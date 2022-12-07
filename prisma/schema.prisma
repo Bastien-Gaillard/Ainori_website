@@ -1,0 +1,259 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model cities {
+  id                 Int       @id @default(autoincrement())
+  department_code    String    @db.VarChar(255)
+  zip_code           String    @db.MediumText
+  name               String    @db.VarChar(45)
+  gps_lat            String    @db.VarChar(45)
+  gps_lng            String    @db.VarChar(45)
+  created_at         DateTime? @default(now()) @db.Timestamp(0)
+  updated_at         DateTime? @db.Timestamp(0)
+  created_by_user_id Int?
+  updated_by_user_id Int?
+  created_by_cities  users?    @relation("cities_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_cities")
+  updated_by_cities  users?    @relation("cities_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_cities")
+  arrival_city_id    routes[]  @relation("citiesToroutes_arrival_city_id")
+  departure_city_id  routes[]  @relation("citiesToroutes_departure_city_id")
+
+  @@index([created_by_user_id], map: "fk_created_by_user_id_cities")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_cities")
+}
+
+model colors {
+  id                 Int              @id @default(autoincrement())
+  color_code         String           @db.VarChar(10)
+  name               String           @db.VarChar(100)
+  created_at         DateTime?        @default(now()) @db.Timestamp(0)
+  updated_at         DateTime?        @db.Timestamp(0)
+  created_by_user_id Int?
+  updated_by_user_id Int?
+  created_by_colors  users?           @relation("colors_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_colors")
+  updated_by_colors  users?           @relation("colors_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_colors")
+  users_vehicles     users_vehicles[]
+
+  @@index([created_by_user_id], map: "fk_created_by_user_id_colors")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_colors")
+}
+
+model images {
+  id                           Int              @id @default(autoincrement())
+  path                         String           @db.VarChar(255)
+  created_at                   DateTime?        @default(now()) @db.Timestamp(0)
+  updated_at                   DateTime?        @db.Timestamp(0)
+  created_by_user_id           Int?
+  updated_by_user_id           Int?
+  created_by_images            users?           @relation("images_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_images")
+  updated_by_images            users?           @relation("images_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_images")
+  users_imagesTousers_image_id users[]          @relation("imagesTousers_image_id")
+  users_vehicles               users_vehicles[]
+
+  @@index([created_by_user_id], map: "fk_created_by_user_id_images")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_images")
+}
+
+model messages {
+  id                  Int       @id @default(autoincrement())
+  sended_by_user_id   Int
+  received_by_user_id Int
+  content             String    @db.MediumText
+  sended_at           DateTime  @default(now()) @db.Timestamp(0)
+  created_at          DateTime? @default(now()) @db.Timestamp(0)
+  updated_at          DateTime? @db.Timestamp(0)
+  created_by_user_id  Int?
+  upadted_by_user_id  Int?
+  created_by_messages users?    @relation("messages_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_messages")
+  received            users     @relation("messages_received_by_user_idTousers", fields: [received_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_received_by_user")
+  sended              users     @relation("messages_sended_by_user_idTousers", fields: [sended_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sended_by_user")
+  updated_by_messages users?    @relation("messages_upadted_by_user_idTousers", fields: [upadted_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_messages")
+
+  @@index([created_by_user_id], map: "fk_created_by_user_id_messages")
+  @@index([received_by_user_id], map: "fk_received_by_user")
+  @@index([sended_by_user_id], map: "fk_sended_by_user")
+  @@index([upadted_by_user_id], map: "fk_updated_by_user_id_messages")
+}
+
+model models {
+  id                 Int              @id @default(autoincrement())
+  mark               String           @db.VarChar(100)
+  model              String           @db.VarChar(100)
+  created_at         DateTime?        @default(now()) @db.Timestamp(0)
+  updated_at         DateTime?        @db.Timestamp(0)
+  created_by_user_id Int?
+  updated_by_user_id Int?
+  created_by_models  users?           @relation("models_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_models")
+  updated_by_models  users?           @relation("models_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_models")
+  users_vehicles     users_vehicles[]
+
+  @@index([created_by_user_id], map: "fk_created_by_user_id_models")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_models")
+}
+
+model notices {
+  id                 Int       @id @default(autoincrement())
+  score              Float     @db.Float
+  comment            String?   @db.MediumText
+  user_id            Int
+  created_at         DateTime? @default(now()) @db.Timestamp(0)
+  updated_at         DateTime? @db.Timestamp(0)
+  created_by_user_id Int?
+  updated_by_user_id Int?
+  created_by_notices users?    @relation("notices_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_notices")
+  updated_by_notices users?    @relation("notices_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_notices")
+  notice             users     @relation("notices_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_notices")
+
+  @@index([created_by_user_id], map: "fk_created_by_user_id_notices")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_notices")
+  @@index([user_id], map: "fk_user_id_notices")
+}
+
+model roles {
+  id                                    Int       @id @default(autoincrement())
+  libelle                               String    @db.VarChar(50)
+  created_at                            DateTime? @default(now()) @db.Timestamp(0)
+  updated_at                            DateTime? @db.Timestamp(0)
+  created_by_user_id                    Int?
+  updated_by_user_id                    Int?
+  users_roles_created_by_user_idTousers users?    @relation("roles_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_roles")
+  users_roles_updated_by_user_idTousers users?    @relation("roles_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_roles")
+  users_rolesTousers_role_id            users[]   @relation("rolesTousers_role_id")
+
+  @@index([created_by_user_id], map: "fk_created_by_user_id_roles")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_roles")
+}
+
+model routes {
+  id                 Int                @id @default(autoincrement())
+  user_id            Int
+  arrival_city_id    Int
+  departure_city_id  Int
+  departure_time     DateTime           @db.Time(0)
+  arrival_time       DateTime           @db.Time(0)
+  departure_date     DateTime           @db.Date
+  available_seats    Int?
+  remaining_seats    Int
+  statuts            Boolean
+  created_at         DateTime?          @default(now()) @db.Timestamp(0)
+  updated_at         DateTime?          @db.Timestamp(0)
+  created_by_user_id Int?
+  updated_by_user_id Int?
+  arrival_city       cities             @relation("citiesToroutes_arrival_city_id", fields: [arrival_city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_arrival_city_id")
+  created_by_routes  users?             @relation("routes_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_routes")
+  departure_city     cities             @relation("citiesToroutes_departure_city_id", fields: [departure_city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departure_city_id")
+  updated_by_routes  users?             @relation("routes_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_routes")
+  route              users              @relation("routes_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_routes")
+  users_has_routes   users_has_routes[]
+
+  @@index([arrival_city_id], map: "fk_arrival_city_id")
+  @@index([created_by_user_id], map: "fk_created_by_user_id_routes")
+  @@index([departure_city_id], map: "fk_departure_city_id")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_routes")
+  @@index([user_id], map: "fk_user_id_routes")
+}
+
+model users {
+  id                                                      Int                @id @default(autoincrement())
+  firstname                                               String             @db.VarChar(100)
+  lastname                                                String             @db.VarChar(100)
+  email                                                   String             @db.VarChar(150)
+  description                                             String?            @db.MediumText
+  password                                                String             @db.VarChar(255)
+  status                                                  Boolean
+  role_id                                                 Int
+  image_id                                                Int?
+  created_at                                              DateTime?          @default(now()) @db.Timestamp(0)
+  updated_at                                              DateTime?          @db.Timestamp(0)
+  created_by_user_id                                      Int?
+  updated_by_user_id                                      Int?
+  created_by_users                                        users?             @relation("usersTousers_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users")
+  image                                                   images?            @relation("imagesTousers_image_id", fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_id_users")
+  role                                                    roles              @relation("rolesTousers_role_id", fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_id")
+  updated_by_users                                        users?             @relation("usersTousers_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users")
+  create_city                                             cities[]           @relation("cities_created_by_user_idTousers")
+  update_city                                             cities[]           @relation("cities_updated_by_user_idTousers")
+  create_color                                            colors[]           @relation("colors_created_by_user_idTousers")
+  update_color                                            colors[]           @relation("colors_updated_by_user_idTousers")
+  create_image                                            images[]           @relation("images_created_by_user_idTousers")
+  update_image                                            images[]           @relation("images_updated_by_user_idTousers")
+  create_message                                          messages[]         @relation("messages_created_by_user_idTousers")
+  update_message                                          messages[]         @relation("messages_received_by_user_idTousers")
+  messages_messages_sended_by_user_idTousers              messages[]         @relation("messages_sended_by_user_idTousers")
+  messages_messages_upadted_by_user_idTousers             messages[]         @relation("messages_upadted_by_user_idTousers")
+  create_model                                            models[]           @relation("models_created_by_user_idTousers")
+  update_model                                            models[]           @relation("models_updated_by_user_idTousers")
+  create_notice                                           notices[]          @relation("notices_created_by_user_idTousers")
+  update_notice                                           notices[]          @relation("notices_updated_by_user_idTousers")
+  notice                                             notices[]          @relation("notices_user_idTousers")
+  create_role                                             roles[]            @relation("roles_created_by_user_idTousers")
+  update_role                                             roles[]            @relation("roles_updated_by_user_idTousers")
+  create_route                                            routes[]           @relation("routes_created_by_user_idTousers")
+  update_route                                            routes[]           @relation("routes_updated_by_user_idTousers")
+  route                                                routes[]           @relation("routes_user_idTousers")
+  create_user                                             users[]            @relation("usersTousers_created_by_user_id")
+  update_user                                             users[]            @relation("usersTousers_updated_by_user_id")
+  create_user_has_route                                   users_has_routes[] @relation("usersTousers_has_routes_updated_by_user_id")
+  update_user_has_route                                   users_has_routes[] @relation("usersTousers_has_routes_created_by_user_id")
+  user_has_route        users_has_routes[] @relation("usersTousers_has_routes_user_id")
+  create_vehicle users_vehicles[]   @relation("usersTousers_vehicles_created_by_user_id")
+  update_vehicule users_vehicles[]   @relation("usersTousers_vehicles_updated_by_user_id")
+  vehicule            users_vehicles[]   @relation("usersTousers_vehicles_user_id")
+
+  @@index([created_by_user_id], map: "fk_created_by_user_id_users")
+  @@index([image_id], map: "fk_image_id_users")
+  @@index([role_id], map: "fk_role_id")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_users")
+}
+
+model users_has_routes {
+  user_id             Int
+  route_id            Int
+  created_at          DateTime? @default(now()) @db.Timestamp(0)
+  updated_at          DateTime? @db.Timestamp(0)
+  created_by_user_id  Int?
+  updated_by_user_id  Int?
+  updated_by_vehicles users?    @relation("usersTousers_has_routes_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users_has_routes")
+  routes              routes    @relation(fields: [route_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_route_id")
+  created_by_routes   users?    @relation("usersTousers_has_routes_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users_has_routes_users_users_has_routes")
+  user_id_routes      users     @relation("usersTousers_has_routes_user_id", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_users_has_routes")
+
+  @@id([user_id, route_id])
+  @@index([updated_by_user_id], map: "fk_created_by_user_id_users_has_routes")
+  @@index([user_id], map: "fk_route_id")
+  @@index([created_by_user_id], map: "fk_updated_by_user_id_users_has_routes")
+  @@index([route_id], map: "fk_user_id")
+}
+
+model users_vehicles {
+  id                  Int       @id @default(autoincrement())
+  user_id             Int
+  lisence_plate       String    @db.VarChar(45)
+  model_id            Int
+  color_id            Int
+  name                String?   @db.VarChar(100)
+  image_id            Int?
+  available_seats     Int
+  created_at          DateTime? @default(now()) @db.Timestamp(0)
+  updated_at          DateTime? @db.Timestamp(0)
+  created_by_user_id  Int?
+  updated_by_user_id  Int?
+  colors              colors    @relation(fields: [color_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_color_id")
+  created_by_vehicles users?    @relation("usersTousers_vehicles_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users_vehicles")
+  images              images?   @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_id_users_vehicles")
+  models              models    @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_model_id")
+  updated_by_vehicles users?    @relation("usersTousers_vehicles_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users_vehicles")
+  user_id_vehicles    users     @relation("usersTousers_vehicles_user_id", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_users_vehicles")
+
+  @@index([color_id], map: "fk_color_id")
+  @@index([created_by_user_id], map: "fk_created_by_user_id_users_vehicles")
+  @@index([image_id], map: "fk_image_id_users_vehicles")
+  @@index([model_id], map: "fk_model_id")
+  @@index([updated_by_user_id], map: "fk_updated_by_user_id_users_vehicles")
+  @@index([user_id], map: "fk_user_id_users_vehicles")
+}
