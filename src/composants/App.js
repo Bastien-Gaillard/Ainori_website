@@ -1,12 +1,21 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React from 'react';
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from './Header';
+import Index from "./Index";
+import SignIn from './SingIn';
 
 export default function App() {
 
-  
+
   return (
-    <div>
-      <h1>Test</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Index />}>
+          <Route index element={<SignIn />} />
+          <Route path="/singIn" element={<SignIn />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
