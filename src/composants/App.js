@@ -13,7 +13,9 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Index />}>
           <Route index element={<SignIn />} />
-          <Route path="/singIn" element={<SignIn />} />
+          <Route path="signin" element={<SignIn />} />
+
+
         </Route>
       </Routes>
     </BrowserRouter>
