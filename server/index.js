@@ -24,9 +24,22 @@ app.listen(port, function () {
   console.log('App listening on port: ' + port);
 });
 
-app.get('/api/get/users', async (req, res) => {
+app.get('/api/get/users/', async (req, res) => {
   const users = await prisma.users.findMany()
   res.send(users);
 });
+
+app.get('/api/get/users2/:email/:password', async (req, res) => {
+  const users_login = await prisma.users.findMany(
+    {
+      where: {
+        email: req.params.email,
+        password: req.params.password,
+      },
+    }
+  )
+  res.send(users_login);
+});
+
 
 

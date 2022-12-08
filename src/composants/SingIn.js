@@ -1,4 +1,9 @@
 import React from 'react';
+import axios from 'axios';
+import { useState } from "react";
+import { useEffect } from "react";
+import Snackbar from '@mui/material/Snackbar'; 
+import Alert from '@mui/material/Alert'; 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,6 +16,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 function Copyright(props) {
   return (
@@ -27,7 +33,11 @@ function Copyright(props) {
 
 const theme = createTheme();
 
+
 export default function SignIn() {
+
+  const [users, setUsers] = useState();
+  const [info, setInfo] = useState();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -35,7 +45,25 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    async function fetchData() {
+      if(data.get('email')=="" || data.get('password')==""){
+        setInfo(<Alert severity="warning">Il faut remplir les champs 'Login' et 'Mot de passe'.</Alert>);
+      }else{
+        const userData = await axios.get('/api/get/users2/'+data.get('email')+'/'+data.get('password'));
+        setUsers(userData.data.length);
+        console.log('data '+userData.data.length);
+        if (userData.data.length ==1){
+          setInfo(<Alert severity="success">Login OK </Alert>);
+        }else{
+          setInfo(<Alert severity="error">Pas le bon 'Login' ou 'Mot de passe' ressayé.</Alert>);
+        }
+      }
+    }
+    fetchData();
+
+    
   };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -75,10 +103,6 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -87,15 +111,12 @@ export default function SignIn() {
             >
               Sign In
             </Button>
+            
+            {info}
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
