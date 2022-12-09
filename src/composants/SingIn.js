@@ -39,11 +39,12 @@ export default function SignIn() {
 
   
   if(read_cookie(cookieLoginUser).length ==0){//if user is already connected
-    console.log('Pas connecté')//-- debug --
+    //console.log('Pas connecté')//-- debug --
   }else{
     //navigate('/');
     //add new page home
   }
+  //console.log(read_cookie(cookieLoginUser)[0])//-- debug --
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -58,11 +59,10 @@ export default function SignIn() {
       }else{
         const userData = await axios.get('/api/get/loginUserSecure/'+data.get('email')+'/'+data.get('password'));
         setUsers(userData.data);
-        console.log('data '+userData.data);
+        //console.log('data '+userData.data);//-- debug --
         if (userData.data.length ==1){//if a user is found => Login
           setInfo(<Alert severity="success">Login OK </Alert>);
           bake_cookie(cookieLoginUser, userData.data);//set value in 'cookieLoginUser'
-          console.log(read_cookie(cookieLoginUser))//-- debug --
           //navigate('/');
           //add new page home
         }else{
