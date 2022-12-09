@@ -111,6 +111,7 @@ export default function SignIn() {
               id="password"
             />
             <Button
+              color="secondary"
               type="submit"
               fullWidth
               variant="contained"

@@ -111,6 +111,7 @@ export default function Forgot() {
                         />
                         {validate == 0 ? validateNotif : validate == 1 ? errorNotif : missNotif}
                         <Button
+                            color="secondary"
                             type="submit"
                             fullWidth
                             variant="contained"
