@@ -63,7 +63,7 @@ export default function SignIn() {
       }else{
         const userData = await axios.get('/api/get/loginUserSecure/'+data.get('email')+'/'+data.get('password'));
         setUsers(userData.data);
-        console.log('data '+userData.data.length);
+        console.log('data '+userData.data);
         if (userData.data.length ==1){//if a user is found => Login
           setInfo(<Alert severity="success">Login OK </Alert>);
           bake_cookie(cookieLoginUser, userData.data);//set value in 'cookieLoginUser'
