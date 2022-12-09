@@ -5,15 +5,14 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import emailjs from '@emailjs/browser';
 import Link from '@mui/material/Link';
-
+import theme from '../cusotmization/palette'
 import { useState } from 'react';
-const theme = createTheme();
 
 export default function Forgot() {
 
@@ -125,7 +124,6 @@ export default function Forgot() {
                     </Box>
                 </Box>
             </Container>
-
         </ThemeProvider>
 
     );

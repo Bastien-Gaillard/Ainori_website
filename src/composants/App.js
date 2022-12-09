@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from './Header';
 import Index from "./Index";
 import SignIn from './SingIn';
-
+import Forgot from './Forgot';
+import Email from './Email'
 export default function App() {
 
 
@@ -14,6 +15,8 @@ export default function App() {
         <Route path="/" element={<Index />}>
           <Route index element={<SignIn />} />
           <Route path="signin" element={<SignIn />} />
+          <Route path="forgot" element={<Forgot />} />
+          <Route path="email" element={<Email />} />
 
 
         </Route>
