@@ -59,11 +59,8 @@ export default function SignIn() {
               type="password"
               id="password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
+              color="secondary"
               type="submit"
               fullWidth
               variant="contained"
