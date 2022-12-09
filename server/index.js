@@ -29,12 +29,24 @@ app.get('/api/get/users/', async (req, res) => {
   res.send(users);
 });
 
-app.get('/api/get/users2/:email/:password', async (req, res) => {
+// for get user for login
+app.get('/api/get/loginUserSecure/:email/:password', async (req, res) => {
   const users_login = await prisma.users.findMany(
     {
+      select: {
+        id: true,
+        firstname: true,
+        lastname:true,
+        email:true,
+        status:true,
+        description:true,
+        role : true ,
+        image :true ,
+      },
       where: {
         email: req.params.email,
         password: req.params.password,
+        status: true,
       },
     }
   )
