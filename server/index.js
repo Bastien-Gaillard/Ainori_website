@@ -18,6 +18,30 @@ app.get('/api', (req, res) => {
     res.send(mockResponse);
 });
 
+
+// GET DATA 
+
+app.get('/api/get/userByEmail/:email', async (req, res) => {
+    const result = await prisma.users.findMany({
+        where: {
+            email: req.params.email 
+        },
+    })
+    res.send(result);
+});
+
+
+// UPDATE DATA
+app.get('/api/update/password/:id/:password', async (req, res) => {
+    const result = await prisma.users.update({
+        where: { 
+            id: 1 
+        },
+        data: { password: req.params.password },
+    })
+    res.send(result);
+});
+
 app.get('*', (req, res) => res.sendFile(path.resolve('dist', 'index.html')));
 app.listen(port, function () {
     console.log('App listening on port: ' + port);
