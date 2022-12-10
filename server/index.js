@@ -29,7 +29,7 @@ app.get('/api/get/userByEmail/:email', async (req, res) => {
     res.send(result);
 });
 
-// for get user for login
+// for get user [ params  (email) and (password) ] in SingIn.js  10/12/2022 Thomas 
 app.get('/api/get/loginUserSecure/:email/:password', async (req, res) => {
   const users_login = await prisma.users.findMany(
     {

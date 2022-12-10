@@ -1,8 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import { useState } from "react";
+import { useEffect } from "react";
 import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
-import  { useNavigate } from 'react-router-dom'
+import  { useNavigate } from 'react-router-dom';
 import Alert from '@mui/material/Alert'; 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -36,23 +37,27 @@ export default function SignIn() {
   */
   //-- debug déconnexion--
 
-
+  useEffect(() => {
+    if(read_cookie(cookieLoginUser).length ==0){//if user is already connected
+      //console.log('Pas connecté')//-- debug --
+    }else{
+      //console.log('connecté')//-- debug --
+      navigate('/homme');
+    }
+  }, []);
   
-  if(read_cookie(cookieLoginUser).length ==0){//if user is already connected
-    //console.log('Pas connecté')//-- debug --
-  }else{
-    //navigate('/');
-    //add new page home
-  }
+
   //console.log(read_cookie(cookieLoginUser)[0])//-- debug --
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    /*
     console.log({
       //-- debug --
       email: data.get('email'),
       password: data.get('password'),
     });
+    */
     async function fetchData() {
       if(data.get('email')=="" || data.get('password')==""){//if field (email,password) is empty 
         setInfo(<Alert severity="warning">Il faut remplir les champs 'Login' et 'Mot de passe'.</Alert>);
@@ -63,7 +68,7 @@ export default function SignIn() {
         if (userData.data.length ==1){//if a user is found => Login
           setInfo(<Alert severity="success">Login OK </Alert>);
           bake_cookie(cookieLoginUser, userData.data);//set value in 'cookieLoginUser'
-          //navigate('/');
+          navigate('/homme');
           //add new page home
         }else{
           setInfo(<Alert severity="error">Pas le bon 'Login' ou 'Mot de passe' ressayé.</Alert>);

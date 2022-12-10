@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import  { useNavigate } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/material/Menu';
 import Container from '@mui/material/Container';
@@ -20,14 +21,16 @@ const settings = ['Profile', 'Messages', 'Mes voitures', 'Deconnexion'];
 
 
 export default function Header() {
+	let navigate = useNavigate();
 	const cookieLoginUser = 'login';
 	const [info, setInfo] = useState();
 	const [anchorElNav, setAnchorElNav] = useState(null);
 	const [anchorElUser, setAnchorElUser] = useState(null);
 
-	const déconnexion = e => {
+	const déconnexion = e => {//for déconnexion delete cookie (cookieLoginUser)
 		e.preventDefault()
 		delete_cookie(cookieLoginUser)
+		navigate('/signin')
 	}
 
 	const handleOpenNavMenu = (event) => {
@@ -44,14 +47,16 @@ export default function Header() {
 	const handleCloseUserMenu = () => {
 		setAnchorElUser(null);
 	};
-	console.log(read_cookie(cookieLoginUser))
-	const LotLogin = (
+	//console.log(read_cookie(cookieLoginUser))
+
+	//if not login
+	const NotLogin = (
 		<IconButton sx={{ p: 0 }}>
 			<Avatar />
 		</IconButton>
 
     )
-	let Login="";
+	let Login="";// set value Login 
 	if(read_cookie(cookieLoginUser).length !=0){//if user is already connected
 		Login = (
 			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -162,7 +167,7 @@ export default function Header() {
 
 						<Box sx={{ flexGrow: 0 }}>
 							<Tooltip title="Open settings">
-								{read_cookie(cookieLoginUser).length ==0 ?  LotLogin :  Login  }
+								{read_cookie(cookieLoginUser).length == 0 ?  NotLogin :  Login  }
 							</Tooltip>
 							<Menu
 								sx={{ mt: '45px' }}
