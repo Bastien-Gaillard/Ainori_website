@@ -1,5 +1,3 @@
-import React from 'react';
-import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from './Header';
 import Index from "./Index";
@@ -16,8 +14,13 @@ export default function App() {
           <Route index element={<SignIn />} />
           <Route path="signin" element={<SignIn />} />
           <Route path="forgot" element={<Forgot />} />
+          <Route path="mycars" element={<Home />} />
+          <Route path="logout" element={<Home />} />
+          <Route path="messages" element={<Home />} />
           <Route path="home" element={<Home />} />
-          <Route path="forgot/:token" element={<ForgotPassword />} />
+          <Route path="profil" element={<Home />} />
+
+          {/* <Route path="forgot/:token" element={<ForgotPassword />} /> */}
 
         </Route>
       </Routes>

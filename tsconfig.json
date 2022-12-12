@@ -7,14 +7,21 @@
         "jsx": "react-jsx",
         "allowJs": true,
         "moduleResolution": "node",
-        "baseUrl": ".",
-        "paths": {},
-        "sourceMap": true,
-        "strict": true,
-        "lib": [
-            "esnext"
-        ],
-        "esModuleInterop": true
+        "baseUrl": "./src",
+        "paths": {
+            "@*": [
+                "*"
+            ],
+            "@socket": [
+                "utils/socket.tsx"
+            ],
+            "@user": [
+                "utils/contexts/userContext.tsx"
+            ],
+            "@serverconfig": [
+                "utils/contexts/configContext.tsx"
+            ]
+        }
     },
     "include": [
         "./**/*"
