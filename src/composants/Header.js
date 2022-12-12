@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import  { useNavigate } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/material/Menu';
 import Container from '@mui/material/Container';
@@ -14,13 +15,23 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../cusotmization/palette';
+import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Messages', 'Mes voitures', 'Deconnexion'];
 
 
 export default function Header() {
+	let navigate = useNavigate();
+	const cookieLoginUser = 'login';
+	const [info, setInfo] = useState();
 	const [anchorElNav, setAnchorElNav] = useState(null);
 	const [anchorElUser, setAnchorElUser] = useState(null);
+
+	const déconnexion = e => {//for déconnexion delete cookie (cookieLoginUser)
+		e.preventDefault()
+		delete_cookie(cookieLoginUser)
+		navigate('/signin')
+	}
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
@@ -36,6 +47,33 @@ export default function Header() {
 	const handleCloseUserMenu = () => {
 		setAnchorElUser(null);
 	};
+	//console.log(read_cookie(cookieLoginUser))
+
+	//if not login
+	const NotLogin = (
+		<IconButton sx={{ p: 0 }}>
+			<Avatar />
+		</IconButton>
+
+    )
+	let Login="";// set value Login 
+	if(read_cookie(cookieLoginUser).length !=0){//if user is already connected
+		Login = (
+			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+				<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src="/static/images/avatar/2.jpg" />
+			</IconButton>  
+		)
+		if(read_cookie(cookieLoginUser)[0].image != null ){//if user as image
+			Login = (
+				<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+					<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src={read_cookie(cookieLoginUser)[0].image.path} />
+				</IconButton>  
+			)
+		}
+	}
+
+
+
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -129,9 +167,7 @@ export default function Header() {
 
 						<Box sx={{ flexGrow: 0 }}>
 							<Tooltip title="Open settings">
-								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-									<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-								</IconButton>
+								{read_cookie(cookieLoginUser).length == 0 ?  NotLogin :  Login  }
 							</Tooltip>
 							<Menu
 								sx={{ mt: '45px' }}
@@ -151,9 +187,10 @@ export default function Header() {
 							>
 								{settings.map((setting) => (
 									<MenuItem key={setting} onClick={handleCloseUserMenu}>
-										<Typography textAlign="center">{setting}</Typography>
+										<Typography textAlign="center" onClick={ setting === 'Deconnexion' ? déconnexion:''}>{setting}</Typography>
 									</MenuItem>
 								))}
+								
 							</Menu>
 						</Box>
 					</Toolbar>

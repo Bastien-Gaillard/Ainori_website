@@ -13,6 +13,10 @@ import emailjs from '@emailjs/browser';
 import Link from '@mui/material/Link';
 import theme from '../cusotmization/palette'
 import { useState } from 'react';
+import { useEffect } from "react";
+import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
+import  { useNavigate } from 'react-router-dom';
+
 export default function Forgot() {
 
     const [open, setOpen] = useState(false);
@@ -83,6 +87,20 @@ export default function Forgot() {
             Un champ est vide
         </Alert>
     )
+
+    // new by thom for check if user is already connected
+    let navigate = useNavigate();
+    const cookieLoginUser = 'login';
+    useEffect(() => {
+        if(read_cookie(cookieLoginUser).length ==0){//if user is already connected
+          //console.log('Pas connecté')//-- debug --
+        }else{
+          //console.log('connecté')//-- debug --
+          navigate('/home');
+        }
+      }, []);
+
+
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">

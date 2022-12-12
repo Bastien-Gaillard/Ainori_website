@@ -5,10 +5,10 @@ import Header from './Header';
 import Index from "./Index";
 import SignIn from './SingIn';
 import Forgot from './Forgot';
-import Email from './Email'
+import Home from './Home';
 export default function App() {
 
-
+  //new Route for test page Home.js by thomas
   return (
     <BrowserRouter>
       <Routes>
@@ -16,10 +16,8 @@ export default function App() {
           <Route index element={<SignIn />} />
           <Route path="signin" element={<SignIn />} />
           <Route path="forgot" element={<Forgot />} />
+          <Route path="home" element={<Home />} />
           <Route path="forgot/:token" element={<ForgotPassword />} />
-
-          <Route path="email" element={<Email />} />
-
 
         </Route>
       </Routes>
