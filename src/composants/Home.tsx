@@ -1,4 +1,3 @@
-import React from 'react';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '../cusotmization/palette';
@@ -7,9 +6,6 @@ import  { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { useEffect } from "react";
 import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
-
-// by Thomas Barron 10/12/2022 
-
 
 export default function Home() {
     const cookieLoginUser = 'login';
