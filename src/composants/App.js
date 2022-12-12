@@ -5,10 +5,10 @@ import Header from './Header';
 import Index from "./Index";
 import SignIn from './SingIn';
 import Forgot from './Forgot';
-import Homme from './Homme';
+import Home from './Home';
 export default function App() {
 
-  //new Route for test page Homme.js by thomas
+  //new Route for test page Home.js by thomas
   return (
     <BrowserRouter>
       <Routes>
@@ -16,7 +16,7 @@ export default function App() {
           <Route index element={<SignIn />} />
           <Route path="signin" element={<SignIn />} />
           <Route path="forgot" element={<Forgot />} />
-          <Route path="homme" element={<Homme />} />
+          <Route path="home" element={<Home />} />
 
 
         </Route>

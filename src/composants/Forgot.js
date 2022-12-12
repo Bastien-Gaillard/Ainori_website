@@ -86,7 +86,7 @@ export default function Forgot() {
             Un champ est vide
         </Alert>
     )
-    
+
     // new by thom for check if user is already connected
     let navigate = useNavigate();
     const cookieLoginUser = 'login';
@@ -95,7 +95,7 @@ export default function Forgot() {
           //console.log('Pas connecté')//-- debug --
         }else{
           //console.log('connecté')//-- debug --
-          navigate('/homme');
+          navigate('/home');
         }
       }, []);
 

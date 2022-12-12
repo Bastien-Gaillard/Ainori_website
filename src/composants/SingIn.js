@@ -42,7 +42,7 @@ export default function SignIn() {
       //console.log('Pas connecté')//-- debug --
     }else{
       //console.log('connecté')//-- debug --
-      navigate('/homme');
+      navigate('/home');
     }
   }, []);
   
@@ -68,7 +68,7 @@ export default function SignIn() {
         if (userData.data.length ==1){//if a user is found => Login
           setInfo(<Alert severity="success">Login OK </Alert>);
           bake_cookie(cookieLoginUser, userData.data);//set value in 'cookieLoginUser'
-          navigate('/homme');
+          navigate('/home');
           //add new page home
         }else{
           setInfo(<Alert severity="error">Pas le bon 'Login' ou 'Mot de passe' ressayé.</Alert>);

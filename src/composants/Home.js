@@ -11,7 +11,7 @@ import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
 // by Thomas Barron 10/12/2022 
 
 
-export default function Homme() {
+export default function Home() {
     const cookieLoginUser = 'login';
     let navigate = useNavigate();
     useEffect(() => {
