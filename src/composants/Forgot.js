@@ -13,7 +13,6 @@ import emailjs from '@emailjs/browser';
 import Link from '@mui/material/Link';
 import theme from '../cusotmization/palette'
 import { useState } from 'react';
-
 export default function Forgot() {
 
     const [open, setOpen] = useState(false);
@@ -28,9 +27,10 @@ export default function Forgot() {
     const sendMail = async (email) => {
         const result = await axios.get('/api/get/userByEmail/' + email);
         if (result.data != "") {
+            console.log(result);
             emailjs.send("service_10k2k67", "template_597yze8", {
                 user_name: "bastien",
-                link: "dlposq",
+                link: "localhost:3000/forgot/" + result.data[0].token,
                 email: email,
             }, 'HamLJtCxqPRaXk6xn');
             setValidate(0);

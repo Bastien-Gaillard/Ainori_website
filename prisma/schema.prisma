@@ -159,51 +159,52 @@ model routes {
 }
 
 model users {
-  id                                                      Int                @id @default(autoincrement())
-  firstname                                               String             @db.VarChar(100)
-  lastname                                                String             @db.VarChar(100)
-  email                                                   String             @db.VarChar(150)
-  description                                             String?            @db.MediumText
-  password                                                String             @db.VarChar(255)
-  status                                                  Boolean
-  role_id                                                 Int
-  image_id                                                Int?
-  created_at                                              DateTime?          @default(now()) @db.Timestamp(0)
-  updated_at                                              DateTime?          @db.Timestamp(0)
-  created_by_user_id                                      Int?
-  updated_by_user_id                                      Int?
-  created_by_users                                        users?             @relation("usersTousers_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users")
-  image                                                   images?            @relation("imagesTousers_image_id", fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_id_users")
-  role                                                    roles              @relation("rolesTousers_role_id", fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_id")
-  updated_by_users                                        users?             @relation("usersTousers_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users")
-  create_city                                             cities[]           @relation("cities_created_by_user_idTousers")
-  update_city                                             cities[]           @relation("cities_updated_by_user_idTousers")
-  create_color                                            colors[]           @relation("colors_created_by_user_idTousers")
-  update_color                                            colors[]           @relation("colors_updated_by_user_idTousers")
-  create_image                                            images[]           @relation("images_created_by_user_idTousers")
-  update_image                                            images[]           @relation("images_updated_by_user_idTousers")
-  create_message                                          messages[]         @relation("messages_created_by_user_idTousers")
-  update_message                                          messages[]         @relation("messages_received_by_user_idTousers")
-  messages_messages_sended_by_user_idTousers              messages[]         @relation("messages_sended_by_user_idTousers")
-  messages_messages_upadted_by_user_idTousers             messages[]         @relation("messages_upadted_by_user_idTousers")
-  create_model                                            models[]           @relation("models_created_by_user_idTousers")
-  update_model                                            models[]           @relation("models_updated_by_user_idTousers")
-  create_notice                                           notices[]          @relation("notices_created_by_user_idTousers")
-  update_notice                                           notices[]          @relation("notices_updated_by_user_idTousers")
-  notice                                             notices[]          @relation("notices_user_idTousers")
-  create_role                                             roles[]            @relation("roles_created_by_user_idTousers")
-  update_role                                             roles[]            @relation("roles_updated_by_user_idTousers")
-  create_route                                            routes[]           @relation("routes_created_by_user_idTousers")
-  update_route                                            routes[]           @relation("routes_updated_by_user_idTousers")
-  route                                                routes[]           @relation("routes_user_idTousers")
-  create_user                                             users[]            @relation("usersTousers_created_by_user_id")
-  update_user                                             users[]            @relation("usersTousers_updated_by_user_id")
-  create_user_has_route                                   users_has_routes[] @relation("usersTousers_has_routes_updated_by_user_id")
-  update_user_has_route                                   users_has_routes[] @relation("usersTousers_has_routes_created_by_user_id")
-  user_has_route        users_has_routes[] @relation("usersTousers_has_routes_user_id")
-  create_vehicle users_vehicles[]   @relation("usersTousers_vehicles_created_by_user_id")
-  update_vehicule users_vehicles[]   @relation("usersTousers_vehicles_updated_by_user_id")
-  vehicule            users_vehicles[]   @relation("usersTousers_vehicles_user_id")
+  id                                          Int                @id @default(autoincrement())
+  firstname                                   String             @db.VarChar(100)
+  lastname                                    String             @db.VarChar(100)
+  email                                       String             @db.VarChar(150)
+  description                                 String?            @db.MediumText
+  password                                    String             @db.VarChar(255)
+  status                                      Boolean
+  role_id                                     Int
+  token                                       String             @db.Text
+  image_id                                    Int?
+  created_at                                  DateTime?          @default(now()) @db.Timestamp(0)
+  updated_at                                  DateTime?          @db.Timestamp(0)
+  created_by_user_id                          Int?
+  updated_by_user_id                          Int?
+  created_by_users                            users?             @relation("usersTousers_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users")
+  image                                       images?            @relation("imagesTousers_image_id", fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_id_users")
+  role                                        roles              @relation("rolesTousers_role_id", fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_id")
+  updated_by_users                            users?             @relation("usersTousers_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users")
+  create_city                                 cities[]           @relation("cities_created_by_user_idTousers")
+  update_city                                 cities[]           @relation("cities_updated_by_user_idTousers")
+  create_color                                colors[]           @relation("colors_created_by_user_idTousers")
+  update_color                                colors[]           @relation("colors_updated_by_user_idTousers")
+  create_image                                images[]           @relation("images_created_by_user_idTousers")
+  update_image                                images[]           @relation("images_updated_by_user_idTousers")
+  create_message                              messages[]         @relation("messages_created_by_user_idTousers")
+  update_message                              messages[]         @relation("messages_received_by_user_idTousers")
+  messages_messages_sended_by_user_idTousers  messages[]         @relation("messages_sended_by_user_idTousers")
+  messages_messages_upadted_by_user_idTousers messages[]         @relation("messages_upadted_by_user_idTousers")
+  create_model                                models[]           @relation("models_created_by_user_idTousers")
+  update_model                                models[]           @relation("models_updated_by_user_idTousers")
+  create_notice                               notices[]          @relation("notices_created_by_user_idTousers")
+  update_notice                               notices[]          @relation("notices_updated_by_user_idTousers")
+  notice                                      notices[]          @relation("notices_user_idTousers")
+  create_role                                 roles[]            @relation("roles_created_by_user_idTousers")
+  update_role                                 roles[]            @relation("roles_updated_by_user_idTousers")
+  create_route                                routes[]           @relation("routes_created_by_user_idTousers")
+  update_route                                routes[]           @relation("routes_updated_by_user_idTousers")
+  route                                       routes[]           @relation("routes_user_idTousers")
+  create_user                                 users[]            @relation("usersTousers_created_by_user_id")
+  update_user                                 users[]            @relation("usersTousers_updated_by_user_id")
+  create_user_has_route                       users_has_routes[] @relation("usersTousers_has_routes_updated_by_user_id")
+  update_user_has_route                       users_has_routes[] @relation("usersTousers_has_routes_created_by_user_id")
+  user_has_route                              users_has_routes[] @relation("usersTousers_has_routes_user_id")
+  create_vehicle                              users_vehicles[]   @relation("usersTousers_vehicles_created_by_user_id")
+  update_vehicule                             users_vehicles[]   @relation("usersTousers_vehicles_updated_by_user_id")
+  vehicule                                    users_vehicles[]   @relation("usersTousers_vehicles_user_id")
 
   @@index([created_by_user_id], map: "fk_created_by_user_id_users")
   @@index([image_id], map: "fk_image_id_users")
@@ -214,6 +215,7 @@ model users {
 model users_has_routes {
   user_id             Int
   route_id            Int
+  status_notice       Int       @db.TinyInt
   created_at          DateTime? @default(now()) @db.Timestamp(0)
   updated_at          DateTime? @db.Timestamp(0)
   created_by_user_id  Int?
