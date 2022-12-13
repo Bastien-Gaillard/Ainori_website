@@ -2,7 +2,7 @@
   "name": "ainori",
   "version": "1.0.0",
   "description": "Un site web de covoiturage crée pour le centre de formation Nextech ",
-  "main": "index.js",
+  "main": "index.tsx",
   "scripts": {
     "start": "node server/index.js",
     "dev": "webpack --mode development && node server/index.js",
@@ -32,8 +32,8 @@
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.4",
-    "sfcookies": "^1.0.2",
-    "ts-loader": "^9.4.2"
+    "ts-loader": "^9.4.2",
+    "sfcookies": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
@@ -41,6 +41,7 @@
     "@types/react-dom": "^18.0.9",
     "html-webpack-plugin": "^5.5.0",
     "prisma": "^4.6.1",
+    "sfcookies": "^1.0.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.4",
     "webpack": "^5.75.0",

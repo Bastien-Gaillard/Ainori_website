@@ -15,7 +15,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '../cusotmization/palette';
 import { ThemeProvider } from '@mui/material/styles';
-
+interface JSXElement extends React.ReactElement<any> { }
+type Element = JSXElement | null;
 // by Thomas Barron 09/12/2022 
 
 
@@ -24,7 +25,7 @@ export default function SignIn() {
   let navigate = useNavigate();
   const cookieLoginUser = 'login';
   const [users, setUsers] = useState();
-  const [info, setInfo]  = useState<Element>();
+  const [info, setInfo] = useState<Element>();
 
   //-- debug déconnexion--
   // onSubmit={déconnexion}
@@ -59,7 +60,7 @@ export default function SignIn() {
     async function fetchData() {
 
       //if field (email,password) is empty 
-      if (data.get('email') == "" || data.get('password') == "") { 
+      if (data.get('email') == "" || data.get('password') == "") {
         setInfo(<Alert severity="warning">Il faut remplir les champs 'Login' et 'Mot de passe'.</Alert>);
       } else {
         const userData = await axios.get('/api/get/loginUserSecure/' + data.get('email') + '/' + data.get('password'));
@@ -95,43 +96,45 @@ export default function SignIn() {
             Connexion
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Adresse mail"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Mot de passe"
-              type="password"
-              id="password"
-            />
-            <Button
-              color="secondary"
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Connexion
-            </Button>
+            <>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Adresse mail"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Mot de passe"
+                type="password"
+                id="password"
+              />
+              <Button
+                color="secondary"
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Connexion
+              </Button>
 
-            {info}
-            <Grid container>
-              <Grid item xs>
-                <Link href="/forgot" variant="body2">
-                  Mot de passe oublié ?
-                </Link>
+              {info}
+              <Grid container>
+                <Grid item xs>
+                  <Link href="/forgot" variant="body2">
+                    Mot de passe oublié ?
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
+            </>
           </Box>
         </Box>
       </Container>

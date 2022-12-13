@@ -1,4 +1,3 @@
-import React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -12,8 +11,7 @@ import Alert from '@mui/material/Alert';
 import emailjs from '@emailjs/browser';
 import Link from '@mui/material/Link';
 import theme from '../cusotmization/palette'
-import { useState } from 'react';
-import { useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
 import  { useNavigate } from 'react-router-dom';
 
@@ -47,7 +45,7 @@ export default function Forgot() {
         setOpen(true);
     };
 
-    const handleClose = (event, reason) => {
+    const handleClose = (reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -56,7 +54,7 @@ export default function Forgot() {
     };
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        const data = event.currentTarget;
         const email = data.get('email');
         if (email === "") {
             setValidate(3);

@@ -71,11 +71,11 @@ export default function Header() {
 			<Avatar />
 		</IconButton>
 	)
-	const Login = (
-		<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-			<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src={read_cookie(cookieLoginUser)[0].image.path} />
-		</IconButton>
-	)
+	// const Login = (
+	// 	<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+	// 		<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src={read_cookie(cookieLoginUser)[0].image.path} />
+	// 	</IconButton>
+	// )
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -169,7 +169,7 @@ export default function Header() {
 
 						<Box sx={{ flexGrow: 0 }}>
 							<Tooltip title="Open settings">
-								{read_cookie(cookieLoginUser).length == 0 ? NotLogin : Login}
+								{read_cookie(cookieLoginUser).length == 0 ? NotLogin : NotLogin}
 							</Tooltip>
 							<Menu
 								sx={{ mt: '45px' }}
