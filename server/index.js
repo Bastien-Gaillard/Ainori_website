@@ -20,7 +20,6 @@ app.get('/api', (req, res) => {
 
 
 // GET DATA 
-
 app.get('/api/get/userByEmail/:email', async (req, res) => {
     const result = await prisma.users.findMany({
         where: {
@@ -30,6 +29,29 @@ app.get('/api/get/userByEmail/:email', async (req, res) => {
     res.send(result);
 });
 
+// for get user [ params  (email) and (password) ] in SingIn.js  10/12/2022 Thomas 
+app.get('/api/get/loginUserSecure/:email/:password', async (req, res) => {
+  const users_login = await prisma.users.findMany(
+    {
+      select: {
+        id: true,
+        firstname: true,
+        lastname:true,
+        email:true,
+        status:true,
+        description:true,
+        role : true ,
+        image :true ,
+      },
+      where: {
+        email: req.params.email,
+        password: req.params.password,
+        status: true,
+      },
+    }
+  )
+  res.send(users_login);
+});
 
 // UPDATE DATA
 app.get('/api/update/password/:id/:password', async (req, res) => {
@@ -43,9 +65,14 @@ app.get('/api/update/password/:id/:password', async (req, res) => {
 });
 
 app.get('*', (req, res) => res.sendFile(path.resolve('dist', 'index.html')));
+
 app.listen(port, function () {
     console.log('App listening on port: ' + port);
 });
+
+
+
+
 
 
 

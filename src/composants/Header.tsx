@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/material/Menu';
 import Container from '@mui/material/Container';
@@ -14,13 +15,38 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../cusotmization/palette';
+import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
 const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Messages', 'Mes voitures', 'Deconnexion'];
+const settings = [{
+	name: "Profile",
+	redirect: "/profil"
+},
+{
+	name: "Messages",
+	redirect: "/messages"
+},
+{
+	name: "Mes voitures",
+	redirect: "/myCars"
+},
+{
+	name: "Deconnexion",
+	redirect: "logout"
+}];
 
 
 export default function Header() {
+	let navigate = useNavigate();
+	const cookieLoginUser = 'login';
+	const [info, setInfo] = useState();
 	const [anchorElNav, setAnchorElNav] = useState(null);
 	const [anchorElUser, setAnchorElUser] = useState(null);
+
+	const déconnexion = e => {//for déconnexion delete cookie (cookieLoginUser)
+		e.preventDefault()
+		delete_cookie(cookieLoginUser)
+		navigate('/signin')
+	}
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
@@ -34,8 +60,22 @@ export default function Header() {
 	};
 
 	const handleCloseUserMenu = () => {
+		console.log("oui");
 		setAnchorElUser(null);
 	};
+	//console.log(read_cookie(cookieLoginUser))
+
+	//if not login
+	const NotLogin = (
+		<IconButton sx={{ p: 0 }}>
+			<Avatar />
+		</IconButton>
+	)
+	const Login = (
+		<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+			<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src={read_cookie(cookieLoginUser)[0].image.path} />
+		</IconButton>
+	)
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -70,7 +110,7 @@ export default function Header() {
 								onClick={handleOpenNavMenu}
 								color="inherit"
 							>
-								<MenuIcon />
+								<MenuIcon open={undefined}/>
 							</IconButton>
 							<Menu
 								id="menu-appbar"
@@ -129,9 +169,7 @@ export default function Header() {
 
 						<Box sx={{ flexGrow: 0 }}>
 							<Tooltip title="Open settings">
-								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-									<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-								</IconButton>
+								{read_cookie(cookieLoginUser).length == 0 ? NotLogin : Login}
 							</Tooltip>
 							<Menu
 								sx={{ mt: '45px' }}
@@ -150,10 +188,11 @@ export default function Header() {
 								onClose={handleCloseUserMenu}
 							>
 								{settings.map((setting) => (
-									<MenuItem key={setting} onClick={handleCloseUserMenu}>
-										<Typography textAlign="center">{setting}</Typography>
+									<MenuItem key={setting.name} onClick={handleCloseNavMenu}>
+										<Typography textAlign="center">{setting.name}</Typography>
 									</MenuItem>
 								))}
+
 							</Menu>
 						</Box>
 					</Toolbar>
