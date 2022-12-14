@@ -65,12 +65,31 @@ export default function ProfilNav() {
         console.log("oui");
         setAnchorElUser(null);
     };
+    const NotLogin = (
+		<IconButton sx={{ p: 0 }}>
+			<Avatar />
+		</IconButton>
+
+    )
+	let Login=null;// set value Login 
+	if(read_cookie(cookieLoginUser).length !=0){//if user is already connected
+		Login = (
+			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+				<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src="/static/images/avatar/2.jpg" />
+			</IconButton>  
+		)
+		if(read_cookie(cookieLoginUser)[0].image != null ){//if user as image
+			Login = (
+				<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+					<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src={read_cookie(cookieLoginUser)[0].image.path} />
+				</IconButton>  
+			)
+		}
+	}
     return (
         <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-                <IconButton sx={{ p: 0 }}>
-                    <Avatar />
-                </IconButton>
+                    {read_cookie(cookieLoginUser).length == 0 ?  NotLogin :  Login  }
             </Tooltip>
             <Menu
                 sx={{ mt: '45px' }}
@@ -90,7 +109,7 @@ export default function ProfilNav() {
             >
                 {settings.map((setting) => (
                     <MenuItem key={setting.name} onClick={handleCloseNavMenu}>
-                        <Typography textAlign="center">{setting.name}</Typography>
+                        <Typography textAlign="center" onClick={ setting.name === 'Deconnexion' ? déconnexion:null}>{setting.name}</Typography>
                     </MenuItem>
                 ))}
 
