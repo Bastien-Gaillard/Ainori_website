@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from './Header';
+import Header from './header/Header';
 import Index from "./Index";
 import SignIn from './SingIn';
 import Forgot from './Forgot';
