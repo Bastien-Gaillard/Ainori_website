@@ -20,9 +20,7 @@ export default function Home() {
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
-          <Typography component="h1" variant="h5">
-            Home
-          </Typography>
+        un home quoi ...
       </Container>
     </ThemeProvider>
   );

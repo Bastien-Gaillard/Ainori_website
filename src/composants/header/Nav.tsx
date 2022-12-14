@@ -47,17 +47,24 @@ export default function Nav() {
         setAnchorElUser(null);
     };
 
-    return (
+    const NotLogin = (
+        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}></Box>
+    )
+    const Login = (
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-                <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                    {page}
-                </Button>
-            ))}
+        {pages.map((page) => (
+            <Button
+                key={page}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+                {page}
+            </Button>
+        ))}
         </Box>
+    )
+
+    return (
+        read_cookie(cookieLoginUser).length == 0 ?  NotLogin :  Login 
     );
 }

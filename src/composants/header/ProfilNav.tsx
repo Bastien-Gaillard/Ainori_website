@@ -47,6 +47,7 @@ export default function ProfilNav() {
     const déconnexion = e => {//for déconnexion delete cookie (cookieLoginUser)
         e.preventDefault()
         delete_cookie(cookieLoginUser)
+        setAnchorElUser(null)
         navigate('/signin')
     }
 
@@ -66,31 +67,30 @@ export default function ProfilNav() {
         setAnchorElUser(null);
     };
     const NotLogin = (
-		<IconButton sx={{ p: 0 }}>
 			<Avatar />
-		</IconButton>
-
     )
 	let Login=null;// set value Login 
 	if(read_cookie(cookieLoginUser).length !=0){//if user is already connected
 		Login = (
+            <Tooltip title="Open settings">
 			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 				<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src="/static/images/avatar/2.jpg" />
-			</IconButton>  
+			</IconButton> 
+            </Tooltip> 
 		)
 		if(read_cookie(cookieLoginUser)[0].image != null ){//if user as image
 			Login = (
+                <Tooltip title="Open settings">
 				<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 					<Avatar alt={read_cookie(cookieLoginUser)[0].lastname} src={read_cookie(cookieLoginUser)[0].image.path} />
-				</IconButton>  
+				</IconButton> 
+                </Tooltip>
 			)
 		}
 	}
     return (
         <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-                    {read_cookie(cookieLoginUser).length == 0 ?  NotLogin :  Login  }
-            </Tooltip>
+            {read_cookie(cookieLoginUser).length == 0 ?  NotLogin :  Login  }
             <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -112,7 +112,6 @@ export default function ProfilNav() {
                         <Typography textAlign="center" onClick={ setting.name === 'Deconnexion' ? déconnexion:null}>{setting.name}</Typography>
                     </MenuItem>
                 ))}
-
             </Menu>
         </Box>
     )
