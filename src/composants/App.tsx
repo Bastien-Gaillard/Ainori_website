@@ -5,6 +5,7 @@ import Index from "./Index";
 import SignIn from './SingIn';
 import Forgot from './Forgot';
 import Home from './Home';
+import Profil from './Profil';
 export default function App() {
 
   //new Route for test page Home.js by thomas
@@ -19,7 +20,7 @@ export default function App() {
           <Route path="logout" element={<Home />} />
           <Route path="messages" element={<Home />} />
           <Route path="home" element={<Home />} />
-          <Route path="profil" element={<Home />} />
+          <Route path="profil" element={<Profil />} />
 
           {/* <Route path="forgot/:token" element={<ForgotPassword />} /> */}
 
