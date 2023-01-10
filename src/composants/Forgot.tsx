@@ -135,7 +135,7 @@ export default function Forgot() {
                         >
                             Valider
                         </Button>
-                        <Link href="/signin" variant="body2">
+                        <Link href="/login" variant="body2">
                             Se connecter
                         </Link>
                     </Box>

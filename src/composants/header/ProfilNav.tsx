@@ -48,7 +48,7 @@ export default function ProfilNav() {
         e.preventDefault()
         delete_cookie(cookieLoginUser)
         setAnchorElUser(null)
-        navigate('/signin')
+        navigate('/login')
     }
 
     const handleOpenNavMenu = (event) => {

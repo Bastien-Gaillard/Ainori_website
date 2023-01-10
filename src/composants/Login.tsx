@@ -18,7 +18,7 @@ import { ThemeProvider } from '@mui/material/styles';
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
-export default function SignIn() {
+export default function Login() {
 
   let navigate = useNavigate();
   const cookieLoginUser = 'login';

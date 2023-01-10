@@ -2,7 +2,7 @@ import * as React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from './header/Header';
 import Index from "./Index";
-import SignIn from './SingIn';
+import Login from './Login';
 import Forgot from './Forgot';
 import Home from './Home';
 import Profil from './Profil';
@@ -13,8 +13,8 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />}>
-          <Route index element={<SignIn />} />
-          <Route path="signin" element={<SignIn />} />
+          <Route index element={<Login />} />
+          <Route path="login" element={<Login />} />
           <Route path="forgot" element={<Forgot />} />
           <Route path="mycars" element={<Home />} />
           <Route path="logout" element={<Home />} />

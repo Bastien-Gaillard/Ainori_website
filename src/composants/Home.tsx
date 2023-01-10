@@ -11,8 +11,8 @@ export default function Home() {
     const cookieLoginUser = 'login';
     let navigate = useNavigate();
     useEffect(() => {
-        if(read_cookie(cookieLoginUser).length ==0){//if user is not connected => signin
-            navigate('/signin');
+        if(read_cookie(cookieLoginUser).length ==0){//if user is not connected => login
+            navigate('/login');
         }
     }, []);
 

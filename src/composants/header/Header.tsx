@@ -48,7 +48,7 @@ export default function Header() {
 	const deconnexion = e => {//for déconnexion delete cookie (cookieLoginUser)
 		e.preventDefault()
 		delete_cookie(cookieLoginUser)
-		navigate('/signin')
+		navigate('/login')
 	}
 
 	const handleOpenNavMenu = (event) => {
