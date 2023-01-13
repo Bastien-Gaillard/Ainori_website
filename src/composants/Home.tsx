@@ -2,25 +2,19 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '../cusotmization/palette';
 import { ThemeProvider } from '@mui/material/styles';
-import  { useNavigate } from 'react-router-dom';
-import { useState } from "react";
-import { useEffect } from "react";
-import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import axios from 'axios';
+const instance = axios.create({
+  baseURL: 'http://localhost:3001/api/',
+});
 
 export default function Home() {
-    const cookieLoginUser = 'login';
-    let navigate = useNavigate();
-    useEffect(() => {
-        if(read_cookie(cookieLoginUser).length ==0){//if user is not connected => login
-            navigate('/login');
-        }
-    }, []);
-
 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
-        un home quoi ...
+        Bienvenue
       </Container>
     </ThemeProvider>
   );

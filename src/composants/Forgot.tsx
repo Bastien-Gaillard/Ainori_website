@@ -12,60 +12,59 @@ import emailjs from '@emailjs/browser';
 import Link from '@mui/material/Link';
 import theme from '../cusotmization/palette'
 import { useState, useEffect } from 'react';
-import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
-import  { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Forgot() {
 
     const [open, setOpen] = useState(false);
     const [validate, setValidate] = useState(0);
 
-    const checkPassword = async (email, firstPassword, secondPassword) => {
-        const result = await axios.get('/api/get/userByEmail/' + email);
-        if (result.data != "") {
+    // const checkPassword = async (email, firstPassword, secondPassword) => {
+    //     const result = await axios.get('/api/get/userByEmail/' + email);
+    //     if (result.data != "") {
 
-        }
-    }
-    const sendMail = async (email) => {
-        const result = await axios.get('/api/get/userByEmail/' + email);
-        if (result.data != "") {
-            console.log(result);
-            emailjs.send("service_10k2k67", "template_597yze8", {
-                user_name: "bastien",
-                link: "localhost:3000/forgot/" + result.data[0].token,
-                email: email,
-            }, 'HamLJtCxqPRaXk6xn');
-            setValidate(0);
-        } else {
-            setValidate(1);
-        }
-        handleClick();
-    }
-    const handleClick = () => {
-        setOpen(true);
-    };
+    //     }
+    // }
+    // const sendMail = async (email) => {
+    //     const result = await axios.get('/api/get/userByEmail/' + email);
+    //     if (result.data != "") {
+    //         console.log(result);
+    //         emailjs.send("service_10k2k67", "template_597yze8", {
+    //             user_name: "bastien",
+    //             link: "localhost:3001/forgot/" + result.data[0].token,
+    //             email: email,
+    //         }, 'HamLJtCxqPRaXk6xn');
+    //         setValidate(0);
+    //     } else {
+    //         setValidate(1);
+    //     }
+    //     handleClick();
+    // }
+    // const handleClick = () => {
+    //     setOpen(true);
+    // };
 
     const handleClose = (reason) => {
         if (reason === 'clickaway') {
             return;
         }
-
         setOpen(false);
     };
+    
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = event.currentTarget;
-        const email = data.get('email');
-        if (email === "") {
-            setValidate(3);
-        } else {
-            sendMail(data.get('email'));
-        }
+        const data = new FormData(event.currentTarget);
+        console.log(data);
+        // const data = event.currentTarget;
+        // const email = data.get('email');
+        // if (email === "") {
+        //     setValidate(3);
+        // } else {
+        //     sendMail(data.get('email'));
+    }
 
 
 
-
-    };
     const validateNotif = (
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
             <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
@@ -84,20 +83,7 @@ export default function Forgot() {
         <Alert severity="warning" sx={{ width: '100%' }}>
             Un champ est vide
         </Alert>
-    )
-
-    // new by thom for check if user is already connected
-    let navigate = useNavigate();
-    const cookieLoginUser = 'login';
-    useEffect(() => {
-        if(read_cookie(cookieLoginUser).length ==0){//if user is already connected
-          //console.log('Pas connecté')//-- debug --
-        }else{
-          //console.log('connecté')//-- debug --
-          navigate('/home');
-        }
-      }, []);
-
+    );
 
     return (
         <ThemeProvider theme={theme}>
