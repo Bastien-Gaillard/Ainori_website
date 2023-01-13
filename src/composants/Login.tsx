@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { useState } from "react";
-import { useEffect } from "react";
-import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
@@ -15,48 +13,42 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '../cusotmization/palette';
 import { ThemeProvider } from '@mui/material/styles';
+
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
-export default function SignIn() {
+//Create axios instance
+const instance = axios.create({
+  baseURL: 'http://localhost:3001/api/',
+});
 
-  let navigate = useNavigate();
-  const cookieLoginUser = 'login';
-  const [users, setUsers] = useState();
+export default function Login() {
+
   const [info, setInfo] = useState<Element>();
-
-
-
-  useEffect(() => {
-    if (read_cookie(cookieLoginUser).length == 0) {//if user is already connected
-      //console.log('Pas connecté')//-- debug --
-    } else {
-      //console.log('connecté')//-- debug --
-      navigate('/home');
-    }
-  }, []);
-
-
-  //console.log(read_cookie(cookieLoginUser)[0])//-- debug --
+  const navigate = useNavigate();
+  //When submit form
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    if (data.get('email') == "" || data.get('password') == "") {//if field (email,password) is empty 
+    //If field empty send message else try to connect
+    if (data.get('email') == "" || data.get('password') == "") {
       setInfo(<Alert severity="warning">Il faut remplir les champs 'Login' et 'Mot de passe'.</Alert>);
     } else {
-      const userData = await axios.get('/api/get/loginUserSecure/' + data.get('email') + '/' + data.get('password'));
-      setUsers(userData.data);
-      if (userData.data.length == 1) {//if a user is found => Login
-        setInfo(<Alert severity="success">Login OK </Alert>);
-        bake_cookie(cookieLoginUser, userData.data);//set value in 'cookieLoginUser'
-        navigate('/home');
-        //add new page home
-      } else {
-        setInfo(<Alert severity="error">Pas le bon 'Login' ou 'Mot de passe' ressayé.</Alert>);
-      }
+      // Check if value of email and password exist in database
+      const user = await axios.post('/api/login', data, { headers: { "content-type": "application/json" } })
+        .then((response) => {
+          if (response.data != "Identifiant invalide") {
+            navigate('/home');
+          } else {
+            setInfo(<Alert severity="error">Identifiant ou mot de passe invalide</Alert>);
+          }
+        }).catch((err) => {
+          console.error(err);
+        });
     }
   }
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -83,7 +75,7 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
-              
+
             />
             <TextField
               margin="normal"

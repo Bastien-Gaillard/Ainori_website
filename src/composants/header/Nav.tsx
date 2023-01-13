@@ -12,42 +12,34 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../cusotmization/palette';
 import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
+import axios from 'axios';
+
+const instance = axios.create({
+    baseURL: 'http://localhost:3001/api/',
+});
+
 const pages = ['Products', 'Pricing', 'Blog'];
 
-export default function Nav() {
+export default ({
+    isConnected,
+}: {
+    isConnected: Boolean,
+}) => {
 
-    let navigate = useNavigate();
-    const cookieLoginUser = 'login';
-    const [info, setInfo] = useState();
     const [anchorElNav, setAnchorElNav] = useState(null);
-    const [anchorElUser, setAnchorElUser] = useState(null);
-    const déconnexion = e => {//for déconnexion delete cookie (cookieLoginUser)
-        e.preventDefault()
-        delete_cookie(cookieLoginUser)
-        navigate('/signin')
-    }
-
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
-        console.log("oui");
-        setAnchorElUser(null);
-    };
-
-    return (
+    const NotLogin = (
+        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}></Box>
+    )
+    const Login = (
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
                 <Button
@@ -59,5 +51,9 @@ export default function Nav() {
                 </Button>
             ))}
         </Box>
+    )
+
+    return (
+        isConnected ? Login : NotLogin
     );
 }

@@ -12,10 +12,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../cusotmization/palette';
-import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
+import axios from 'axios';
+
+const instance = axios.create({
+    baseURL: 'http://localhost:3001/api/',
+});
+
 const settings = [{
     name: "Profile",
     redirect: "/profil"
@@ -33,26 +38,27 @@ const settings = [{
     redirect: "logout"
 }];
 
-// const déconnexion = e => {
-//     e.preventDefault()
-//     delete_cookie(cookieLoginUser)
-//   }
-export default function ProfilNav() {
+export default ({
+    isConnected,
+    user
+}: {
+    isConnected: Boolean,
+    user?: any
+}) => {
     let navigate = useNavigate();
-    const cookieLoginUser = 'login';
-    const [info, setInfo] = useState();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
-    const déconnexion = e => {//for déconnexion delete cookie (cookieLoginUser)
-        e.preventDefault()
-        delete_cookie(cookieLoginUser)
-        navigate('/signin')
+    const logout = async () => {//for déconnexion delete cookie (cookieLoginUser)
+        await instance.get('logout')
+        .then(response => {
+            navigate('/');
+          })
+          .catch(error => {
+            console.log(error);
+          });
     }
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
@@ -62,16 +68,34 @@ export default function ProfilNav() {
     };
 
     const handleCloseUserMenu = () => {
-        console.log("oui");
         setAnchorElUser(null);
     };
+    const NotLogin = (
+        <Avatar />
+    );
+    let Login=null;// set value Login 
+    if(isConnected){//if user is already connected
+    	Login = (
+            <Tooltip title="Open settings">
+    		<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+    			<Avatar alt={user.lastname} src="/static/images/avatar/2.jpg" />
+    		</IconButton> 
+            </Tooltip> 
+    	)
+    	if(!!user.image_id){//if user as image
+    		Login = (
+                <Tooltip title="Open settings">
+    			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+    				{/* <Avatar alt={user.lastname} src={user.image.path} /> */}
+                    <Avatar alt={user.lastname} src={user.lastname} />
+    			</IconButton> 
+                </Tooltip>
+    		)
+    	}
+    }
     return (
         <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-                <IconButton sx={{ p: 0 }}>
-                    <Avatar />
-                </IconButton>
-            </Tooltip>
+            {isConnected ? Login : NotLogin}
             <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -90,10 +114,9 @@ export default function ProfilNav() {
             >
                 {settings.map((setting) => (
                     <MenuItem key={setting.name} onClick={handleCloseNavMenu}>
-                        <Typography textAlign="center">{setting.name}</Typography>
+                        <Typography textAlign="center" onClick={ setting.name === 'Deconnexion' ? logout : null}>{setting.name}</Typography>
                     </MenuItem>
                 ))}
-
             </Menu>
         </Box>
     )

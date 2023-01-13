@@ -19,7 +19,7 @@
                 "utils/contexts/userContext.tsx"
             ],
             "@serverconfig": [
-                "utils/contexts/configContext.tsx"
+                "utils/contexts/configContext.tsx" 
             ]
         }
     },
