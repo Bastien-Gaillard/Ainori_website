@@ -33,16 +33,9 @@ const Index = () => {
                 }
             }
         }
-        if(link == "/*"){
-            console.log("Un lien qui n'existe pas");
-        } else {
-            console.log("Un lien qui existe");
-        }
     }
     useEffect(() => {
-        // (async () => {
         authConnexion();
-        // })();
     }, []);
 
     return (

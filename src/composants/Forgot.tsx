@@ -4,9 +4,7 @@ import axios from 'axios';
 import theme from '../cusotmization/palette'
 import { useState } from 'react';
 import FormForgot from './form/FormForgot';
-const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
-});
+
 
 export default function Forgot() {
 

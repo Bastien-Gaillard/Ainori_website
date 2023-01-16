@@ -62,7 +62,7 @@ app.post('/api/login', async (req, res) => {
   const user = await prisma.users.findUnique({
     where: {
       email: req.body.email,
-    },
+    }
   });
   console.log('user', user);
   //Compare password if user exist
@@ -89,6 +89,7 @@ app.post('/api/forgot', async (req, res) => {
     where: {
       email: req.body.email,
     },
+   
   });
   if (user == null) {
     res.send(false);
@@ -143,7 +144,23 @@ app.post('/api/forgot/update', async (req, res) => {
 //Get user data
 app.get('/api/user', authenticateToken, (req, res) => {
   delete req.user.password;
+  console.log(req.user);
   res.send(req.user);
+});
+
+app.get('/api/update/userdata/:id/:firstname/:lastname/:email/:description', async (req, res) => {
+  const result = await prisma.users.update({
+      where: { 
+          id: parseInt(req.params.id) 
+      },
+      data: { 
+        firstname: req.params.firstname,
+        lastname: req.params.lastname,
+        email: req.params.email,
+        description: req.params.description
+      },
+  })
+  res.send(result);
 });
 
 //Check if user already connect or not
