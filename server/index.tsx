@@ -75,6 +75,7 @@ app.post('/api/login', async (req, res) => {
   }
 
   //Create token and add user_id and token in the session
+  delete user.password;
   const accessToken = generateAccessToken(user);
   req.session.user_id = user.id;
   req.session.token = accessToken;
@@ -141,6 +142,7 @@ app.post('/api/forgot/update', async (req, res) => {
 });
 //Get user data
 app.get('/api/user', authenticateToken, (req, res) => {
+  delete req.user.password;
   res.send(req.user);
 });
 
