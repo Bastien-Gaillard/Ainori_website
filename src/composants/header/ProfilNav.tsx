@@ -78,16 +78,16 @@ export default ({
     	Login = (
             <Tooltip title="Open settings">
     		<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-    			<Avatar alt={user.lastname} src="/static/images/avatar/2.jpg" />
+    			<Avatar alt={user?.lastname} src="/static/images/avatar/2.jpg" />
     		</IconButton> 
             </Tooltip> 
     	)
-    	if(!!user.image_id){//if user as image
+    	if(!!user?.image_id){//if user as image
     		Login = (
                 <Tooltip title="Open settings">
     			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
     				{/* <Avatar alt={user.lastname} src={user.image.path} /> */}
-                    <Avatar alt={user.lastname} src={user.lastname} />
+                    <Avatar alt={user?.lastname} src={user?.lastname} />
     			</IconButton> 
                 </Tooltip>
     		)

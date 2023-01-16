@@ -15,7 +15,7 @@ const instance = axios.create({
 });
 
 export default function Header({isConnected, user}) {
-
+	console.log('HEADER', isConnected, user);
 	return (
 		<ThemeProvider theme={theme}>
 			<AppBar position="static">

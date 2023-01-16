@@ -11,28 +11,38 @@ const Index = () => {
 
     const [isConnected, setIsConnected] = useState(false);
     const [user, setUser] = useState();
-
     let navigate = useNavigate();
 
     const authConnexion = async () => {
-        if(window.location.pathname != '/forgot'){
-            const check = await instance.get('check/user');
-            if (!check?.data) {
-                navigate('/login');
-                return;
-            } else if ((window.location.pathname == '/login') || (window.location.pathname == '/')) {
-                console.log(window.location.pathname);
-                navigate('/home');
-                return;
+        const link = window.location.pathname;
+        if (link != '/forgot') {
+            if (!link.startsWith('/forgot/')) {
+                const check = await instance.get('check/user');
+                if (check.data) {
+                    setIsConnected(true);
+                    const dataUser = await instance.get('/user');
+                    setUser(dataUser.data);
+                    if (link == '/login' || link == '/') {
+                        navigate('/home');
+                        return;
+                    }
+                } else {
+                    setIsConnected(false);
+                    navigate('/');
+                    return;
+                }
             }
-            const dataUser = await instance.get('/user');
-            setUser(dataUser.data);
-            setIsConnected(true);
         }
-     
+        if(link == "/*"){
+            console.log("Un lien qui n'existe pas");
+        } else {
+            console.log("Un lien qui existe");
+        }
     }
     useEffect(() => {
+        // (async () => {
         authConnexion();
+        // })();
     }, []);
 
     return (
