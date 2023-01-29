@@ -109,6 +109,7 @@ app.post('/api/login', async (req, res) => {
   }
   delete user.password;
   //Create token and add user_id and token in the session
+  delete user.password;
   const accessToken = generateAccessToken(user);
   req.session.user_id = user.id;
   req.session.token = accessToken;
@@ -124,6 +125,7 @@ app.post('/api/forgot', async (req, res) => {
     where: {
       email: req.body.email,
     },
+   
   });
   if (user == null) {
     res.send(false);
@@ -177,8 +179,24 @@ app.post('/api/forgot/update', async (req, res) => {
 });
 //Get user data
 app.get('/api/user', authenticateToken, (req, res) => {
-  console.log('in /api/user', req.user);
+  delete req.user.password;
+  console.log(req.user);
   res.send(req.user);
+});
+
+app.get('/api/update/userdata/:id/:firstname/:lastname/:email/:description', async (req, res) => {
+  const result = await prisma.users.update({
+      where: { 
+          id: parseInt(req.params.id) 
+      },
+      data: { 
+        firstname: req.params.firstname,
+        lastname: req.params.lastname,
+        email: req.params.email,
+        description: req.params.description
+      },
+  })
+  res.send(result);
 });
 
 //Check if user already connect or not
