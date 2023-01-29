@@ -17,16 +17,15 @@ export default function FormLogin() {
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
-        console.log("oui oui oui");
-        console.log(data);
         // Check if value of email and password exist in database
         const user = await instance.post('login', data, { headers: { "content-type": "application/json" } })
             .then((response) => {
-                console.log(response.data);
-                if (response.data != "Identifiant invalide") {
+                if (response.data == "ok") {
                     navigate('/home');
-                } else {
+                } else if(response.data == "null"){
                     setInfo(<Alert severity="error">Identifiant ou mot de passe invalide</Alert>);
+                } else if(response.data == "disable"){
+                    setInfo(<Alert severity="error">Le compte est désactivé</Alert>);
                 }
             }).catch((err) => {
                 console.error(err);

@@ -13,7 +13,6 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useState, useEffect } from 'react';
-import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../cusotmization/palette';
 import axios from 'axios';
 
@@ -55,9 +54,11 @@ export default ({
             navigate('/');
           })
           .catch(error => {
-            console.log(error);
+            console.error(error);
           });
     }
+    useEffect(() => {
+	}, [isConnected, user]);
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -78,7 +79,7 @@ export default ({
     	Login = (
             <Tooltip title="Open settings">
     		<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-    			<Avatar alt={user?.lastname} src="/static/images/avatar/2.jpg" />
+    			<Avatar alt={user?.lastname} src={user?.image?.path} />
     		</IconButton> 
             </Tooltip> 
     	)
@@ -93,6 +94,8 @@ export default ({
     		)
     	}
     }
+    console.log('profil Nav', isConnected, user);
+
     return (
         <Box sx={{ flexGrow: 0 }}>
             {isConnected ? Login : NotLogin}

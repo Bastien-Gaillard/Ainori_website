@@ -28,7 +28,6 @@ export default function FormForgot() {
             });
     }
     const handleClose = (reason) => {
-        console.log("close");
         if (reason === 'clickaway') {
             return;
         }
@@ -62,7 +61,7 @@ export default function FormForgot() {
             >
                 Valider
             </Button>
-            <Link href="/login" variant="body2">
+            <Link href="/" variant="body2">
                 Se connecter
             </Link>
         </Box>

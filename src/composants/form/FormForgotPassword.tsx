@@ -31,7 +31,7 @@ export default function FormForgot() {
                         setMessage("Mot de passe changé, vous allez être redirigé");
                         setSeverity("success");
                         setTimeout(() => {
-                            navigate('/login');
+                            navigate('/');
                         }, 5000);
                     }
                 }).catch((err) => {
@@ -113,7 +113,7 @@ export default function FormForgot() {
                 </Button>
 
 
-                <Link href="/login" variant="body2">
+                <Link href="/" variant="body2">
                     Se connecter
                 </Link>
             </Box>

@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -11,6 +11,7 @@ const port = process.env.PORT || 3001;
 const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 const { SHA256 } = require('crypto-js');
+// const cleanSessions = require('./cleanSessions');
 const mockResponse = {
   foo: 'bar',
   bar: 'foo'
@@ -34,16 +35,31 @@ const session = sessions({
   }),
 });
 
-function hashPassword(password){
-  return(cryptoJs.SHA256(password).toString());
+//Function to hash password
+function hashPassword(password) {
+  return (cryptoJs.SHA256(password).toString());
 }
+
+//Function to generate token
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1800s' });
 }
 
+//Function for check if the token in session exist
+function authenticateToken(req, res, next) {
+  if (req.session.token == null) return res.send("Vous n'avez pas accès à cette page")
+
+  jwt.verify(req.session.token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      return res.send("Une erreur avec votre token")
+    }
+    req.user = user;
+    next();
+  });
+}
+
 //Use session
 app.use(session);
-
 app.disable("x-powered-by");
 //Other use
 app.use(express.json());
@@ -53,34 +69,54 @@ app.use('/', express.static('dist', { etag: false }));
 app.get('/api', (req, res) => {
   res.send(mockResponse);
 });
+//Clean sessions
+// cleanSessions();
 
 //Route for check if user can connect or not
 app.post('/api/login', async (req, res) => {
-
   console.log(req.body);
   //Get data of user if email exist
   const user = await prisma.users.findUnique({
     where: {
       email: req.body.email,
+    },
+    select: {
+      id: true,
+      firstname: true,
+      lastname: true,
+      email: true,
+      password: true,
+      description: true,
+      status: true,
+      image: {
+        select: {
+          path: true
+        }
+      }
     }
   });
   console.log('user', user);
   //Compare password if user exist
   if (user == null) {
-    res.send("Identifiant invalide");
+    res.send("null");
+    return;
+  } else if (user?.status == 0) {
+    res.send("disable");
     return;
   } else if (hashPassword(req.body.password) != user.password) {
-    res.send("Identifiant invalide");
+    res.send("null");
     return;
   }
-
+  delete user.password;
   //Create token and add user_id and token in the session
   delete user.password;
   const accessToken = generateAccessToken(user);
   req.session.user_id = user.id;
   req.session.token = accessToken;
   req.session.save();
-  res.send('Connexion réussi');
+
+  console.log('in /api/login', req.user);
+  res.send('ok');
 
 });
 
@@ -165,6 +201,8 @@ app.get('/api/update/userdata/:id/:firstname/:lastname/:email/:description', asy
 
 //Check if user already connect or not
 app.get('/api/check/user', (req, res) => {
+  console.log('in /api/check/user', req.user);
+
   if (req.session.user_id) {
     res.send(true);
   } else {
@@ -178,19 +216,6 @@ app.get('/api/logout', (req, res) => {
   console.log('session destroy', req.session);
   res.redirect('/');
 });
-
-//Function for check if the token in session exist
-function authenticateToken(req, res, next) {
-  if (req.session.token == null) return res.send("Vous n'avez pas accès à cette page")
-
-  jwt.verify(req.session.token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      return res.send("Une erreur avec votre token")
-    }
-    req.user = user;
-    next();
-  });
-}
 
 app.get('*', (req, res) => res.sendFile(path.resolve('dist', 'index.html')));
 

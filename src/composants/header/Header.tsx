@@ -5,29 +5,66 @@ import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import { useState, useEffect } from 'react';
-import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../cusotmization/palette';
 import Nav from './Nav';
 import ProfilNav from './ProfilNav';
 import axios from 'axios';
+import { Box, Link } from '@mui/material';
 const instance = axios.create({
 	baseURL: 'http://localhost:3001/api/',
 });
 
-export default function Header({isConnected, user}) {
+export default function Header() {
+
+
+	const [isConnected, setIsConnected] = useState(false);
+	const [user, setUser] = useState();
+	let navigate = useNavigate();
+
+	useEffect(() => {
+		(async () => {
+			const link = window.location.pathname;
+			if (link != '/forgot') {
+				if (!link.startsWith('/forgot/')) {
+					const check = await instance.get('check/user');
+					if (check.data) {
+						setIsConnected(true);
+						const dataUser = await instance.get('/user');
+						setUser(dataUser.data);
+						if (link == '/') {
+							navigate('/home');
+							return;
+						}
+					} else {
+						setIsConnected(false);
+						navigate('/');
+						return;
+					}
+				}
+			}
+		})();
+		console.log('the header');
+	}, []);
+
+	
 	return (
-		<ThemeProvider theme={theme}>
-			<AppBar position="static">
-				<Container maxWidth="xl">
-					<Toolbar>
-						<img src='logo.png' alt="" />
-						<Nav isConnected={isConnected} />
-						<ProfilNav isConnected={isConnected}
-							user={user} />
-					</Toolbar>
-				</Container>
-			</AppBar>
-		</ThemeProvider>
+		<AppBar position="static">
+			<Toolbar>
+				<Link sx={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					color: 'black',
+					textDecoration: 'none'
+				}} href='/home'>
+					<img width='100%' height='100%' src='logo.png' alt="" />
+					<h1>Ainori</h1>
+				</Link>
+				<Nav isConnected={isConnected} />
+				<ProfilNav isConnected={isConnected}
+					user={user} />
+			</Toolbar>
+		</AppBar>
 
 	);
 }
