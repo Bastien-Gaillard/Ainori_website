@@ -40,8 +40,7 @@ const Index = () => {
 
     return (
         <div>
-            <Header isConnected={isConnected}
-                user={user} />
+            <Header />
             <Outlet />
         </div>
     )
