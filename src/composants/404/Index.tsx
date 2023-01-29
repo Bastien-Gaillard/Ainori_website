@@ -1,5 +1,4 @@
-import { Container, Snackbar, Alert, Button } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
+import { Container, Snackbar, Alert, Button, Box } from '@mui/material';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,9 +12,9 @@ const instance = axios.create({
 export default function Index() {
 
     return (
-        <Container component="main" maxWidth="xl">
+        <Box >
             <h1>Cette page n'existe pas</h1>
             <Button href='/home'>Revenir à la page d'acceuil</Button>
-        </Container>
+        </Box>
     );
 }

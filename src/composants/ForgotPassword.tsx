@@ -1,12 +1,11 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import theme from '../cusotmization/palette'
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FormForgotPassword from './form/FormForgotPassword';
+import FormForgotPassword from './Form/FormForgotPassword';
 import { AlertColor } from '@mui/material';
 import Index from './404/Index';
 const instance = axios.create({
@@ -22,7 +21,6 @@ export default function ForgotPassword() {
     const validateLink = async () => {
         const data = new FormData();
         data.append('link', window.location.pathname);
-        console.log(data);
         await instance.post('valide/link', data, { headers: { "content-type": "application/json" } })
             .then((response) => {
                 if (!response.data) {
@@ -37,8 +35,7 @@ export default function ForgotPassword() {
     }, []);
 
     return (
-
-        <ThemeProvider theme={theme}>
+        <>
             {!exist ? <Index /> :
                 <Container component="main" maxWidth="xs">
                     <Box
@@ -56,7 +53,6 @@ export default function ForgotPassword() {
                     </Box>
                 </Container>
             }
-        </ThemeProvider>
-
+        </>
     );
 }

@@ -13,7 +13,6 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useState, useEffect } from 'react';
-import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../cusotmization/palette';
 import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
 import axios from 'axios';
@@ -40,7 +39,7 @@ export default ({
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}></Box>
     )
     const Login = (
-        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end'}}>
             {pages.map((page) => (
                 <Button
                     key={page}
@@ -52,7 +51,7 @@ export default ({
             ))}
         </Box>
     )
-
+    console.log('nav', isConnected);
     return (
         isConnected ? Login : NotLogin
     );
