@@ -15,7 +15,6 @@ const instance = axios.create({
 });
 
 export default function Login() {
-  console.log('login');
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

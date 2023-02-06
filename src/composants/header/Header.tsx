@@ -29,7 +29,7 @@ export default function Header() {
 					const check = await instance.get('check/user');
 					if (check.data) {
 						setIsConnected(true);
-						const dataUser = await instance.get('/user');
+						const dataUser = await instance.get('user');
 						setUser(dataUser.data);
 						if (link == '/') {
 							navigate('/home');
@@ -43,12 +43,11 @@ export default function Header() {
 				}
 			}
 		})();
-		console.log('the header');
 	}, []);
 
 	
 	return (
-		<AppBar position="static">
+		<AppBar position="static" sx={{zIndex: 1}}>
 			<Toolbar>
 				<Link sx={{
 					display: 'flex',

@@ -74,7 +74,6 @@ app.get('/api', (req, res) => {
 
 //Route for check if user can connect or not
 app.post('/api/login', async (req, res) => {
-  console.log(req.body);
   //Get data of user if email exist
   const user = await prisma.users.findUnique({
     where: {
@@ -95,7 +94,6 @@ app.post('/api/login', async (req, res) => {
       }
     }
   });
-  console.log('user', user);
   //Compare password if user exist
   if (user == null) {
     res.send("null");
@@ -111,11 +109,11 @@ app.post('/api/login', async (req, res) => {
   //Create token and add user_id and token in the session
   delete user.password;
   const accessToken = generateAccessToken(user);
+
   req.session.user_id = user.id;
   req.session.token = accessToken;
   req.session.save();
 
-  console.log('in /api/login', req.user);
   res.send('ok');
 
 });
@@ -125,7 +123,7 @@ app.post('/api/forgot', async (req, res) => {
     where: {
       email: req.body.email,
     },
-   
+
   });
   if (user == null) {
     res.send(false);
@@ -145,7 +143,6 @@ app.post('/api/forgot', async (req, res) => {
 app.post('/api/valide/link', async (req, res) => {
   const token = req.session.forgot;
   const tokenLink = (req.body.link.split('/forgot/')[1]);
-  console.log('token', token, 'tokenLink', tokenLink);
   if (token == tokenLink) {
     const timestamp1 = tokenLink.split('$')[1];
     const timestamp2 = timestamp1 - (24 * 60 * 60 * 1000);
@@ -179,30 +176,83 @@ app.post('/api/forgot/update', async (req, res) => {
 });
 //Get user data
 app.get('/api/user', authenticateToken, (req, res) => {
+  console.log('api/user', req.user);
   delete req.user.password;
-  console.log(req.user);
   res.send(req.user);
+});
+
+app.get('/api/user/id', authenticateToken, async (req, res) => {
+  const user = await prisma.users.findUnique({
+    where: {
+      id: req.user.id,
+    },
+    select: {
+      id: true,
+      firstname: true,
+      lastname: true,
+      email: true,
+      password: true,
+      description: true,
+      status: true,
+      image: {
+        select: {
+          path: true
+        }
+      }
+    }
+  });
+  res.send(user);
+});
+
+app.post('/api/update/user/', authenticateToken, async (req, res) => {
+  const result = await prisma.users.update({
+    where: {
+      id: parseInt(req.body.id)
+    },
+    data: {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      description: req.body.description
+    },
+    select: {
+      id: true,
+      firstname: true,
+      lastname: true,
+      email: true,
+      password: true,
+      description: true,
+      status: true,
+      image: {
+        select: {
+          path: true
+        }
+      }
+    }
+  });
+  req.user = result;
+  console.log('RESULT', result);
+  console.log('REQ.USER', req.user)
+  res.send(result);
 });
 
 app.get('/api/update/userdata/:id/:firstname/:lastname/:email/:description', async (req, res) => {
   const result = await prisma.users.update({
-      where: { 
-          id: parseInt(req.params.id) 
-      },
-      data: { 
-        firstname: req.params.firstname,
-        lastname: req.params.lastname,
-        email: req.params.email,
-        description: req.params.description
-      },
+    where: {
+      id: parseInt(req.params.id)
+    },
+    data: {
+      firstname: req.params.firstname,
+      lastname: req.params.lastname,
+      email: req.params.email,
+      description: req.params.description
+    },
   })
   res.send(result);
 });
 
 //Check if user already connect or not
 app.get('/api/check/user', (req, res) => {
-  console.log('in /api/check/user', req.user);
-
   if (req.session.user_id) {
     res.send(true);
   } else {

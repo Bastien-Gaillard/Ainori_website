@@ -5,7 +5,10 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-
+import { useForm } from "react-hook-form";
+import CreateIcon from '@mui/icons-material/Create';
+import { InputAdornment } from "@mui/material";
+import FormProfil from "./form/FormProfil";
 const instance = axios.create({
     baseURL: 'http://localhost:3001/api/',
 });
@@ -13,11 +16,14 @@ const instance = axios.create({
 type UserModel = {
     firstname: string,
     lastname: string,
-    email: string, 
+    email: string,
     description?: string
-} 
+}
 export default function Profil() {
-    const [user, setUser] = useState<UserModel>({ firstname: '', lastname: '', email: ''});
+    const [user, setUser] = useState<UserModel>(null);
+    const [modify, setModify] = useState<boolean>(false);
+    const [disableFirstname, setDisableFirstname] = useState<boolean>(true);
+
 
     useEffect(() => {
         (async () => {
@@ -25,65 +31,39 @@ export default function Profil() {
         })();
     }, []);
 
-    // useEffect(() => {
-    //     console.log('second use effect', firstname, lastname)
-    // }, [user]);
+    useEffect(() => {
+        console.log('second use effect', user)
+    }, [user]);
+
+    const updateUser = (updatedUser: UserModel) => {
+        setUser(updatedUser);
+        console.log('userUpdate');
+    };
 
     const getUser = async () => {
-        await instance.get('user')
+        await instance.get('user/id')
             .then((response) => {
-                console.log('the response', response)
                 if (response.data) {
+                    console.log('the response', response.data);
                     setUser(response.data);
-                
                 }
             }).catch((err) => {
                 console.error(err);
             });
     }
-    return (
-        <div>
-            <Box
-                component="form"
-                sx={{
-                    '& .MuiTextField-root': { m: 1, width: '25ch' },
-                }}
-                noValidate
-                autoComplete="off"
-            >
-                <TextField
-                    disabled
-                    id="FirstName"
-                    label="First name"
-                    value={user.firstname}
-                    
-                    variant="standard"
-                />
-                <TextField
-                    disabled
-                    id="LastName"
-                    label="Last name"
-                    value={user.lastname}
-                    variant="standard"
-                />
-                <TextField
-                    disabled
-                    id="Mail"
-                    label="EMail"
-                    value={user.email}
-                    variant="standard"
-                />
-                <TextField
-                    disabled
-                    id="Description"
-                    label="Description"
-                    value={user.description || ''}
-                    variant="standard"
-                />
-            </Box>
-            <Button variant="contained">Contained</Button>
-        </div>
-    );
+
+    if (user !== null) {
+
+        return (
+            <FormProfil user={user}  updateUser={updateUser}/>
+        );
+    } else {
+
+        return (
+            <h2>Aucne information</h2>
+        )
+    }
+
 }
 
 

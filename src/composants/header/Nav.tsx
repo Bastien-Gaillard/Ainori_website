@@ -51,7 +51,6 @@ export default ({
             ))}
         </Box>
     )
-    console.log('nav', isConnected);
     return (
         isConnected ? Login : NotLogin
     );

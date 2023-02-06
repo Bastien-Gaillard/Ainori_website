@@ -94,7 +94,6 @@ export default ({
     		)
     	}
     }
-    console.log('profil Nav', isConnected, user);
 
     return (
         <Box sx={{ flexGrow: 0 }}>
