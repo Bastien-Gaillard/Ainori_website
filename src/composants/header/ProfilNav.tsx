@@ -87,7 +87,6 @@ export default ({
     		Login = (
                 <Tooltip title="Open settings">
     			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-    				{/* <Avatar alt={user.lastname} src={user.image.path} /> */}
                     <Avatar alt={user?.lastname} src={user?.lastname} />
     			</IconButton> 
                 </Tooltip>

@@ -96,7 +96,7 @@ export default function FormProfil({ user, updateUser }) {
                         <h2>Mes informations</h2>
                         <CreateIcon onClick={changeModify} sx={{ marginLeft: '8px', '&:hover': { color: 'primary' } }} />
                     </Box>
-                    <Avatar alt={user.firstname} src={user.image.path} />
+                    <Avatar alt={user.firstname} src={!!user.image.path ? user.image.path : ''} />
                     <TextField
                         label="Prénom"
                         name="firstname"
