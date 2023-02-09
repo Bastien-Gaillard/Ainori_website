@@ -176,7 +176,6 @@ app.post('/api/forgot/update', async (req, res) => {
 });
 //Get user data
 app.get('/api/user', authenticateToken, (req, res) => {
-  console.log('api/user', req.user);
   delete req.user.password;
   res.send(req.user);
 });
@@ -260,6 +259,36 @@ app.get('/api/check/user', (req, res) => {
   }
 });
 
+app.get('/api/get/marks', async (req, res) => {
+  try {
+      const result = await prisma.$queryRaw`
+        SELECT mark
+        FROM models
+        GROUP BY mark
+      `;
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.post('/api/get/models', async (req, res) => {
+  console.log('body', req.body, req.body.mark);
+  try {
+      const result = await prisma.models.findMany({
+        where: {
+          mark: req.body.mark
+        },
+        select: {
+          model: true
+        }
+      });
+      console.log('the result', result)
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+  }
+});
 app.get('/api/logout', (req, res) => {
   console.log('sessions', req.session);
   req.session.destroy();

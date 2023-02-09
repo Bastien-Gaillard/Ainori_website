@@ -7,6 +7,7 @@ import ForgotPassword from './ForgotPassword';
 import Index404 from './404/Index';
 import { ThemeProvider } from '@emotion/react';
 import theme from '../cusotmization/palette';
+import AddCars from './MyCars';
 
 import Home from './Home';
 import Profil from './Profil';
@@ -17,20 +18,21 @@ export default function App() {
     <ThemeProvider theme={theme} >
 
       <BrowserRouter>
-      <Header />
+        <Header />
 
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="forgot" element={<Forgot />} />
-        <Route path="forgot/:token" element={<ForgotPassword />} />
-        {/* <Route path="mycars" element={<Home />} />
-          <Route path="logout" element={<Home />} />
-          <Route path="messages" element={<Home />} /> */}
-        <Route path="home" element={<Home />} />
-        <Route path="profil" element={<Profil />} />
-        <Route path="/*" element={<Index404 />} />
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="forgot" element={<Forgot />} />
+          <Route path="forgot/:token" element={<ForgotPassword />} />
+          <Route path="mycars" element={<Home />} />
+          <Route path="addcars" element={<AddCars />} />
+          {/* // <Route path="logout" element={<Home />} />
+          // <Route path="messages" element={<Home />} /> */}
+          <Route path="home" element={<Home />} />
+          <Route path="profil" element={<Profil />} />
+          <Route path="/*" element={<Index404 />} />
+        </Routes>
+      </BrowserRouter>
 
     </ThemeProvider >
 
