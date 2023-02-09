@@ -42,7 +42,7 @@ function hashPassword(password) {
 
 //Function to generate token
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1800s' });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '84000s' });
 }
 
 //Function for check if the token in session exist
@@ -202,6 +202,36 @@ app.get('/api/user/id', authenticateToken, async (req, res) => {
     }
   });
   res.send(user);
+});
+
+app.get('/api/cars/id', authenticateToken, async (req, res) => {
+  const cars = await prisma.users.findUnique({
+    where: {
+      id: req.user.id,
+    },
+    select: {
+      vehicule: {
+        select: {
+          name: true,
+          images: {
+            select: {
+              path: true
+            }
+          },
+          models: {
+            select: {
+              mark: true,
+              model: true
+            }
+          },
+          color: true ,
+          lisence_plate: true,
+          available_seats: true
+        }
+      }
+    }
+  });
+  res.send(cars);
 });
 
 app.post('/api/update/user/', authenticateToken, async (req, res) => {

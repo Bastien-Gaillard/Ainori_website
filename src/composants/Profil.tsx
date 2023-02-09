@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import CreateIcon from '@mui/icons-material/Create';
 import { InputAdornment } from "@mui/material";
 import FormProfil from "./form/FormProfil";
+import Cars from "./Cars";
 const instance = axios.create({
     baseURL: 'http://localhost:3001/api/',
 });
@@ -23,7 +24,7 @@ export default function Profil() {
     const [user, setUser] = useState<UserModel>(null);
     const [modify, setModify] = useState<boolean>(false);
     const [disableFirstname, setDisableFirstname] = useState<boolean>(true);
-
+    const [showBox, setShowBox] = useState("profil");
 
     useEffect(() => {
         (async () => {
@@ -55,7 +56,23 @@ export default function Profil() {
     if (user !== null) {
 
         return (
-            <FormProfil user={user}  updateUser={updateUser}/>
+            <>
+                <Box  sx={{ 
+                    minWidth: '28%',
+                    boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'}}>
+                    <Button onClick={() => setShowBox("profil")}>
+                        Profil
+                    </Button>
+                    <Button onClick={() => setShowBox("voitur")}>
+                        voitur
+                    </Button>
+                    <Button onClick={() => setShowBox("ModifierProfil")}>
+                        Modifier Profil
+                    </Button>
+                </Box>
+                {showBox == "profil" ? "profil" : showBox == "voitur" ? <Cars />:<FormProfil user={user}  updateUser={updateUser}/>}
+            </>
+            
         );
     } else {
 
