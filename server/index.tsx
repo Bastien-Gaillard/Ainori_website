@@ -1,6 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const express = require('express');
+const express = require("express"),
+  bodyParser = require("body-parser"),
+  swaggerJsdoc = require("swagger-jsdoc"),
+  swaggerUi = require("swagger-ui-express");
 const path = require('path');
 const app = express();
 const jwt = require('jsonwebtoken');
@@ -37,6 +40,24 @@ const session = sessions({
   }),
 });
 
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Documentation for ainori API",
+      version: "0.1.0",
+      description:
+        "This is a simple CRUD API application made with Express and documented with Swagger",
+    },
+    servers: [
+      {
+        url: "http://localhost:3001/api/",
+      },
+    ],
+  },
+  apis: ["./routes/*.yaml"],
+};
+
 //Function to hash password
 function hashPassword(password) {
   return (cryptoJs.SHA256(password).toString());
@@ -71,6 +92,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 //Use session
+
+const specs = swaggerJsdoc(options);
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs)
+);
 app.use(session);
 app.disable("x-powered-by");
 //Other use
@@ -324,14 +353,15 @@ app.get('/api/get/marks', async (req, res) => {
 
 app.post('/api/get/models', async (req, res) => {
   try {
-    const result = await prisma.models.findMany({
-      where: {
-        mark: req.body.mark
-      },
-      select: {
-        model: true
-      }
-    });
+      const result = await prisma.models.findMany({
+        where: {
+          mark: req.body.mark
+        },
+        select: {
+          model: true
+        }
+      });
+      console.log('the result', result)
     res.send(result);
   } catch (error) {
     console.error(error);

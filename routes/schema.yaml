@@ -1,0 +1,229 @@
+components:
+  schemas:
+    cities:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 33247
+        department_code:
+          type: string
+          example: 84
+
+        zip_code:
+          type: string
+          example: 84120
+        name:
+          type: string
+          example: Pertuis
+        gps_lat:
+          type: string
+          example: 43.694953541667
+        gps_lng:
+          type: string
+          example: 5.5262394444444
+        arrival_city_id:
+          type: array
+          items:
+            $ref: '#/components/schemas/routes'
+        departure_city_id:
+          type: array
+          items:
+            $ref: '#/components/schemas/routes'
+    images:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        path:
+          type: string
+          example: images\avatars\thomas.jpg
+        users_images:
+          type: array
+          items:
+            $ref: "#/components/schemas/users"
+        # users_vehicles:
+        #   type: array
+        #   items:
+        #     $ref: '#/components/schemas/users_vehicles'
+    messages:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          example: Salut mec
+        sended_at:
+          type: string
+          format: date-time
+          example: 2022-11-10 14:48:24
+        received:
+          $ref: '#/components/schemas/users'
+        sended:
+          $ref: '#/components/schemas/users'
+    models:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        mark:
+          type: string
+          example: Peugeot
+        model:
+          type: string
+          example: 308
+        users_vehicles:
+          type: array
+          items:
+            $ref: '#/components/schemas/users_vehicles'
+    notices:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        score:
+          type: number
+          example: 4.5
+        comment:
+          type: string
+          example: Nickel
+        notice:
+          $ref: '#/components/schemas/users'
+    roles:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        libelle:
+          type: string
+          example: admin
+        users_rolesTousers_role_id:
+          type: array
+          items:
+            $ref: '#/components/schemas/users'
+    routes:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        departure_time:
+          type: string
+          format: date-time
+          example: 07:22:00
+        arrival_time:
+          type: string
+          format: date-time
+          example: 08:14:12
+        departure_date:
+          type: string
+          format: date-time
+          example: 2022-11-11
+        available_seats:
+          type: integer
+          example: 4
+        remaining_seats:
+          type: integer
+          example: 3
+        statuts:
+          type: boolean
+          example: 1
+        arrival_city:
+          $ref: '#/components/schemas/cities'
+        departure_city:
+          $ref: '#/components/schemas/cities'
+        route:
+          $ref: '#/components/schemas/users'
+        users_has_routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/users_has_routes'
+    users:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        firstname:
+          type: string
+          example: Bastien
+        lastname:
+          type: string
+          example: GAILLARD
+        email:
+          type: string
+          example: bastien.gaillard@formation-technologique.fr
+        description:
+          type: string
+          example: Un etudiant
+        password:
+          type: string
+          example: ddb21c82fb950f1aa47e36c05a69a59f1e5ad7af8cd3545c2e95483d66c41577
+        status:
+          type: boolean
+          example: 1
+        image:
+          anyOf:
+            - $ref: "#/components/schemas/images"
+            - type: "null"
+        role:
+          $ref: "#/components/schemas/roles"
+        notice:
+          type: array
+          items:
+            $ref: "#/components/schemas/notices"
+        route:
+          type: array
+          items:
+            $ref: "#/components/schemas/routes"
+        user_has_route:
+          type: array
+          items:
+            $ref: '#/components/schemas/users_has_routes'
+        vehicule:
+          type: array
+          items:
+            $ref: '#/components/schemas/users_vehicles'
+    users_has_routes:
+      type: object
+      properties:
+        status_notice:
+          type: integer
+          example: 1
+        routes:
+          $ref: "#/components/schemas/routes"
+        user_id_routes:
+          $ref: "#/components/schemas/users"
+    users_vehicles:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        lisence_plate:
+          type: string
+          example: XX-200-XX
+        color:
+          type: string
+          default: "#ffffff"
+          example: "#0f0f0f"
+        name:
+          type: string
+          example: Ma voiture au top
+        available_seats:
+          type: integer
+          example: 1
+        images:
+          anyOf:
+            - $ref: "#/components/schemas/images"
+            - type: "null"
+        models:
+          anyOf:
+            - $ref: "#/components/schemas/models"
+            - type: "null"

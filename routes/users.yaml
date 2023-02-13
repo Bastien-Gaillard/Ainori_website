@@ -1,0 +1,20 @@
+tags:
+  name: users
+  description: The users managing API
+paths:
+  user/id:
+    post:
+      tags:
+        - users
+      summary: Get user data
+      description: retrieve the information of the user connected via his id
+      operationId: getCurrentUser
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users"
+        404:
+          description: User not found
