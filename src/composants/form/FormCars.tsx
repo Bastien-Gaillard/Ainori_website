@@ -1,54 +1,76 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
-import CreateIcon from '@mui/icons-material/Create';
-import { Autocomplete, Avatar, FormControl, IconButton, Input, InputAdornment, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { isTemplateSpan } from "typescript";
-import { ThemeProvider } from "@emotion/react";
+import { Autocomplete, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { CompactPicker } from 'react-color';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { PhotoCamera } from "@mui/icons-material";
+import { getValue } from "@mui/system";
 const instance = axios.create({
     baseURL: 'http://localhost:3001/api/',
 });
 
-type UserModel = {
-    firstname: string,
-    lastname: string,
-    email: string,
-    description?: string
-}
 export default function FormCars() {
 
-    const { handleSubmit, formState: { errors }, register, setValue, getValues, watch } = useForm();
+    const { handleSubmit, formState: { errors }, register, setValue, getValues } = useForm();
     const [marks, setMarks] = useState();
     const [models, setModels] = useState();
-    const [numberplate, setNumberplate] = useState("");
+    const [licencePlate, setLicencePlate] = useState("");
     const [color, setColor] = useState({ hex: "#FFFFFF" });
     const [seats, setSeats] = useState(1);
     const [selectedFile, setSelectedFile] = useState(null);
 
     const onSubmit = async (data) => {
+        const vehicles = await instance.post("get/model", data, { headers: { "content-type": "application/json" } })
+            .then(async (response) => {
+                console.log('response vehicules', response.data)
+                data.models = response.data;
+            }).catch((err) => {
+                console.error(err);
+            });
+        console.log('data after vehicles', data)
+        const image = await instance.post("add/vehicles/image", data, { headers: { "content-type": "application/json" } })
+            .then(async (response) => {
+                console.log('response', response.data);
+                data.images = response.data;
+            }).catch((err) => {
+                console.error(err);
+            });
+        console.log('data after images', data)
+        const result = await instance.post("add/vehicles", data, { headers: { "content-type": "application/json" } })
+            .then(async (response) => {
+                console.log('the response', response);
+            }).catch((err) => {
+                console.error(err);
+            });
         console.log(data);
+        // handleUpload();
     }
 
     const handleFileSelect = event => {
         console.log(event.target.files)
-        setSelectedFile(event.target.files);
+        setSelectedFile(event.target.files[0]);
+        setValue('image', event.target.files[0].name);
+        console.log('the values', getValues());
     };
 
-    const handleUpload = () => {
+    const handleUpload = async () => {
         console.log('select', selectedFile);
         const formData = new FormData();
-        formData.append('image', selectedFile);
+        formData.append("image", selectedFile);
+
+        axios.post("/api/upload", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         // const formData = new FormData();
         // formData.append('image', selectedFile);
         console.log('data', formData);
+
     };
 
 
@@ -94,11 +116,13 @@ export default function FormCars() {
     const { ref: modelRef, ...modelProps } = register("model", {
         required: true,
     });
-    const { ref: numberplateRef, ...numberplateProps } = register("numberplate", {
+    const { ref: lisencePlateRef, ...lisencePlateProps } = register("lisence_plate", {
         required: true,
         pattern: /^[A-Z]{2}[-][0-9]{3}[-][A-Z]{2}$/
     });
-
+    const { ref: nameRef, ...nameProps } = register("name", {
+        required: true,
+    });
 
     function handleInputChange(event, value) {
         setModels(null);
@@ -119,7 +143,7 @@ export default function FormCars() {
             inputValue = inputValue.slice(0, 6) + "-" + inputValue.slice(5);
         }
 
-        setNumberplate(inputValue);
+        setLicencePlate(inputValue);
     };
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -127,6 +151,11 @@ export default function FormCars() {
         setValue('available_seats', parseInt(event.target.value));
     };
 
+    var componentConfig = {
+        iconFiletypes: ['.jpg', '.png', '.gif'],
+        showFiletypeIcon: true,
+        postUrl: '/uploadHandler'
+    };
 
     return (
         <div style={divStyle}>
@@ -150,6 +179,13 @@ export default function FormCars() {
                     <h2>Ajouter un véhicule</h2>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <TextField
+                        label="Plaque d'immatriculation"
+                        name="lisence_plate"
+                        size="medium"
+                        inputRef={nameRef}
+                        {...nameProps}
+                    />
                     {!!marks &&
                         <Autocomplete
                             disablePortal
@@ -183,14 +219,14 @@ export default function FormCars() {
                     }
                     <TextField
                         label="Plaque d'immatriculation"
-                        name="numberplate"
+                        name="lisence_plate"
                         size="medium"
                         placeholder="AA-000-AA"
-                        value={numberplate}
-                        inputRef={numberplateRef}
-                        {...numberplateProps}
-                        error={!!errors.numberplate}
-                        helperText={errors.numberplate && "Plaque d'immatriculation invalide"}
+                        value={licencePlate}
+                        inputRef={lisencePlateRef}
+                        {...lisencePlateProps}
+                        error={!!errors.lisence_plate}
+                        helperText={errors.lisence_plate && "Plaque d'immatriculation invalide"}
                         onChange={handleNumberPlateChange}
                     />
                     <Box sx={{ marginBottom: '10px' }}>
@@ -226,7 +262,7 @@ export default function FormCars() {
                         <input hidden accept="image/*" type="file" onChange={handleFileSelect} />
                         <PhotoCamera />
                     </IconButton>
-                    <Button variant="contained" color="primary" onClick={handleUpload} />
+                    {!!selectedFile && selectedFile.name}
                     <Box id="my-container"></Box>
                     <Button variant="contained" sx={{ width: '26%' }} type="submit">Enregistrer</Button>
                 </Box>

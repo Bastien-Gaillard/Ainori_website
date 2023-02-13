@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator jsonSchema {
+  provider       = "prisma-json-schema-generator"
+  outputFileName = "db.json"
+}
+
 model cities {
   id                 Int       @id @default(autoincrement())
   department_code    String    @db.VarChar(255)
@@ -28,16 +33,16 @@ model cities {
 }
 
 model images {
-  id                           Int              @id @default(autoincrement())
-  path                         String           @db.VarChar(255)
-  created_at                   DateTime?        @default(now()) @db.Timestamp(0)
-  updated_at                   DateTime?        @db.Timestamp(0)
-  created_by_user_id           Int?
-  updated_by_user_id           Int?
-  created_by_images            users?           @relation("images_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_images")
-  updated_by_images            users?           @relation("images_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_images")
-  users_imagesTousers_image_id users[]          @relation("imagesTousers_image_id")
-  users_vehicles               users_vehicles[]
+  id                 Int              @id @default(autoincrement())
+  path               String           @db.VarChar(255)
+  created_at         DateTime?        @default(now()) @db.Timestamp(0)
+  updated_at         DateTime?        @db.Timestamp(0)
+  created_by_user_id Int?
+  updated_by_user_id Int?
+  created_by_images  users?           @relation("images_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_images")
+  updated_by_images  users?           @relation("images_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_images")
+  users_images       users[]          @relation("imagesTousers_image_id")
+  users_vehicles     users_vehicles[]
 
   @@index([created_by_user_id], map: "fk_created_by_user_id_images")
   @@index([updated_by_user_id], map: "fk_updated_by_user_id_images")
@@ -146,7 +151,7 @@ model users {
   id                                          Int                @id @default(autoincrement())
   firstname                                   String             @db.VarChar(100)
   lastname                                    String             @db.VarChar(100)
-  email                                       String             @db.VarChar(150) @unique
+  email                                       String             @unique @db.VarChar(150)
   description                                 String?            @db.MediumText
   password                                    String             @db.VarChar(255)
   status                                      Boolean
@@ -215,9 +220,9 @@ model users_has_routes {
 
 model users_vehicles {
   id                  Int       @id @default(autoincrement())
-  user_id             Int
+  user_id             Int?
   lisence_plate       String    @db.VarChar(45)
-  model_id            Int
+  model_id            Int?
   color               String    @default("#ffffff") @db.VarChar(12)
   name                String?   @db.VarChar(100)
   image_id            Int?
@@ -228,9 +233,9 @@ model users_vehicles {
   updated_by_user_id  Int?
   created_by_vehicles users?    @relation("usersTousers_vehicles_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users_vehicles")
   images              images?   @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_id_users_vehicles")
-  models              models    @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_model_id")
+  models              models?   @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_model_id")
   updated_by_vehicles users?    @relation("usersTousers_vehicles_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users_vehicles")
-  user_id_vehicles    users     @relation("usersTousers_vehicles_user_id", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_users_vehicles")
+  user_id_vehicles    users?    @relation("usersTousers_vehicles_user_id", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_users_vehicles")
 
   @@index([created_by_user_id], map: "fk_created_by_user_id_users_vehicles")
   @@index([image_id], map: "fk_image_id_users_vehicles")

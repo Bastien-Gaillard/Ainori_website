@@ -10,7 +10,9 @@ var FileStore = require('session-file-store')(sessions);
 const port = process.env.PORT || 3001;
 const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
+const multer = require("multer");
 const { SHA256 } = require('crypto-js');
+
 // const cleanSessions = require('./cleanSessions');
 const mockResponse = {
   foo: 'bar',
@@ -42,7 +44,7 @@ function hashPassword(password) {
 
 //Function to generate token
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1800s' });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '84000s' });
 }
 
 //Function for check if the token in session exist
@@ -57,6 +59,16 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/images/vehicles");
+  },
+  filename: function (req, file, cb, res) {
+    const splitFile = file.originalname.split('.');
+    cb(null, cryptoJs.SHA256(splitFile[0]).toString() + '.' + splitFile[1]);
+  },
+});
+const upload = multer({ storage: storage });
 
 //Use session
 app.use(session);
@@ -230,26 +242,12 @@ app.post('/api/update/user/', authenticateToken, async (req, res) => {
     }
   });
   req.user = result;
-  console.log('RESULT', result);
-  console.log('REQ.USER', req.user)
   res.send(result);
 });
 
-app.get('/api/update/userdata/:id/:firstname/:lastname/:email/:description', async (req, res) => {
-  const result = await prisma.users.update({
-    where: {
-      id: parseInt(req.params.id)
-    },
-    data: {
-      firstname: req.params.firstname,
-      lastname: req.params.lastname,
-      email: req.params.email,
-      description: req.params.description
-    },
-  })
-  res.send(result);
+app.post("/api/upload", upload.single("image"), (req, res) => {
+  res.send("Image uploaded successfully");
 });
-
 //Check if user already connect or not
 app.get('/api/check/user', (req, res) => {
   if (req.session.user_id) {
@@ -259,9 +257,61 @@ app.get('/api/check/user', (req, res) => {
   }
 });
 
+app.post('/api/add/vehicles/image', authenticateToken, async (req, res) => {
+
+  const image = req.body.image.split('.')
+  const imageInServe = cryptoJs.SHA256(image[0]).toString() + '.' + image[1];
+  try {
+    const result = await prisma.images.create({
+      data: {
+        path: 'images/vehicles/' + imageInServe
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+  }
+
+});
+app.post('/api/add/vehicles', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_vehicles.create({
+      data: {
+        name: req.body.name,
+        available_seats: req.body.available_seats,
+        color: req.body.color,
+        lisence_plate: req.body.lisence_plate,
+        models: {
+          id: req.body.models.id,
+          mark: req.body.models.mark,
+          model: req.body.models.model,
+        },
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.post('/api/get/model', authenticateToken, async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const result = await prisma.models.findFirst({
+      where: {
+        mark: req.body.mark,
+        model: req.body.model
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+  }
+});
 app.get('/api/get/marks', async (req, res) => {
   try {
-      const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`
         SELECT mark
         FROM models
         GROUP BY mark
@@ -273,26 +323,22 @@ app.get('/api/get/marks', async (req, res) => {
 });
 
 app.post('/api/get/models', async (req, res) => {
-  console.log('body', req.body, req.body.mark);
   try {
-      const result = await prisma.models.findMany({
-        where: {
-          mark: req.body.mark
-        },
-        select: {
-          model: true
-        }
-      });
-      console.log('the result', result)
+    const result = await prisma.models.findMany({
+      where: {
+        mark: req.body.mark
+      },
+      select: {
+        model: true
+      }
+    });
     res.send(result);
   } catch (error) {
     console.error(error);
   }
 });
 app.get('/api/logout', (req, res) => {
-  console.log('sessions', req.session);
   req.session.destroy();
-  console.log('session destroy', req.session);
   res.redirect('/');
 });
 
