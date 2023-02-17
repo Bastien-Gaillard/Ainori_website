@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 const Index = () => {
 
@@ -17,10 +17,10 @@ const Index = () => {
         const link = window.location.pathname;
         if (link != '/forgot') {
             if (!link.startsWith('/forgot/')) {
-                const check = await instance.get('check/user');
+                const check = await instance.get('user/check');
                 if (check.data) {
                     setIsConnected(true);
-                    const dataUser = await instance.get('/user');
+                    const dataUser = await instance.get('user/current/session');
                     setUser(dataUser.data);
                     if (link == '/login' || link == '/') {
                         navigate('/home');

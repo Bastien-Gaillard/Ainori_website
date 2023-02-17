@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 
@@ -14,7 +14,7 @@ const authConnexion = async () => {
     const link = window.location.pathname;
     if (link != '/forgot') {
         if (!link.startsWith('/forgot/')) {
-            const check = await instance.get('check/user');
+            const check = await instance.get('user/check');
             if (check.data) {
                 setIsConnected(true);
                 const dataUser = await instance.get('/user');

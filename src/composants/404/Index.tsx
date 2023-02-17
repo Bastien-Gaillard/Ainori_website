@@ -6,7 +6,7 @@ import { createTheme, Theme } from '@mui/material/styles';
 import { bgcolor, palette } from '@mui/system';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 export default function Index() {

@@ -11,7 +11,7 @@ import ProfilNav from './ProfilNav';
 import axios from 'axios';
 import { Box, Link } from '@mui/material';
 const instance = axios.create({
-	baseURL: 'http://localhost:3001/api/',
+	baseURL: 'http://localhost:3001/',
 });
 
 export default function Header() {
@@ -26,7 +26,8 @@ export default function Header() {
 			const link = window.location.pathname;
 			if (link != '/forgot') {
 				if (!link.startsWith('/forgot/')) {
-					const check = await instance.get('check/user');
+					const check = await instance.get('user/check');
+					console.log('check', check);
 					if (check.data) {
 						setIsConnected(true);
 						const dataUser = await instance.get('user');

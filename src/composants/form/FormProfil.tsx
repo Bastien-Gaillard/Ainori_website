@@ -11,7 +11,7 @@ import { Avatar, InputAdornment } from "@mui/material";
 import { isTemplateSpan } from "typescript";
 import { ThemeProvider } from "@emotion/react";
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 type UserModel = {
@@ -34,7 +34,7 @@ export default function FormProfil({ user, updateUser }) {
 
     const onSubmit = async (data) => {
         data.id = user.id;
-        await instance.post('update/user/', data, { headers: { "content-type": "application/json" } })
+        await instance.put('user/update', data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 updateUser(response.data);
                 setModify(false);

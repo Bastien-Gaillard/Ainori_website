@@ -10,7 +10,7 @@ import { CompactPicker } from 'react-color';
 import { PhotoCamera } from "@mui/icons-material";
 import { getValue } from "@mui/system";
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 export default function FormCars() {
@@ -24,15 +24,15 @@ export default function FormCars() {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const onSubmit = async (data) => {
-        const vehicles = await instance.post("get/model", data, { headers: { "content-type": "application/json" } })
+        const vehicles = await instance.post("model", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 console.log('response vehicules', response.data)
                 data.models = response.data;
             }).catch((err) => {
                 console.error(err);
             });
-        console.log('data after vehicles', data)
-        const image = await instance.post("add/vehicles/image", data, { headers: { "content-type": "application/json" } })
+        data.path = 'images/vehicles'
+        const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 console.log('response', response.data);
                 data.images = response.data;
@@ -40,7 +40,7 @@ export default function FormCars() {
                 console.error(err);
             });
         console.log('data after images', data)
-        const result = await instance.post("add/vehicles", data, { headers: { "content-type": "application/json" } })
+        const result = await instance.post("vehicles/create", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 console.log('the response', response);
             }).catch((err) => {
@@ -62,7 +62,7 @@ export default function FormCars() {
         const formData = new FormData();
         formData.append("image", selectedFile);
 
-        axios.post("/api/upload", formData, {
+        axios.post("upload", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -92,7 +92,7 @@ export default function FormCars() {
     }, []);
 
     const getDataMarks = async () => {
-        await instance.get('get/marks')
+        await instance.get('marks')
             .then(async (response) => {
                 setMarks(response.data.map(elem => elem.mark));
             }).catch((err) => {
@@ -101,7 +101,7 @@ export default function FormCars() {
     }
 
     const getDataModels = async (value) => {
-        await instance.post('get/models', { mark: value }, { headers: { "content-type": "application/json" } })
+        await instance.post('models', { mark: value }, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 setModels(response.data.map(elem => elem.model));
             }).catch((err) => {

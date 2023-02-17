@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;

@@ -18,7 +18,7 @@ import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 const pages = ['Products', 'Pricing', 'Blog'];

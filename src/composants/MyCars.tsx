@@ -11,7 +11,7 @@ import Index from './404/Index';
 import { useForm } from 'react-hook-form';
 import FormCars from './form/FormCars';
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 export default function AddCars() {

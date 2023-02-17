@@ -11,7 +11,7 @@ type Element = JSXElement | null;
 
 //Create axios instance
 const instance = axios.create({
-  baseURL: 'http://localhost:3001/api/',
+  baseURL: 'http://localhost:3001/',
 });
 
 export default function Login() {

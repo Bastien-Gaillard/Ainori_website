@@ -10,7 +10,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import { InputAdornment } from "@mui/material";
 import FormProfil from "./form/FormProfil";
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 type UserModel = {
@@ -41,7 +41,7 @@ export default function Profil() {
     };
 
     const getUser = async () => {
-        await instance.get('user/id')
+        await instance.get('user/current/id')
             .then((response) => {
                 if (response.data) {
                     console.log('the response', response.data);
