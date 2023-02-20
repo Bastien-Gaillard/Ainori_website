@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { useCookies } from "react-cookie";
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
@@ -14,6 +15,7 @@ export default function FormLogin() {
     const [showPassword, setShowPassword] = useState(false);
     const { handleSubmit, control, formState: { errors }, register } = useForm();
     const [info, setInfo] = useState<Element>();
+    const [cookies, setCookie] = useCookies();
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
@@ -21,6 +23,7 @@ export default function FormLogin() {
         const user = await instance.post('login', data, { headers: { "content-type": "application/json" } })
             .then((response) => {
                 if (response.data == "ok") {
+                    setCookie('user', true, { path: '/' })
                     navigate('/home');
                 } else if(response.data == "null"){
                     setInfo(<Alert severity="error">Identifiant ou mot de passe invalide</Alert>);

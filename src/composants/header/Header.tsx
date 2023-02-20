@@ -16,7 +16,6 @@ const instance = axios.create({
 
 export default function Header() {
 
-
 	const [isConnected, setIsConnected] = useState(false);
 	const [user, setUser] = useState();
 	let navigate = useNavigate();
@@ -27,7 +26,6 @@ export default function Header() {
 			if (link != '/forgot') {
 				if (!link.startsWith('/forgot/')) {
 					const check = await instance.get('user/check');
-					console.log('check', check);
 					if (check.data) {
 						setIsConnected(true);
 						const dataUser = await instance.get('user');
@@ -44,11 +42,9 @@ export default function Header() {
 				}
 			}
 		})();
-	}, []);
-
-	
+	}, [isConnected, user]);
 	return (
-		<AppBar position="static" sx={{zIndex: 1}}>
+		<AppBar position="static" sx={{ zIndex: 1 }}>
 			<Toolbar>
 				<Link sx={{
 					display: 'flex',
@@ -60,9 +56,8 @@ export default function Header() {
 					<img width='100%' height='100%' src='logo.png' alt="" />
 					<h1>Ainori</h1>
 				</Link>
-				<Nav isConnected={isConnected} />
-				<ProfilNav isConnected={isConnected}
-					user={user} />
+				<Nav />
+				<ProfilNav user={user} />
 			</Toolbar>
 		</AppBar>
 

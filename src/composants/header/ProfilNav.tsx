@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState, useEffect } from 'react';
 import theme from '../../cusotmization/palette';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
@@ -38,27 +39,28 @@ const settings = [{
 }];
 
 export default ({
-    isConnected,
     user
 }: {
-    isConnected: Boolean,
     user?: any
 }) => {
     let navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [cookies, setCookie] = useCookies(['user']);
+    const cookieUser = cookies.user;
 
     const logout = async () => {//for déconnexion delete cookie (cookieLoginUser)
         await instance.get('logout')
-        .then(response => {
-            navigate('/');
-          })
-          .catch(error => {
-            console.error(error);
-          });
+            .then(response => {
+                setAnchorElNav(null);
+                setAnchorElUser(null)
+                setCookie('user', '', { expires: new Date(0) });
+                navigate('/');
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
-    useEffect(() => {
-	}, [isConnected, user]);
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -74,29 +76,29 @@ export default ({
     const NotLogin = (
         <Avatar />
     );
-    let Login=null;// set value Login 
-    if(isConnected){//if user is already connected
-    	Login = (
+    let Login = null;// set value Login 
+    if (cookieUser) {//if user is already connected
+        Login = (
             <Tooltip title="Open settings">
-    		<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-    			<Avatar alt={user?.lastname} src={user?.image?.path} />
-    		</IconButton> 
-            </Tooltip> 
-    	)
-    	if(!!user?.image_id){//if user as image
-    		Login = (
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt={user?.lastname} src={user?.image?.path} />
+                </IconButton>
+            </Tooltip>
+        )
+        if (!!user?.image_id) {//if user as image
+            Login = (
                 <Tooltip title="Open settings">
-    			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={user?.lastname} src={user?.lastname} />
-    			</IconButton> 
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt={user?.lastname} src={user?.image?.path} />
+                    </IconButton>
                 </Tooltip>
-    		)
-    	}
+            )
+        }
     }
 
     return (
         <Box sx={{ flexGrow: 0 }}>
-            {isConnected ? Login : NotLogin}
+            {cookieUser ? Login : NotLogin}
             <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -115,7 +117,7 @@ export default ({
             >
                 {settings.map((setting) => (
                     <MenuItem key={setting.name} onClick={handleCloseNavMenu}>
-                        <Typography textAlign="center" onClick={ setting.name === 'Deconnexion' ? logout : null}>{setting.name}</Typography>
+                        <Typography textAlign="center" onClick={setting.name === 'Deconnexion' ? logout : null}>{setting.name}</Typography>
                     </MenuItem>
                 ))}
             </Menu>
