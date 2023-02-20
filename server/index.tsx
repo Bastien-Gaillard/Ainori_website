@@ -83,7 +83,7 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-const storage = multer.diskStorage({
+const storageVehicles = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/images/vehicles");
   },
@@ -92,7 +92,7 @@ const storage = multer.diskStorage({
     cb(null, cryptoJs.SHA256(splitFile[0]).toString() + '.' + splitFile[1]);
   },
 });
-const upload = multer({ storage: storage });
+const uploadVehicles = multer({ storage: storageVehicles });
 const uploadPut = multer();
 
 //Use session
@@ -253,7 +253,7 @@ app.get("/images", async(req, res) => {
 
 });
 
-app.post("/upload", upload.single("image"), (req, res) => {
+app.post("/upload", uploadVehicles.single("image"), (req, res) => {
   res.send("Image uploaded successfully");
 });
 
@@ -262,9 +262,10 @@ app.post('/image/create', authenticateToken, async (req, res) => {
   const image = req.body.image.split('.')
   const imageInServe = cryptoJs.SHA256(image[0]).toString() + '.' + image[1];
   try {
+    console.log('create image body', req.body)
     const result = await prisma.images.create({
       data: {
-        path: req.body.path + imageInServe
+        path: req.body.path + '/' + imageInServe
       }
     });
     res.send(result);
@@ -455,7 +456,7 @@ app.delete('/user/delete', authenticateToken, async (req, res) => {
 
 
 // *************************************
-// ROUTES IMAGES
+// ROUTES VEHICLES
 // *************************************
 
 app.post('/vehicles/create', authenticateToken, async (req, res) => {
@@ -463,13 +464,12 @@ app.post('/vehicles/create', authenticateToken, async (req, res) => {
     console.log('/vehicles/create', req.body);
     const result = await prisma.users_vehicles.create({
       data: {
+        user_id: req.user.id,
         name: req.body.name,
         available_seats: req.body.available_seats,
         color: req.body.color,
         lisence_plate: req.body.lisence_plate,
-        models: !!req.body.models ? req.body.models : null,
-        images: !!req.body.images ? req.body.images : null,
-        model_id: !!req.body.models.id ? req.body.models.id : null,
+        model_id: req.body.models.id,
         image_id: !!req.body.images.id ? req.body.images.id : null,
       }
     });

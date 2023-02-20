@@ -47,7 +47,7 @@ export default function FormCars() {
                 console.error(err);
             });
         console.log(data);
-        // handleUpload();
+        handleUpload();
     }
 
     const handleFileSelect = event => {
@@ -67,8 +67,6 @@ export default function FormCars() {
                 "Content-Type": "multipart/form-data",
             },
         });
-        // const formData = new FormData();
-        // formData.append('image', selectedFile);
         console.log('data', formData);
 
     };
@@ -140,7 +138,7 @@ export default function FormCars() {
             inputValue = inputValue.slice(0, 2) + "-" + inputValue.slice(2);
         }
         if (inputValue.length > 6 && inputValue[6] !== "-") {
-            inputValue = inputValue.slice(0, 6) + "-" + inputValue.slice(5);
+            inputValue = inputValue.slice(0, 6) + "-" + inputValue.slice(6);
         }
 
         setLicencePlate(inputValue);
