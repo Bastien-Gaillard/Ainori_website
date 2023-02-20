@@ -94,7 +94,13 @@ export default function FormProfil({ user, updateUser }) {
                 >
                     <Box sx={{ display: 'flex' }}>
                         <h2>Mes informations</h2>
-                        <CreateIcon onClick={changeModify} sx={{ marginLeft: '8px', '&:hover': { color: 'primary' } }} />
+                        <CreateIcon onClick={changeModify} sx={
+                            { marginLeft: '8px', 
+                            '&:hover': 
+                                { color: '#FFC107',
+                                cursor: 'pointer' } }} />
+
+
                     </Box>
                     <Avatar alt={user.firstname} src={user.image?.path} />
                     <TextField
