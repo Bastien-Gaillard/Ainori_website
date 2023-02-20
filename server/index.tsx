@@ -212,6 +212,7 @@ app.get('/api/cars/id', authenticateToken, async (req, res) => {
     select: {
       vehicule: {
         select: {
+          id: true,
           name: true,
           images: {
             select: {
@@ -227,11 +228,26 @@ app.get('/api/cars/id', authenticateToken, async (req, res) => {
           color: true ,
           lisence_plate: true,
           available_seats: true
+        },
+        where:{
+          status : true,
         }
       }
     }
   });
   res.send(cars);
+});
+
+app.post('/api/update/car/', authenticateToken, async (req, res) => {
+  const result = await prisma.users_vehicles.update({
+    where: {
+      id: parseInt(req.body.id)
+    },
+    data: {
+      status: false,
+    },
+  });
+  res.send(result);
 });
 
 app.post('/api/update/user/', authenticateToken, async (req, res) => {

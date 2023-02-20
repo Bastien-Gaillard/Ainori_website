@@ -22,11 +22,21 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Typography from '@mui/material/Typography';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+import EditIcon from '@mui/icons-material/Edit';
+import Dialog from '@mui/material//Dialog';
+import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+
 const instance = axios.create({
     baseURL: 'http://localhost:3001/api/',
 });
 
 type ResponseData = {
+    id : number;
     name: string;
     images: any;
     models: {
@@ -86,6 +96,48 @@ export default function Cars() {
     const icon = {
         justifyContent: 'center'
     };
+
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    const [openAdd, setOpenAdd] = useState(false);
+
+    const handleClickOpenAdd = () => {
+        setOpenAdd(true);
+    };
+  
+    const handleCloseAdd = () => {
+        setOpenAdd(false);
+    };
+
+    const [openDelete, setOpenDelete] = useState(false);
+    const [CarIdCar, setCas] = useState(0);
+
+    const handleClickOpenDelete = (id) => {
+        setOpenDelete(true);
+        setCas(id);
+    };
+  
+    const handleCloseDelete = () => {
+        setOpenDelete(false);
+    };
+
+    const deleteCar=  async () => {
+        const data = {id:CarIdCar}
+        await instance.post('update/car/', data, { headers: { "content-type": "application/json" } })
+        .then(async () => {
+            dataCarsSet();
+        }).catch((err) => {
+            console.error(err);
+        });
+    };
     
     
     return (
@@ -104,11 +156,11 @@ export default function Cars() {
                         justifyContent: 'center',
                         margin: '10px'}} 
                     >
-                    Vos véhicule
+                    Vos véhicules
                     </Typography>
                     <List >
                         {responseData.vehicule.map(({id,name, images, lisence_plate, color, models,available_seats}) => (
-                            <ListItem button alignItems="flex-start" key={id} >
+                            <ListItem button alignItems="flex-start" key={id} onDoubleClick={handleClickOpen} >
                                 <ListItemAvatar>
                                     <Avatar alt={name} src={images ? images : 'null'} />
                                 </ListItemAvatar> 
@@ -129,15 +181,71 @@ export default function Cars() {
                                         }
                                 />
                                 <ListItemIcon>
-                                    <DirectionsCarFilledIcon style={{ color: color,fontSize: '50px', backgroundColor: luminance(color),borderRadius: '10px',border: '1px black' }}/>
+                                    <EditIcon style={{ fontSize: '30px',margin: '2px'  }} onClick={handleClickOpen} />
+                                    <DeleteTwoToneIcon style={{ fontSize: '30px',margin: '2px'  }} onClick={() => handleClickOpenDelete(id)} />
+                                    <DirectionsCarFilledIcon style={{ color: color,fontSize: '45px',margin: '2px', backgroundColor: luminance(color),borderRadius: '10px',border: '1px black' }}/>
                                 </ListItemIcon>
+                                
                             </ListItem>
+
                         ))}
-                            <ListItem button style={icon} key={999} >
-                                <ListItemIcon >
-                                    <AddIcon style={{fontSize: '50px' }}/>
-                                </ListItemIcon>
-                            </ListItem>
+                            <Box>
+                                <ListItem button style={icon} key={999}  onClick={handleClickOpenAdd}>
+                                    <ListItemIcon >
+                                        <AddIcon style={{fontSize: '50px' }}/>
+                                    </ListItemIcon>
+                                </ListItem>
+                                <Dialog
+                                    open={open}
+                                    onClose={handleClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                    >
+                                    <DialogTitle id="alert-dialog-title">{"Modifier véhicules"}</DialogTitle>
+                                    {/* <FormLogin /> */}coposent
+                                    <DialogActions>
+                                    <Button onClick={handleClose} color="primary">
+                                        Retour
+                                    </Button>
+                                    </DialogActions>
+                                </Dialog>
+                                <Dialog
+                                    open={openAdd}
+                                    onClose={handleCloseAdd}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                    >
+                                    <DialogTitle id="alert-dialog-title">{"Ajout véhicules"}</DialogTitle>
+                                    {/* <FormLogin /> */}plus
+                                    <DialogActions>
+                                    <Button onClick={handleCloseAdd} color="primary">
+                                        Retour
+                                    </Button>
+                                    </DialogActions>
+                                </Dialog>
+                                <Dialog
+                                    open={openDelete}
+                                    onClose={handleCloseDelete}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                    >
+                                    <DialogTitle id="alert-dialog-title">{"Suprimer véhicules"}</DialogTitle>
+                                    {/* <FormLogin /> */}voitur
+                                    <DialogActions>
+                                    <Button 
+                                    onClick={() => {
+                                        deleteCar();
+                                        handleCloseDelete();
+                                    }}
+                                    color="primary">
+                                        Oui
+                                    </Button>
+                                    <Button onClick={handleCloseDelete} color="primary">
+                                        Non
+                                    </Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </Box>
 
                     </List>
                 </Box>
@@ -160,12 +268,27 @@ export default function Cars() {
                         minWidth: '28%',
                         minHeight: '60vh',
                         boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'}}>
-                            <ListItem button style={icon} key={999} >
+                        <Box>
+                            <ListItem button style={icon} key={999} onClick={handleClickOpenAdd} >
                                 <ListItemIcon >
                                     <AddIcon style={{fontSize: '50px' }}/>
                                 </ListItemIcon>
                             </ListItem>
-
+                            <Dialog
+                                open={openAdd}
+                                onClose={handleCloseAdd}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                                >
+                                <DialogTitle id="alert-dialog-title">{"Ajout véhicules"}</DialogTitle>
+                                {/* <FormLogin /> */}plus
+                                <DialogActions>
+                                <Button onClick={handleCloseAdd} color="primary">
+                                    Retour
+                                </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </Box>
                     </List>
                 </Box>
             )}
