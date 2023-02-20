@@ -28,8 +28,6 @@ export default function Header() {
 					const check = await instance.get('user/check');
 					if (check.data) {
 						setIsConnected(true);
-						const dataUser = await instance.get('user');
-						setUser(dataUser.data);
 						if (link == '/') {
 							navigate('/home');
 							return;
@@ -42,7 +40,7 @@ export default function Header() {
 				}
 			}
 		})();
-	}, [isConnected, user]);
+	}, []);
 	return (
 		<AppBar position="static" sx={{ zIndex: 1 }}>
 			<Toolbar>
@@ -57,7 +55,7 @@ export default function Header() {
 					<h1>Ainori</h1>
 				</Link>
 				<Nav />
-				<ProfilNav user={user} />
+				<ProfilNav />
 			</Toolbar>
 		</AppBar>
 

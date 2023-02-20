@@ -38,17 +38,39 @@ const settings = [{
     redirect: "logout"
 }];
 
-export default ({
-    user
-}: {
-    user?: any
-}) => {
+type ImageModel = {
+    path: string,
+}
+type UserModel = {
+    firstname: string,
+    lastname: string,
+    email: string,
+    description?: string,
+    image_id?: number
+    image?: ImageModel
+}
+export default function ProfilNav() {
+
     let navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [cookies, setCookie] = useCookies(['user']);
+    const [user, setUser] = useState<UserModel>(null);
+
     const cookieUser = cookies.user;
 
+    useEffect(() => {
+		(async () => {
+            try {
+                const dataUser = await instance.get('user/current/session');
+                setUser(dataUser.data);
+            } catch (error) {
+                console.error(error);
+            }
+		})();
+	}, []);
+
+    console.log('user', user);
     const logout = async () => {//for déconnexion delete cookie (cookieLoginUser)
         await instance.get('logout')
             .then(response => {
