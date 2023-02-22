@@ -102,13 +102,11 @@ export default function Cars() {
     
     const [open, setOpen] = useState(false);
     const [Car, setCar] = useState<ResponseData>();
-
-    const handleClickOpen = (id) => {
+    console.log("toto le rigolo2","value");
+    const handleClickOpen = (voiturr) => {
         
-      //setOpen(true);
-      let carWithId = responseData.find(vehicule => vehicule.id === id);
-      console.log("toto le rigolo",carWithId);
-      setCar(carWithId);
+      setOpen(true);
+      setCar(voiturr);
     };
   
     const handleClose = () => {
@@ -168,7 +166,7 @@ export default function Cars() {
                     </Typography>
                     <List >
                         {responseData.vehicule.map(({id,name, images, lisence_plate, color, models,available_seats}) => (
-                            <ListItem button alignItems="flex-start" key={id} onDoubleClick={() => handleClickOpen(id)} >
+                            <ListItem button alignItems="flex-start" key={id} onDoubleClick={() => handleClickOpen({ id, name, images, lisence_plate, color, models , available_seats })} >
                                 <ListItemAvatar>
                                     <Avatar alt={name} src={images ? images : 'null'} />
                                 </ListItemAvatar> 
@@ -189,13 +187,12 @@ export default function Cars() {
                                         }
                                 />
                                 <ListItemIcon>
-                                    <EditIcon style={{ fontSize: '30px',margin: '2px'  }} onClick={() => handleClickOpen(id)} />
+                                    <EditIcon style={{ fontSize: '30px',margin: '2px'  }} onClick={() => handleClickOpen({ id, name, images, lisence_plate, color, models , available_seats })} />
                                     <DeleteTwoToneIcon style={{ fontSize: '30px',margin: '2px'  }} onClick={() => handleClickOpenDelete(id)} />
                                     <DirectionsCarFilledIcon style={{ color: color,fontSize: '45px',margin: '2px', backgroundColor: luminance(color),borderRadius: '10px',border: '1px black' }}/>
                                 </ListItemIcon>
                                 
                             </ListItem>
-
                         ))}
                             <Box>
                                 <ListItem button style={icon} key={999}  onClick={handleClickOpenAdd}>
