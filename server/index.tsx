@@ -237,12 +237,11 @@ app.delete('/cities/delete', authenticateToken, async (req, res) => {
   }
 });
 
-
 // *************************************
 // ROUTES IMAGES
 // *************************************
 
-app.get("/images", async(req, res) => {
+app.get("/images", async (req, res) => {
   try {
     const result = await prisma.images.findMany();
     res.send(result);
@@ -274,10 +273,11 @@ app.post('/image/create', authenticateToken, async (req, res) => {
   }
 
 });
+
 // *************************************
 // ROUTES USERS
 // *************************************
-//Get user data
+
 app.get('/user/current/session', authenticateToken, (req, res) => {
   delete req.user.password;
   res.send(req.user);
@@ -639,6 +639,311 @@ app.put('/forgot/update', async (req, res) => {
   res.send('success');
 
 });
+
+// *************************************
+// ROUTES ROUTES
+// *************************************
+
+app.get('/routes', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.routes.findMany();
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/route', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.routes.findUnique({
+      where: {
+        id: parseInt(req.body.id)
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/route/departure/arrival', authenticateToken, async (req, res) => {
+  try {
+    if (!!req.body.departure_city_id && !!req.body.arrival_city_id) {
+      const result = await prisma.routes.findMany({
+        where: {
+          departure_city_id: parseInt(req.body.departure_city_id),
+          arrival_city_id: parseInt(req.body.arrival_city_id)
+        }
+      });
+      res.send(result);
+    } else if (!!req.body.departure_city_id) {
+      const result = await prisma.routes.findMany({
+        where: {
+          departure_city_id: parseInt(req.body.departure_city_id),
+        }
+      });
+      res.send(result);
+    } else if ((!!req.body.arrival_city_id)) {
+      const result = await prisma.routes.findMany({
+        where: {
+          arrival_city_id: parseInt(req.body.arrival_city_id),
+        }
+      });
+      res.send(result);
+    } else {
+      const result = await prisma.routes.findMany();
+      res.send(result);
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/route/create', authenticateToken, async (req, res) => {
+  try {
+    const departureTime = new Date(req.body.departure_time);
+    const arrivalTime = new Date(req.body.arrival_time);
+    const departureDate = new Date(req.body.departure_date);
+
+    console.log('date', departureTime, arrivalTime, departureDate)
+    const result = await prisma.routes.create({
+      data: {
+        user_id: req.user.id,
+        arrival_city_id: parseInt(req.body.arrival_city_id),
+        departure_city_id: parseInt(req.body.departure_city_id),
+        departure_time: departureTime,
+        arrival_time: arrivalTime,
+        departure_date: departureDate,
+        available_seats: parseInt(req.body.available_seats),
+        remaining_seats: parseInt(req.body.remaining_seats),
+        statuts: true,
+      }
+    });
+    res.send(result)
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.put('/route/update', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.routes.update({
+      where: {
+        id: parseInt(req.body.id)
+      },
+      data: {
+        user_id: req.body.user_id,
+        arrival_city_id: req.body.arrival_city_id,
+        departure_city_id: req.body.departure_city_id,
+        departure_time: req.body.departure_time,
+        arrival_time: req.body.arrival_time,
+        departure_date: req.body.departure_date,
+        available_seats: parseInt(req.body.available_seats),
+        remaining_seats: parseInt(req.body.remaining_seats),
+        statuts: req.body.statuts,
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.put('/route/remainingSeats', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.routes.update({
+      where: {
+        id: parseInt(req.body.id)
+      },
+      data: {
+        remaining_seats: parseInt(req.body.remaining_seats),
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.put('/route/disable', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.routes.update({
+      where: {
+        id: parseInt(req.body.id)
+      },
+      data: {
+        statuts: false,
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.put('/route/enable', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.routes.update({
+      where: {
+        id: parseInt(req.body.id)
+      },
+      data: {
+        statuts: true,
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+app.delete('/route/delete', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.routes.delete({
+      where: {
+        id: parseInt(req.body.id)
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+// *************************************
+// ROUTES USER HAS ROUTES
+// *************************************
+
+app.get('/usersHasRoutes', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_has_routes.findMany();
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/usersHasRoute', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_has_routes.findUnique({
+      where: {
+        id: parseInt(req.body.id)
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/userHasRoute/route', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_has_routes.findMany({
+      where: {
+        route_id: parseInt(req.body.route_id)
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/userHasRoute/user', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_has_routes.findMany({
+      where: {
+        user_id: parseInt(req.body.user_id)
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/userHasRoute/user/route', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_has_routes.findMany({
+      where: {
+        user_id: req.user.id,
+        route_id: parseInt(req.body.route_id)
+
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/userHasRoute/create', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_has_routes.create({
+      data: {
+        user_id: req.user.id,
+        route_id: parseInt(req.body.route_id),
+        status_notice: parseInt(req.body.status_notice),
+      }
+    });
+    res.send(result)
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.put('/route/update', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_has_routes.update({
+      where: {
+        id: parseInt(req.body.id)
+      },
+      data: {
+        user_id: parseInt(req.user.id),
+        route_id: parseInt(req.body.route_id),
+        status_notice: parseInt(req.body.status_notice),
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+
+app.delete('/userHasRoute/delete/:id', authenticateToken, async (req, res) => {
+  try {
+    const isUser = await prisma.users_has_routes.findUnique(
+      {
+        where: {
+          id: parseInt(req.params.id)
+        },
+        select: {
+          user_id: true
+        }
+      }
+    );
+    if(isUser.user_id === req.user.id){
+      const result = await prisma.users_has_routes.delete(
+        {
+          where:
+            { id: parseInt(req.params.id) }
+        })
+      res.send(result);
+    } else {
+      res.status(400).send('Une erreur est survenue')
+    }
+   
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
 app.get('*', (req, res) => res.sendFile(path.resolve('dist', 'index.html')));
 
 app.listen(port, function () {

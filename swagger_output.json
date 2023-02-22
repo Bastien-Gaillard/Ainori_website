@@ -26,12 +26,18 @@
     {
       "name": "images",
       "description": "Requêtes concernant les images"
+    },
+    {
+      "name": "routes",
+      "description": "Requêtes concernant les trajets"
+    },
+    {
+      "name": "users_has_routes",
+      "description": "Requêtes concernant les utilisateur participant à un trajet"
     }
-
   ],
 
   "paths": {
-
     "/cities": {
       "post": {
         "tags": ["cities"],
@@ -217,6 +223,9 @@
         ]
       }
     },
+
+
+
     "/images": {
       "get": {
         "tags": ["images"],
@@ -265,6 +274,9 @@
         }
       }
     },
+
+
+
     "/user/current/session": {
       "get": {
         "tags": ["users"],
@@ -559,7 +571,543 @@
         }
       }
     },
+
+
+
+    "/routes": {
+      "get": {
+        "tags": ["routes"],
+        "summary": "Obtenir tous les trajets",
+        "description": "Permet d'obtenir tous les trajets existant",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route": {
+      "post": {
+        "tags": ["routes"],
+        "summary": "Obtenir un trajets via l'id",
+        "description": "Permet de trouver un trajets via son id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/departure/arrival": {
+      "post": {
+        "tags": ["routes"],
+        "summary": "Obtenir les trajets via l'id de la ville de depart ou d'arrivée",
+        "description": "Permet de trouver tout les trajets ayant comme ville d'arrivée ou de départ ou les deux la ville indiquée",
+        "parameters": [
+          {
+            "name": "departure_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "arrival_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/create": {
+      "post": {
+        "tags": ["routes"],
+        "summary": "Créer un trajet",
+        "description": "Permet de créer un trajet",
+        "parameters": [
+          {
+            "name": "arrival_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "departure_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "departure_time",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "2022-11-11 08:00:00"
+          },
+          {
+            "name": "arrival_time",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "2022-11-11 08:30:00"
+          },
+          {
+            "name": "departure_date",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "2022-11-11"
+          },
+          {
+            "name": "available_seats",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "remaining_seats",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/update": {
+      "put": {
+        "tags": ["routes"],
+        "summary": "Obtenir les trajets via l'id de la ville de depart ou d'arrivée",
+        "description": "Permet de trouver tout les trajets ayant comme ville d'arrivée ou de départ ou les deux la ville indiquée",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "integer",
+            "required": false
+          },
+          {
+            "name": "arrival_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "departure_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "departure_time",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "arrival_time",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "departure_date",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "available_seats",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "remaining_seats",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "statuts",
+            "in": "formData",
+            "schema": {
+              "type": "boolean",
+              "enum": [true, false]
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/remainingSeats": {
+      "put": {
+        "tags": ["routes"],
+        "summary": "Modifier le nombre de place disponible",
+        "description": "Permet de modifier le nombre de place disponible",
+        "parameters": [
+          {
+            "name": "remaining_seats",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/disable": {
+      "put": {
+        "tags": ["routes"],
+        "summary": "Desactiver un trajet de l'utilisateur",
+        "description": "Permet de passer le statut du trajet a false afin de le rendre inactif",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/enable": {
+      "put": {
+        "tags": ["routes"],
+        "summary": "Activer un trajet de l'utilisateur",
+        "description": "Permet de passer le statut du trajet a true afin de le rendre inactif",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/delete": {
+      "delete": {
+        "tags": ["routes"],
+        "summary": "Supprimer un trajet ",
+        "description": "Permet de supprimer un trajet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+
+
+
+    "/usersHasRoutes": {
+      "get": {
+        "tags": ["users_has_routes"],
+        "summary": "Obtenir tous les utilisateurs participant à un trajets",
+        "description": "Permet d'obtenir tous les utilisateurs participant à un trajets",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/route": {
+      "post": {
+        "tags": ["users_has_routes"],
+        "summary": "Obtenir les utilisateurs participant à un trajet",
+        "description": "Permet de trouver les utilisateurs participant à un trajet",
+        "parameters": [
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/user": {
+      "post": {
+        "tags": ["users_has_routes"],
+        "summary": "Obtenir les trajets d'un utilisateur",
+        "description": "Permet d'obtenir les trajets d'un utilisateur",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/user/route": {
+      "post": {
+        "tags": ["users_has_routes"],
+        "summary": "Voir si l'utilisateur participe à un trajet",
+        "description": "Permet de voir si l'utilisateur participe à un trajet",
+        "parameters": [
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/create": {
+      "post": {
+        "tags": ["users_has_routes"],
+        "summary": "Obtenir les trajets via l'id de la ville de depart ou d'arrivée",
+        "description": "Permet de trouver tout les trajets ayant comme ville d'arrivée ou de départ ou les deux la ville indiquée",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "status_notice",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/update": {
+      "put": {
+        "tags": ["users_has_routes"],
+        "summary": "Modifier le participant ou le trajet",
+        "description": "Permet de modifier le participant ou le trajet",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "integer",
+            "required": false
+          },
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "integer",
+            "required": false
+          },
+          {
+            "name": "status_notice",
+            "in": "formData",
+            "type": "integer",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/delete": {
+      "put": {
+        "tags": ["users_has_routes"],
+        "summary": "Supprimer la participant au trajet",
+        "description": "Permet de supprimer la participant au trajet",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoutes/delete": {
+      "delete": {
+        "tags": ["users_has_routes"],
+        "summary": "Supprimer un trajet ",
+        "description": "Permet de supprimer un trajet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
    
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     "/vehicles/add": {
       "post": {
         "description": "",
