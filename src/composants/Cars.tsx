@@ -12,6 +12,7 @@ import { isTemplateSpan } from "typescript";
 import { ThemeProvider } from "@emotion/react";
 
 import FormCars from './form/FormCars';
+import FormUpdateVehicule from './form/FromUpdateVehicule';
 import AddIcon from '@mui/icons-material/Add';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
@@ -98,10 +99,16 @@ export default function Cars() {
         justifyContent: 'center'
     };
 
+    
     const [open, setOpen] = useState(false);
+    const [Car, setCar] = useState<ResponseData>();
 
-    const handleClickOpen = () => {
-      setOpen(true);
+    const handleClickOpen = (id) => {
+        
+      //setOpen(true);
+      let carWithId = responseData.find(vehicule => vehicule.id === id);
+      console.log("toto le rigolo",carWithId);
+      setCar(carWithId);
     };
   
     const handleClose = () => {
@@ -161,7 +168,7 @@ export default function Cars() {
                     </Typography>
                     <List >
                         {responseData.vehicule.map(({id,name, images, lisence_plate, color, models,available_seats}) => (
-                            <ListItem button alignItems="flex-start" key={id} onDoubleClick={handleClickOpen} >
+                            <ListItem button alignItems="flex-start" key={id} onDoubleClick={() => handleClickOpen(id)} >
                                 <ListItemAvatar>
                                     <Avatar alt={name} src={images ? images : 'null'} />
                                 </ListItemAvatar> 
@@ -182,7 +189,7 @@ export default function Cars() {
                                         }
                                 />
                                 <ListItemIcon>
-                                    <EditIcon style={{ fontSize: '30px',margin: '2px'  }} onClick={handleClickOpen} />
+                                    <EditIcon style={{ fontSize: '30px',margin: '2px'  }} onClick={() => handleClickOpen(id)} />
                                     <DeleteTwoToneIcon style={{ fontSize: '30px',margin: '2px'  }} onClick={() => handleClickOpenDelete(id)} />
                                     <DirectionsCarFilledIcon style={{ color: color,fontSize: '45px',margin: '2px', backgroundColor: luminance(color),borderRadius: '10px',border: '1px black' }}/>
                                 </ListItemIcon>
@@ -203,7 +210,7 @@ export default function Cars() {
                                     aria-describedby="alert-dialog-description"
                                     >
                                     <DialogTitle id="alert-dialog-title">{"Modifier véhicules"}</DialogTitle>
-                                    {/* <FormCars />*/ }
+                                    {<FormUpdateVehicule cars={Car}/>}
                                     <DialogActions>
                                     <Button onClick={handleClose} color="primary">
                                         Retour
