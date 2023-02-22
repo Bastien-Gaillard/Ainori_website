@@ -666,6 +666,52 @@ app.post('/route', authenticateToken, async (req, res) => {
     res.status(400).send('Une erreur est survenue')
   }
 });
+app.get('/api/cars/id', authenticateToken, async (req, res) => {
+  const cars = await prisma.users.findUnique({
+    where: {
+      id: req.user.id,
+    },
+    select: {
+      vehicule: {
+        select: {
+          id: true,
+          name: true,
+          images: {
+            select: {
+              path: true
+            }
+          },
+          models: {
+            select: {
+              mark: true,
+              model: true
+            }
+          },
+          color: true ,
+          lisence_plate: true,
+          available_seats: true
+        },
+        where:{
+          status : true,
+        }
+      }
+    }
+  });
+  res.send(cars);
+});
+
+app.post('/api/update/car/', authenticateToken, async (req, res) => {
+  const result = await prisma.users_vehicles.update({
+    where: {
+      id: parseInt(req.body.id)
+    },
+    data: {
+      status: false,
+    },
+  });
+  res.send(result);
+});
+
 app.post('/route/departure/arrival', authenticateToken, async (req, res) => {
   try {
     if (!!req.body.departure_city_id && !!req.body.arrival_city_id) {
