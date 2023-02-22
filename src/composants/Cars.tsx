@@ -11,6 +11,7 @@ import { Avatar, InputAdornment } from "@mui/material";
 import { isTemplateSpan } from "typescript";
 import { ThemeProvider } from "@emotion/react";
 
+import FormCars from './form/FormCars';
 import AddIcon from '@mui/icons-material/Add';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
@@ -202,7 +203,7 @@ export default function Cars() {
                                     aria-describedby="alert-dialog-description"
                                     >
                                     <DialogTitle id="alert-dialog-title">{"Modifier véhicules"}</DialogTitle>
-                                    {/* <FormLogin /> */}coposent
+                                    {/* <FormCars />*/ }
                                     <DialogActions>
                                     <Button onClick={handleClose} color="primary">
                                         Retour
@@ -216,7 +217,7 @@ export default function Cars() {
                                     aria-describedby="alert-dialog-description"
                                     >
                                     <DialogTitle id="alert-dialog-title">{"Ajout véhicules"}</DialogTitle>
-                                    {/* <FormLogin /> */}plus
+                                    {<FormCars />}
                                     <DialogActions>
                                     <Button onClick={handleCloseAdd} color="primary">
                                         Retour
@@ -281,7 +282,7 @@ export default function Cars() {
                                 aria-describedby="alert-dialog-description"
                                 >
                                 <DialogTitle id="alert-dialog-title">{"Ajout véhicules"}</DialogTitle>
-                                {/* <FormLogin /> */}plus
+                                { <FormCars /> }
                                 <DialogActions>
                                 <Button onClick={handleCloseAdd} color="primary">
                                     Retour
