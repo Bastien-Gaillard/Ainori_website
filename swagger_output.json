@@ -1,0 +1,1321 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "REST API",
+    "description": ""
+  },
+  "host": "localhost:3001",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "tags": [
+    {
+      "name": "cities",
+      "description": "Requêtes concernant les villes"
+    },
+    {
+      "name": "users",
+      "description": "Requêtes concernant les utilisateurs"
+    },
+    {
+      "name": "other",
+      "description": "Requêtes concernant le reste"
+    },
+    {
+      "name": "images",
+      "description": "Requêtes concernant les images"
+    },
+    {
+      "name": "routes",
+      "description": "Requêtes concernant les trajets"
+    },
+    {
+      "name": "users_has_routes",
+      "description": "Requêtes concernant les utilisateur participant à un trajet"
+    }
+  ],
+
+  "paths": {
+    "/cities": {
+      "post": {
+        "tags": ["cities"],
+        "summary": "Obtenir les villes",
+        "description": "Permet d'obtenir toutes les ville de France",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "formData",
+            "type": "integer",
+            "required": true, 
+            "default": 10  
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/city": {
+      "post": {
+        "tags": ["cities"],
+        "summary": "Obtenir une ville via son nom",
+        "description": "Permet d'obtenir les informations d'une ville à partir de son nom",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "type": "string",
+            "required": true  
+          }
+        ]
+      }
+    },
+    "/city/id": {
+      "post": {
+        "tags": ["cities"],
+        "summary": "Obtenir une ville via son id",
+        "description": "Permet d'obtenir les informations d'une ville grâce à son id",       
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ]
+      }
+    },
+    "/cities/create": {
+      "post": {
+        "tags": ["cities"],
+        "summary": "Créer une ville",
+        "description": "Permet de créer une ville",
+        "parameters": [
+          {
+            "name": "department_code",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "enum": ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26"]
+          },
+          {
+            "name": "zip_code",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "gps_lat",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "gps_lng",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/cities/update": {
+      "put": {
+        "tags": ["cities"],
+        "summary": "Modifier une ville",
+        "description": "Permet de modifier les informations d'une ville",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": "1"
+          },
+          {
+            "name": "department_code",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "zip_code",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "gps_lat",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "gps_lng",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/cities/delete": {
+      "delete": {
+        "tags": ["cities"],
+        "summary": "Supprimer une ville",
+        "description": "Permet de supprimer une ville grâce à son id",       
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ]
+      }
+    },
+
+
+
+    "/images": {
+      "get": {
+        "tags": ["images"],
+        "description": "Obtenir toutes les images",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "tags": ["images"],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/image/create": {
+      "post": {
+        "tags": ["images"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+
+
+
+    "/user/current/session": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Obtenir l'utilisateur actuel",
+        "description": "Permet d'obtenir les informations de l'utilisateur actuellement connéctée grâce au informations de sa session",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/current/id": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Obtenir l'utilisateur actuel",
+        "description": "Permet d'obtenir les informations de l'utilisateur actuellement connéctée grâce à l'id de sa session",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Obtenir tous les utilisateurs",
+        "description": "Permet d'obtenir les informations de tous les utilisateurs de la base",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/user/check": {
+      "get": {
+        "tags": ["users"],
+        "description": "Voir si l'utilisateur est connécté",
+        "summary": "Permet de voir si l'utilisateur est connécté ou non",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/id": {
+      "post": {
+        "tags": ["users"],
+        "summary": "Obtenir un utilisateur via son id",
+        "description": "Permet d'obtenir les informations d'un utilisateur grâce à son id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1   
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/create": {
+      "post": {
+        "tags": ["users"],
+        "summary": "Créer un utilisateur",
+        "description": "Permet d'ajouter un nouvelle utilisateur",
+        "parameters": [
+          {
+            "name": "firstname",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "Jean"
+          },
+          {
+            "name": "lastname",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "BON"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "uniqueItems": true,
+            "default": "test@test.com"
+
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "schema": {
+              "pattern": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+            },
+            "default": "Azerty_1234"
+
+          },
+          {
+            "name": "status",
+            "description": "Le statut de l'utilisateur (actif ou inactif)",
+            "in": "formData",
+            "type": "boolean",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "enum": [true, false]
+            },
+            "default": true
+
+          },
+          {
+            "name": "role",
+            "description": "Le role de l'utilisateur (user ou admin)",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["user", "admin"]
+            },
+            "default": "user"
+
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "put": {
+        "tags": ["users"],
+        "summary": "Modifier le compte d'un utilisateur",
+        "description": "Permet de modifier les informations de l'utilisateur",
+        "parameters": [
+            {
+              "name": "id",
+              "in": "formData",
+              "type": "integer",
+              "required": true,
+              "default": 1
+            },
+            {
+              "name": "firstname",
+              "in": "formData",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "lastname",
+              "in": "formData",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "email",
+              "in": "formData",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "description",
+              "in": "formData",
+              "type": "string",
+              "required": false
+            }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/update/password": {
+      "put": {
+        "tags": ["users"],
+        "summary": "Modifier le mot de passe d'un utilisateur",
+        "description": "Permet de modifier le mot de passe d'un utilisateur",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "Azerty_1234"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/user/disable": {
+      "put": {
+        "tags": ["users"],
+        "summary": "Desactiver le compte d'un utilisateur",
+        "description": "Permet de passer le statut de l'utilisateur a false afin de le rendre inactif",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/user/enable": {
+      "put": {
+        "tags": ["users"],
+        "summary": "Activer le compte d'un utilisateur",
+        "description": "Permet de passer le statut de l'utilisateur a true afin de le rendre actif",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/user/delete": {
+      "delete": {
+        "tags": ["users"],
+        "summary": "Supprimer le compte d'un utilisateur",
+        "description": "Permet de supprimer le compte d'un utilisateur ainsi que ses vehicules et ses trajets",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+
+
+
+    "/routes": {
+      "get": {
+        "tags": ["routes"],
+        "summary": "Obtenir tous les trajets",
+        "description": "Permet d'obtenir tous les trajets existant",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route": {
+      "post": {
+        "tags": ["routes"],
+        "summary": "Obtenir un trajets via l'id",
+        "description": "Permet de trouver un trajets via son id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/departure/arrival": {
+      "post": {
+        "tags": ["routes"],
+        "summary": "Obtenir les trajets via l'id de la ville de depart ou d'arrivée",
+        "description": "Permet de trouver tout les trajets ayant comme ville d'arrivée ou de départ ou les deux la ville indiquée",
+        "parameters": [
+          {
+            "name": "departure_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "arrival_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/create": {
+      "post": {
+        "tags": ["routes"],
+        "summary": "Créer un trajet",
+        "description": "Permet de créer un trajet",
+        "parameters": [
+          {
+            "name": "arrival_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "departure_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "departure_time",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "2022-11-11 08:00:00"
+          },
+          {
+            "name": "arrival_time",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "2022-11-11 08:30:00"
+          },
+          {
+            "name": "departure_date",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "2022-11-11"
+          },
+          {
+            "name": "available_seats",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "remaining_seats",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/update": {
+      "put": {
+        "tags": ["routes"],
+        "summary": "Obtenir les trajets via l'id de la ville de depart ou d'arrivée",
+        "description": "Permet de trouver tout les trajets ayant comme ville d'arrivée ou de départ ou les deux la ville indiquée",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "integer",
+            "required": false
+          },
+          {
+            "name": "arrival_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "departure_city_id",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "departure_time",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "arrival_time",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "departure_date",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "available_seats",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "remaining_seats",
+            "in": "formData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "statuts",
+            "in": "formData",
+            "schema": {
+              "type": "boolean",
+              "enum": [true, false]
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/remainingSeats": {
+      "put": {
+        "tags": ["routes"],
+        "summary": "Modifier le nombre de place disponible",
+        "description": "Permet de modifier le nombre de place disponible",
+        "parameters": [
+          {
+            "name": "remaining_seats",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/disable": {
+      "put": {
+        "tags": ["routes"],
+        "summary": "Desactiver un trajet de l'utilisateur",
+        "description": "Permet de passer le statut du trajet a false afin de le rendre inactif",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/enable": {
+      "put": {
+        "tags": ["routes"],
+        "summary": "Activer un trajet de l'utilisateur",
+        "description": "Permet de passer le statut du trajet a true afin de le rendre inactif",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/route/delete": {
+      "delete": {
+        "tags": ["routes"],
+        "summary": "Supprimer un trajet ",
+        "description": "Permet de supprimer un trajet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+
+
+
+    "/usersHasRoutes": {
+      "get": {
+        "tags": ["users_has_routes"],
+        "summary": "Obtenir tous les utilisateurs participant à un trajets",
+        "description": "Permet d'obtenir tous les utilisateurs participant à un trajets",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/route": {
+      "post": {
+        "tags": ["users_has_routes"],
+        "summary": "Obtenir les utilisateurs participant à un trajet",
+        "description": "Permet de trouver les utilisateurs participant à un trajet",
+        "parameters": [
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/user": {
+      "post": {
+        "tags": ["users_has_routes"],
+        "summary": "Obtenir les trajets d'un utilisateur",
+        "description": "Permet d'obtenir les trajets d'un utilisateur",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/user/route": {
+      "post": {
+        "tags": ["users_has_routes"],
+        "summary": "Voir si l'utilisateur participe à un trajet",
+        "description": "Permet de voir si l'utilisateur participe à un trajet",
+        "parameters": [
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/create": {
+      "post": {
+        "tags": ["users_has_routes"],
+        "summary": "Obtenir les trajets via l'id de la ville de depart ou d'arrivée",
+        "description": "Permet de trouver tout les trajets ayant comme ville d'arrivée ou de départ ou les deux la ville indiquée",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "status_notice",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/update": {
+      "put": {
+        "tags": ["users_has_routes"],
+        "summary": "Modifier le participant ou le trajet",
+        "description": "Permet de modifier le participant ou le trajet",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "integer",
+            "required": false
+          },
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "integer",
+            "required": false
+          },
+          {
+            "name": "status_notice",
+            "in": "formData",
+            "type": "integer",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoute/delete": {
+      "put": {
+        "tags": ["users_has_routes"],
+        "summary": "Supprimer la participant au trajet",
+        "description": "Permet de supprimer la participant au trajet",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "route_id",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/userHasRoutes/delete": {
+      "delete": {
+        "tags": ["users_has_routes"],
+        "summary": "Supprimer un trajet ",
+        "description": "Permet de supprimer un trajet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "integer",
+            "required": true,
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+   
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "/vehicles/add": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "available_seats": {
+                  "example": "any"
+                },
+                "color": {
+                  "example": "any"
+                },
+                "lisence_plate": {
+                  "example": "any"
+                },
+                "models": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/model": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mark": {
+                  "example": "any"
+                },
+                "model": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/marks": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/models": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mark": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "tags": ["other"],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["other"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/forgot": {
+      "post": {
+        "tags": ["other"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/valide/link": {
+      "post": {
+        "tags": ["other"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "link": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/forgot/update": {
+      "put": {
+        "tags": ["other"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password1": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}

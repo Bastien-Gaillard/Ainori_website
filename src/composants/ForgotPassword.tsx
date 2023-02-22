@@ -9,7 +9,7 @@ import FormForgotPassword from './Form/FormForgotPassword';
 import { AlertColor } from '@mui/material';
 import Index from './404/Index';
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 export default function ForgotPassword() {

@@ -7,7 +7,7 @@ import axios from "axios";
 import Snackbar from "../features/Snackbar";
 import Alert from "../features/Alert"
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 export default function FormForgot() {
@@ -24,7 +24,7 @@ export default function FormForgot() {
     const onSubmit = async (data) => {
         if (data.password1 === data.password2) {
             setNotSame(false);
-            await instance.post('forgot/update', data, { headers: { "content-type": "application/json" } })
+            await instance.put('forgot/update', data, { headers: { "content-type": "application/json" } })
                 .then((response) => {
                     if (response.data) {
                         setOpen(true);

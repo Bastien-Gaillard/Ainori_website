@@ -15,9 +15,11 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState, useEffect } from 'react';
 import theme from '../../cusotmization/palette';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { Badge } from '@mui/material';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/api/',
+    baseURL: 'http://localhost:3001/',
 });
 
 const settings = [{
@@ -37,28 +39,51 @@ const settings = [{
     redirect: "logout"
 }];
 
-export default ({
-    isConnected,
-    user
-}: {
-    isConnected: Boolean,
-    user?: any
-}) => {
+type ImageModel = {
+    path: string,
+}
+type UserModel = {
+    firstname: string,
+    lastname: string,
+    email: string,
+    description?: string,
+    image_id?: number
+    image?: ImageModel
+}
+export default function ProfilNav() {
+
     let navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [cookies, setCookie] = useCookies(['user']);
+    const [user, setUser] = useState<UserModel>(null);
 
+    const cookieUser = cookies.user;
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const dataUser = await instance.get('user/current/session');
+                setUser(dataUser.data);
+            } catch (error) {
+                console.error(error);
+            }
+        })();
+    }, []);
+
+    console.log('user', user);
     const logout = async () => {//for déconnexion delete cookie (cookieLoginUser)
         await instance.get('logout')
-        .then(response => {
-            navigate('/');
-          })
-          .catch(error => {
-            console.error(error);
-          });
+            .then(response => {
+                setAnchorElNav(null);
+                setAnchorElUser(null)
+                setCookie('user', '', { expires: new Date(0) });
+                navigate('/');
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
-    useEffect(() => {
-	}, [isConnected, user]);
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -74,29 +99,40 @@ export default ({
     const NotLogin = (
         <Avatar />
     );
-    let Login=null;// set value Login 
-    if(isConnected){//if user is already connected
-    	Login = (
+    let Login = null;// set value Login 
+    if (cookieUser) {//if user is already connected
+        Login = (
             <Tooltip title="Open settings">
-    		<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-    			<Avatar alt={user?.lastname} src={user?.image?.path} />
-    		</IconButton> 
-            </Tooltip> 
-    	)
-    	if(!!user?.image_id){//if user as image
-    		Login = (
+                <Badge badgeContent={4} color="secondary">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt={user?.lastname} src={user?.image?.path} />
+                    </IconButton>
+                </Badge>
+
+            </Tooltip>
+        )
+        if (!!user?.image_id) {//if user as image
+            Login = (
                 <Tooltip title="Open settings">
-    			<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={user?.lastname} src={user?.lastname} />
-    			</IconButton> 
+                    <Badge badgeContent={4} color="secondary">
+
+                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                            <Avatar alt={user?.lastname} src={user?.image?.path} />
+
+                        </IconButton>
+                    </Badge>
+
                 </Tooltip>
-    		)
-    	}
+            )
+        }
     }
 
+    const goMessages = () => {
+        navigate('/messages');
+    }
     return (
         <Box sx={{ flexGrow: 0 }}>
-            {isConnected ? Login : NotLogin}
+            {cookieUser ? Login : NotLogin}
             <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -115,7 +151,13 @@ export default ({
             >
                 {settings.map((setting) => (
                     <MenuItem key={setting.name} onClick={handleCloseNavMenu}>
-                        <Typography textAlign="center" onClick={ setting.name === 'Deconnexion' ? logout : null}>{setting.name}</Typography>
+                        {setting.name === 'Messages' ?
+                            <Badge badgeContent={4} color="secondary">
+                                <Typography textAlign="center" onClick={goMessages}>{setting.name}</Typography>
+                            </Badge>
+                            :
+                            <Typography textAlign="center" onClick={setting.name === 'Deconnexion' ? logout : null}>{setting.name}</Typography>
+                        }
                     </MenuItem>
                 ))}
             </Menu>
