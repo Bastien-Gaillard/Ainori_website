@@ -48,7 +48,9 @@
     "swagger-autogen": "^2.23.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0",
-    "ts-loader": "^9.4.2"
+    "ts-loader": "^9.4.2",
+    "unique-string": "^3.0.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",

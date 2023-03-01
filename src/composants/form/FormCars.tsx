@@ -9,11 +9,14 @@ import { Autocomplete, FormControl, IconButton, InputLabel, MenuItem, Select, Se
 import { CompactPicker } from 'react-color';
 import { PhotoCamera } from "@mui/icons-material";
 import { getValue } from "@mui/system";
+import Alert from "@composants/features/Alert";
+const cryptoJs = require('crypto-js');
+
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 
-export default function FormCars() {
+export default function FormCars(props) {
 
     const { handleSubmit, formState: { errors }, register, setValue, getValues } = useForm();
     const [marks, setMarks] = useState();
@@ -22,6 +25,11 @@ export default function FormCars() {
     const [color, setColor] = useState({ hex: "#FFFFFF" });
     const [seats, setSeats] = useState(1);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [displayImage, setDisplayImage] = useState(false);
+    const handleClick = () => {
+        props.handleCloseForm(); // Call the handleCloseAdd function here
+    }
 
     const onSubmit = async (data) => {
         const vehicles = await instance.post("model", data, { headers: { "content-type": "application/json" } })
@@ -31,7 +39,8 @@ export default function FormCars() {
             }).catch((err) => {
                 console.error(err);
             });
-        data.path = 'images/vehicles'
+
+        data.path = 'images/vehicles/';
         const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 console.log('response', response.data);
@@ -46,41 +55,39 @@ export default function FormCars() {
             }).catch((err) => {
                 console.error(err);
             });
-        console.log(data);
-        handleUpload();
+        handleClick();
     }
 
-    const handleFileSelect = event => {
-        console.log(event.target.files)
+    const handleFileSelect = (event) => {
         setSelectedFile(event.target.files[0]);
-        setValue('image', event.target.files[0].name);
-        console.log('the values', getValues());
+        handleUpload(event.target.files[0]);
     };
 
-    const handleUpload = async () => {
+    const handleUpload = async (selectedFile) => {
         console.log('select', selectedFile);
         const formData = new FormData();
         formData.append("image", selectedFile);
-
-        axios.post("upload", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-        console.log('data', formData);
+        await axios.post("upload", formData, { headers: { "Content-Type": "multipart/form-data" } })
+            .then(async (response) => {
+                setValue('image', response.data);
+                setSelectedFile(response.data);
+                setDisplayImage(true);
+                console.log(getValues())
+            }).catch((err) => {
+                console.error(err);
+                return false;
+            });
 
     };
 
 
     const divStyle = {
         width: '100%',
-        height: '88vh',
+        height: '72vh',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     };
-
-
 
     useEffect(() => {
         (async () => {
@@ -105,7 +112,6 @@ export default function FormCars() {
             }).catch((err) => {
                 console.error(err);
             });
-
     }
 
     const { ref: markRef, ...markProps } = register("mark", {
@@ -119,14 +125,13 @@ export default function FormCars() {
         pattern: /^[A-Z]{2}[-][0-9]{3}[-][A-Z]{2}$/
     });
     const { ref: nameRef, ...nameProps } = register("name", {
-        required: true,
+        required: false,
     });
 
     function handleInputChange(event, value) {
         setModels(null);
         console.log('value', value);
         getDataModels(value);
-
     }
 
     const handleNumberPlateChange = (event) => {
@@ -149,23 +154,18 @@ export default function FormCars() {
         setValue('available_seats', parseInt(event.target.value));
     };
 
-    var componentConfig = {
-        iconFiletypes: ['.jpg', '.png', '.gif'],
-        showFiletypeIcon: true,
-        postUrl: '/uploadHandler'
-    };
-
     return (
         <div style={divStyle}>
             <Box
                 component="form"
                 sx={{
+                    width: '100%',
                     '& .MuiTextField-root': { m: 1, width: '42ch' },
+                    '& .css-1t1j96h-MuiPaper-root-MuiDialog-paper': { width: '100%' },
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    minWidth: '28%',
                     minHeight: '60vh',
                     boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'
                 }}
@@ -176,10 +176,10 @@ export default function FormCars() {
                 <Box sx={{ display: 'flex' }}>
                     <h2>Ajouter un véhicule</h2>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'baseline' }}>
                     <TextField
-                        label="Plaque d'immatriculation"
-                        name="lisence_plate"
+                        label="Nom"
+                        name="name"
                         size="medium"
                         inputRef={nameRef}
                         {...nameProps}
@@ -189,7 +189,7 @@ export default function FormCars() {
                             disablePortal
                             id="combo-box-demo"
                             options={marks}
-                            sx={{ width: 300 }}
+                            sx={{ width: 300, marginTop: '16px' }}
                             onInputChange={handleInputChange}
                             renderInput={(params) => <TextField
                                 {...params}
@@ -220,6 +220,7 @@ export default function FormCars() {
                         name="lisence_plate"
                         size="medium"
                         placeholder="AA-000-AA"
+                        sx={{ marginTop: '16px' }}
                         value={licencePlate}
                         inputRef={lisencePlateRef}
                         {...lisencePlateProps}
@@ -227,7 +228,7 @@ export default function FormCars() {
                         helperText={errors.lisence_plate && "Plaque d'immatriculation invalide"}
                         onChange={handleNumberPlateChange}
                     />
-                    <Box sx={{ marginBottom: '10px' }}>
+                    <Box sx={{ marginBottom: '16px', marginTop: '16px' }}>
                         <InputLabel id="color-picker">Couleurs :</InputLabel>
                         <CompactPicker
                             id="color-picker"
@@ -238,7 +239,7 @@ export default function FormCars() {
                                 setValue('color', color.hex);
                             }} />
                     </ Box>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth sx={{ marginTop: '16px' }}>
                         <InputLabel id="available-seats">Place disponible</InputLabel>
                         <Select
                             labelId="available-seats"
@@ -253,16 +254,25 @@ export default function FormCars() {
                             <MenuItem value={4}>Quatre</MenuItem>
                             <MenuItem value={5}>Cinq</MenuItem>
                             <MenuItem value={6}>Six</MenuItem>
+                            <MenuItem value={7}>Sept</MenuItem>
+                            <MenuItem value={8}>Huit</MenuItem>
+
                         </Select>
                     </ FormControl>
-                    <InputLabel htmlFor="image-upload">Télécharger une image</InputLabel>
+                    <InputLabel htmlFor="image-upload" sx={{ marginTop: '16px' }}>Télécharger une image</InputLabel>
                     <IconButton color="primary" aria-label="upload picture" component="label">
                         <input hidden accept="image/*" type="file" onChange={handleFileSelect} />
                         <PhotoCamera />
                     </IconButton>
-                    {!!selectedFile && selectedFile.name}
-                    <Box id="my-container"></Box>
-                    <Button variant="contained" sx={{ width: '26%' }} type="submit">Enregistrer</Button>
+                    {displayImage &&
+                        <>
+                            <img width={'128px'} height={'auto'}
+                                alt={selectedFile} src={'images/vehicles/' + selectedFile} />
+                        </>
+                    }
+                    <Box sx={{ display: 'flex', marginTop: '16px' }}>
+                        <Button variant="contained" sx={{ width: 'auto' }} type="submit">Enregistrer</Button>
+                    </Box>
                 </Box>
             </Box>
         </div >

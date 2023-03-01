@@ -17,7 +17,7 @@ const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 const multer = require("multer");
 const { SHA256 } = require('crypto-js');
-
+const { v4 : uuidv4} = require('uuid');
 // const cleanSessions = require('./cleanSessions');
 const mockResponse = {
   foo: 'bar',
@@ -89,7 +89,8 @@ const storageVehicles = multer.diskStorage({
   },
   filename: function (req, file, cb, res) {
     const splitFile = file.originalname.split('.');
-    cb(null, cryptoJs.SHA256(splitFile[0]).toString() + '.' + splitFile[1]);
+    const newName = uuidv4();
+    cb(null, newName + '.' + splitFile[1]);
   },
 });
 const uploadVehicles = multer({ storage: storageVehicles });
@@ -253,21 +254,21 @@ app.get("/images", async (req, res) => {
 });
 
 app.post("/upload", uploadVehicles.single("image"), (req, res) => {
-  res.send("Image uploaded successfully");
+  console.log(req.file.path.split('\\')[3]);
+  res.send(req.file.path.split('\\')[3])
 });
 
 app.post('/image/create', authenticateToken, async (req, res) => {
-
-  const image = req.body.image.split('.')
-  const imageInServe = cryptoJs.SHA256(image[0]).toString() + '.' + image[1];
   try {
-    console.log('create image body', req.body)
-    const result = await prisma.images.create({
-      data: {
-        path: req.body.path + '/' + imageInServe
-      }
-    });
-    res.send(result);
+    if (!!req.body.image) {
+      console.log('create image body', req.body)
+      const result = await prisma.images.create({
+        data: {
+          path: req.body.path + req.body.image
+        }
+      });
+      res.send(result);
+    }
   } catch (error) {
     console.error(error);
   }
@@ -666,7 +667,7 @@ app.post('/route', authenticateToken, async (req, res) => {
     res.status(400).send('Une erreur est survenue')
   }
 });
-app.get('/api/cars/id', authenticateToken, async (req, res) => {
+app.get('/vehicules/user', authenticateToken, async (req, res) => {
   const cars = await prisma.users.findUnique({
     where: {
       id: req.user.id,
@@ -687,12 +688,12 @@ app.get('/api/cars/id', authenticateToken, async (req, res) => {
               model: true
             }
           },
-          color: true ,
+          color: true,
           lisence_plate: true,
           available_seats: true
         },
-        where:{
-          status : true,
+        where: {
+          status: 1,
         }
       }
     }
@@ -700,13 +701,13 @@ app.get('/api/cars/id', authenticateToken, async (req, res) => {
   res.send(cars);
 });
 
-app.post('/api/update/car/', authenticateToken, async (req, res) => {
+app.post('/vehicles/update/status', authenticateToken, async (req, res) => {
   const result = await prisma.users_vehicles.update({
     where: {
       id: parseInt(req.body.id)
     },
     data: {
-      status: false,
+      status: req.body.status,
     },
   });
   res.send(result);
@@ -973,7 +974,7 @@ app.delete('/userHasRoute/delete/:id', authenticateToken, async (req, res) => {
         }
       }
     );
-    if(isUser.user_id === req.user.id){
+    if (isUser.user_id === req.user.id) {
       const result = await prisma.users_has_routes.delete(
         {
           where:
@@ -983,7 +984,7 @@ app.delete('/userHasRoute/delete/:id', authenticateToken, async (req, res) => {
     } else {
       res.status(400).send('Une erreur est survenue')
     }
-   
+
   } catch (error) {
     console.log(error);
     res.status(400).send('Une erreur est survenue')

@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import CreateIcon from '@mui/icons-material/Create';
-import { InputAdornment } from "@mui/material";
+import { ButtonGroup, InputAdornment } from "@mui/material";
 import FormProfil from "./form/FormProfil";
 import Cars from "./Cars";
 const instance = axios.create({
@@ -20,6 +20,9 @@ type UserModel = {
     email: string,
     description?: string
 }
+
+
+
 export default function Profil() {
     const [user, setUser] = useState<UserModel>(null);
     const [modify, setModify] = useState<boolean>(false);
@@ -53,26 +56,36 @@ export default function Profil() {
             });
     }
 
-    if (user !== null) {
+    const buttons = [
+        <Button key="profil" onClick={() => setShowBox("profil")}>Mon profil</Button>,
+        <Button key="avis" onClick={() => setShowBox("avis")}>Mes avis</Button>,
+        <Button key="vehiclues" onClick={() => setShowBox("vehiclues")}>Mes vehicules</Button>,
+    ];
 
+    if (user !== null) {
         return (
             <>
-                <Box  sx={{ 
-                    minWidth: '28%',
-                    boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'}}>
-                    <Button onClick={() => setShowBox("profil")}>
-                        Profil
-                    </Button>
-                    <Button onClick={() => setShowBox("voitur")}>
-                        voitur
-                    </Button>
-                    <Button onClick={() => setShowBox("ModifierProfil")}>
-                        Modifier Profil
-                    </Button>
+                <Box sx={{
+                    minHeight: '93vh',
+                    display: 'flex',
+                    width: '100vw',
+                }}
+                    className='waw'>
+                    <ButtonGroup
+                        sx={{
+                            width: '12vw', marginLeft: '2vw', marginTop: '2vh'
+                        }}
+                        orientation="vertical"
+                        aria-label="vertical outlined button group"
+                    >
+                        {buttons}
+                    </ButtonGroup>
+                    <Box sx={{ width: '68vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} /> : showBox == "vehiclues" ? <Cars /> : <p>Ahhhhhh</p>}
+                    </Box>
                 </Box>
-                {showBox == "profil" ? "profil" : showBox == "voitur" ? <Cars />:<FormProfil user={user}  updateUser={updateUser}/>}
             </>
-            
+
         );
     } else {
 
