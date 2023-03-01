@@ -42,7 +42,7 @@ export default function Header() {
 		})();
 	}, []);
 	return (
-		<AppBar position="static" sx={{ zIndex: 1 }}>
+		<AppBar position="static" sx={{ zIndex: 1, height: '7vh' }}>
 			<Toolbar>
 				<Link sx={{
 					display: 'flex',

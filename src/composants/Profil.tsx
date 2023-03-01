@@ -7,8 +7,9 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import CreateIcon from '@mui/icons-material/Create';
-import { InputAdornment } from "@mui/material";
+import { ButtonGroup, InputAdornment } from "@mui/material";
 import FormProfil from "./form/FormProfil";
+import Cars from "./Cars";
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
@@ -19,11 +20,14 @@ type UserModel = {
     email: string,
     description?: string
 }
+
+
+
 export default function Profil() {
     const [user, setUser] = useState<UserModel>(null);
     const [modify, setModify] = useState<boolean>(false);
     const [disableFirstname, setDisableFirstname] = useState<boolean>(true);
-
+    const [showBox, setShowBox] = useState("profil");
 
     useEffect(() => {
         (async () => {
@@ -52,10 +56,36 @@ export default function Profil() {
             });
     }
 
-    if (user !== null) {
+    const buttons = [
+        <Button key="profil" onClick={() => setShowBox("profil")}>Mon profil</Button>,
+        <Button key="avis" onClick={() => setShowBox("avis")}>Mes avis</Button>,
+        <Button key="vehiclues" onClick={() => setShowBox("vehiclues")}>Mes vehicules</Button>,
+    ];
 
+    if (user !== null) {
         return (
-            <FormProfil user={user}  updateUser={updateUser}/>
+            <>
+                <Box sx={{
+                    minHeight: '93vh',
+                    display: 'flex',
+                    width: '100vw',
+                }}
+                    className='waw'>
+                    <ButtonGroup
+                        sx={{
+                            width: '12vw', marginLeft: '2vw', marginTop: '2vh'
+                        }}
+                        orientation="vertical"
+                        aria-label="vertical outlined button group"
+                    >
+                        {buttons}
+                    </ButtonGroup>
+                    <Box sx={{ width: '68vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} /> : showBox == "vehiclues" ? <Cars /> : <p>Ahhhhhh</p>}
+                    </Box>
+                </Box>
+            </>
+
         );
     } else {
 
