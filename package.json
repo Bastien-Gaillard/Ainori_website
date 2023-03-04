@@ -13,6 +13,9 @@
     "pulldb": "npx prisma db pull",
     "swagger-autogen": "node swagger.js"
   },
+  "prisma": {
+    "seed": "ts-node server/users.seed.ts"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -21,8 +24,10 @@
     "@emailjs/browser": "^3.10.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@faker-js/faker": "^7.6.0",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.10.17",
+    "@mui/x-data-grid": "^5.17.25",
     "@prisma/client": "^4.6.1",
     "axios": "^1.2.0",
     "babel-loader": "^9.1.0",
@@ -33,15 +38,18 @@
     "express": "^4.18.2",
     "express-redirect": "^1.2.2",
     "express-session": "^1.17.3",
+    "faker": "^6.6.6",
     "fs": "^0.0.1-security",
     "js-cookie": "^3.0.1",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "multer": "^1.4.5-lts.1",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
+    "react-fakers": "^1.0.3-rc1",
     "react-hook-form": "^7.42.0",
     "react-router-dom": "^6.4.4",
     "session-file-store": "^1.5.0",
@@ -53,13 +61,13 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.11.9",
+    "@types/node": "^18.14.5",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "html-webpack-plugin": "^5.5.0",
-    "prisma": "^4.6.1",
+    "prisma": "^4.11.0",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.4",
+    "typescript": "^4.9.5",
     "webpack": "^5.75.0",
     "webpack-cli": "^4.10.0"
   }

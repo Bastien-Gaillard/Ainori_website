@@ -21,14 +21,14 @@ const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 
-const pages = ['Covoiturage', 'Mes trajets'];
+const pages = [{name: 'Covoiturage', navigation: 'travels'}, {name: 'Mes trajets', navigation: 'historical'}];
 
 export default function Nav() {
 
 
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [cookies] = useCookies();
-
+    const navigate = useNavigate()
     const cookieUser = cookies.user;
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
@@ -41,11 +41,11 @@ export default function Nav() {
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end' }}>
             {pages.map((page) => (
                 <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
+                    key={page.name}
+                    onClick={() => navigate(page.navigation)}
                     sx={{ my: 2, color: 'white', display: 'block' }}
                 >
-                    {page}
+                    {page.name}
                 </Button>
             ))}
         </Box>

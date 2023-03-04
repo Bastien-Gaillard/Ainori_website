@@ -11,8 +11,8 @@ import { Avatar, DialogContent, InputAdornment } from "@mui/material";
 import { isTemplateSpan } from "typescript";
 import { ThemeProvider } from "@emotion/react";
 
-import FormCars from './form/FormCars';
-import FormUpdateVehicule from './form/FromUpdateVehicule';
+import FormCars from '../form/FormCars';
+import FormUpdateVehicule from '../form/FromUpdateVehicule';
 import AddIcon from '@mui/icons-material/Add';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
