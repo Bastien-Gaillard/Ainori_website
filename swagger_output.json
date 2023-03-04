@@ -34,6 +34,10 @@
     {
       "name": "users_has_routes",
       "description": "Requêtes concernant les utilisateur participant à un trajet"
+    },
+    {
+      "name": "create",
+      "description": "Requêtes pour créer des données aléatoires"
     }
   ],
 
@@ -579,6 +583,21 @@
         "tags": ["routes"],
         "summary": "Obtenir tous les trajets",
         "description": "Permet d'obtenir tous les trajets existant",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/routes/id": {
+      "get": {
+        "tags": ["routes"],
+        "summary": "Obtenir tous les trajets d'un utilisateur",
+        "description": "Permet d'obtenir tous les trajets crée par un utilisateur",
         "responses": {
           "200": {
             "description": "OK"
@@ -1310,6 +1329,78 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/create/users": {
+      "post": {
+        "tags": ["create"],
+        "description": "Créer des utilisateur",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/create/images": {
+      "post": {
+        "tags": ["create"],
+        "description": "Créer des images",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/create/messages": {
+      "post": {
+        "tags": ["create"],
+        "description": "Créer des messages",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/create/notices": {
+      "post": {
+        "tags": ["create"],
+        "description": "Crées des notes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/create/routes": {
+      "post": {
+        "tags": ["create"],
+        "description": "Crées des trajets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/create/usersHasRoutes": {
+      "post": {
+        "tags": ["create"],
+        "description": "Crées des trajets",
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"

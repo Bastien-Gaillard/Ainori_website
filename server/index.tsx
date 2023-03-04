@@ -1,3 +1,5 @@
+const { faker } = require("@faker-js/faker");
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const express = require("express"),
@@ -17,7 +19,7 @@ const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 const multer = require("multer");
 const { SHA256 } = require('crypto-js');
-const { v4 : uuidv4} = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 // const cleanSessions = require('./cleanSessions');
 const mockResponse = {
   foo: 'bar',
@@ -654,6 +656,43 @@ app.get('/routes', authenticateToken, async (req, res) => {
     res.status(400).send('Une erreur est survenue')
   }
 });
+app.get('/routes/id', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.routes.findMany({
+      where: {
+        user_id: parseInt(req.user.id)
+      },
+      select: {
+        id: true,
+        route: {
+          select: {
+            firstname: true,
+            lastname: true
+          }
+        },
+        arrival_city: {
+          select: {
+            name: true
+          }
+        },
+        departure_city: {
+          select: {
+            name: true
+          }
+        },
+        departure_time: true,
+        arrival_time: true,
+        departure_date: true,
+        remaining_seats: true,
+        statuts: true
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
 app.post('/route', authenticateToken, async (req, res) => {
   try {
     const result = await prisma.routes.findUnique({
@@ -985,6 +1024,191 @@ app.delete('/userHasRoute/delete/:id', authenticateToken, async (req, res) => {
       res.status(400).send('Une erreur est survenue')
     }
 
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+app.post('/create/images', authenticateToken, async (req, res) => {
+  const imageData = [];
+  try {
+    for (let i = 0; i < 10; i++) {
+      imageData.push({
+        path: faker.image.avatar()
+      });
+    }
+    const result = await prisma.images.createMany({
+      data: imageData
+    });
+    console.log('the result is', result);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+app.post('/create/messages', authenticateToken, async (req, res) => {
+  const imageData = [];
+  try {
+    for (let i = 0; i < 10; i++) {
+      imageData.push({
+        sended_by_user_id: faker.datatype.number({
+          'min': 1,
+          'max': 3
+        }),
+        received_by_user_id: faker.datatype.number({
+          'min': 1,
+          'max': 3
+        }),
+        content: faker.lorem.sentences(),
+        sended_at: faker.date.recent()
+      });
+    }
+    const result = await prisma.messages.createMany({
+      data: imageData
+    });
+    console.log('the result is', result);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+app.post('/create/notices', authenticateToken, async (req, res) => {
+  const imageData = [];
+  try {
+    for (let i = 0; i < 10; i++) {
+      imageData.push({
+        score: faker.datatype.number({
+          'min': 1,
+          'max': 5
+        }),
+        comment: faker.lorem.sentences(),
+        user_id: faker.datatype.number({
+          'min': 1,
+          'max': 3
+        }),
+      });
+    }
+    const result = await prisma.notices.createMany({
+      data: imageData
+    });
+    console.log('the result is', result);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+app.post('/create/routes', authenticateToken, async (req, res) => {
+  const imageData = [];
+  try {
+    for (let i = 0; i < 10; i++) {
+      imageData.push({
+        user_id: faker.datatype.number({
+          'min': 1,
+          'max': 3
+        }),
+        arrival_city_id: faker.datatype.number({
+          'min': 1,
+          'max': 35853
+        }),
+        departure_city_id: faker.datatype.number({
+          'min': 1,
+          'max': 35853
+        }),
+        departure_time: faker.date.soon(),
+        arrival_time: faker.date.soon(),
+        departure_date: faker.date.soon(),
+        available_seats: faker.datatype.number({
+          'min': 1,
+          'max': 6
+        }),
+        remaining_seats: faker.datatype.number({
+          'min': 0,
+          'max': 6
+        }),
+        statuts: true
+      });
+    }
+    const result = await prisma.routes.createMany({
+      data: imageData
+    });
+    console.log('the result is', result);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/create/users', authenticateToken, async (req, res) => {
+  const userData = [];
+  try {
+    for (let i = 0; i < 10; i++) {
+      userData.push({
+        firstname: faker.name.firstName(),
+        lastname: faker.name.lastName(),
+        email: faker.internet.email(),
+        password: hashPassword(faker.internet.password()),
+        role_id: faker.datatype.number({
+          'min': 1,
+          'max': 2
+        }),
+        status: true
+      });
+    }
+    const result = await prisma.users.createMany({
+      data: userData
+    });
+    console.log('the result is', result);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+app.post('/create/usersHasRoutes', authenticateToken, async (req, res) => {
+  const imageData = [];
+  try {
+    for (let i = 0; i < 10; i++) {
+      imageData.push({
+        user_id: faker.datatype.number({
+          'min': 1,
+          'max': 3
+        }),
+        route_id: faker.datatype.number({
+          'min': 1,
+          'max': 52
+        }),
+        status_notice: 0,
+      });
+    }
+    const result = await prisma.users_has_routes.createMany({
+      data: imageData
+    });
+    console.log('the result is', result);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+
+// *************************************
+// ROUTES FOR VIEWS
+// *************************************
+app.get('/views/routesHistory', authenticateToken, async (req, res) => {
+  console.log('qzfodjpjdzopqpqodspoqds');
+  try {
+    const result = await prisma.$queryRaw`
+      SELECT * FROM route_history WHERE user_id = ${req.user.id}`
+    res.send(result);
   } catch (error) {
     console.log(error);
     res.status(400).send('Une erreur est survenue')
