@@ -6,6 +6,14 @@ import clsx from 'clsx';
 import { useForm } from "react-hook-form";
 import { Container, Typography, Box, CssBaseline, Grid, Link } from '@mui/material';
 import * as moment from 'moment';
+
+import FormTrajets from "../form/FromTrajets";
+import * as React from 'react';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material//Dialog';
+import CloseIcon from '@mui/icons-material/Close';
+import { Avatar, DialogContent, InputAdornment } from "@mui/material";
+import Button from '@mui/material/Button';
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -19,6 +27,15 @@ export default function Historical() {
 
     const [routes, setRoutes] = useState<any>();
     const [data, setData] = useState<any>();
+    const [openAdd, setOpenAdd] = useState(false);
+
+    const handleClickOpenAdd = () => {
+        setOpenAdd(true);
+    };
+
+    const handleCloseAdd = () => {
+        setOpenAdd(false);
+    };
 
     const frFR =
         useEffect(() => {
@@ -158,6 +175,19 @@ export default function Historical() {
                 fontWeight: '600',
             },
         }}>
+            <Button key="profil" onClick={handleClickOpenAdd}>New Trajet</Button>
+            <Dialog
+                open={openAdd}
+                onClose={handleCloseAdd}
+                sx={{ width: '100%'}}
+            >
+                <DialogTitle>
+                    <CloseIcon onClick={handleCloseAdd} sx={{color:'red'}}/>
+                </DialogTitle>
+                <DialogContent>
+                    <FormTrajets handleCloseForm={handleCloseAdd} />
+                </DialogContent>
+            </Dialog>
             <h1>Historique de mes trajets</h1>
             {!!data &&
                 <DataGrid

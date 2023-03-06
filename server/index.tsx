@@ -137,6 +137,18 @@ app.get('/', (req, res) => {
 // *************************************
 // ROUTES CITIES
 // *************************************
+app.get('/get/cities/name', async (req, res) => {
+  try {
+    const result = await prisma.$queryRaw`
+        SELECT name
+        FROM cities
+        GROUP BY name
+      `;
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+  }
+});
 app.post('/cities', authenticateToken, async (req, res) => {
   try {
     if (!!req.body.limit) {

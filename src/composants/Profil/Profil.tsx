@@ -23,11 +23,11 @@ type UserModel = {
 
 
 
-export default function Profil() {
+export default function Profil({ obtion }) {
     const [user, setUser] = useState<UserModel>(null);
     const [modify, setModify] = useState<boolean>(false);
     const [disableFirstname, setDisableFirstname] = useState<boolean>(true);
-    const [showBox, setShowBox] = useState("profil");
+    const [showBox, setShowBox] = useState(obtion);
 
     useEffect(() => {
         (async () => {
