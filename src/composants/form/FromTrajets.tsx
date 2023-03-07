@@ -17,6 +17,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import fr from 'date-fns/locale/fr';
+import Alert from '@mui/material/Alert';
+
 
 
 const instance = axios.create({
@@ -25,23 +27,27 @@ const instance = axios.create({
 
 export default function FormTrajets(props) {
     const { handleSubmit, formState: { errors }, register, setValue, getValues } = useForm();
-    const [selectedDate , setSelectedDate] = useState(new Date());
-    const [selectedDate2, setSelectedDate2] = useState(new Date());
-    const [selectedTime,  setSelectedTime] = useState(new Date());
-    const [selectedTime2,  setSelectedTime2] = useState(new Date());
+    const [inputTime,  setInputTime]       = useState<Date | null>(null);
+    const [inputTime2,  setInputTime2]     = useState<Date | null>(null);
     const [inputCity , setInputCityCitys ] = useState("");
     const [inputCity2, setInputCityCitys2] = useState("");
+    const [inputcars, setinputCars]        = useState("");
+    const [inputDate , setInputDate ] = useState<Date | null>(null);
+    const [inputDate2, setInputDate2] = useState<Date | null>(null);
+
     const [City , setCitys ] = useState([]);
     const [City2, setCitys2] = useState([]);
+    const [car, setCar] = useState([]);
     const [isChecked, setIsChecked] = useState(false);
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [varAlert, setvarAlert] = useState("");
 
     const handleCheckboxChange = (event) => {
         setIsChecked(event.target.checked);
     };
 
-    var now = moment().locale("fr");
-
-    var tomorrow = moment().add(1, 'day').locale("fr");
+    var now = moment();
 
     const handleClick = () => {
         props.handleCloseForm(); // Call the handleCloseAdd function here
@@ -49,13 +55,25 @@ export default function FormTrajets(props) {
 
 
     const onSubmit = async (data) => {
-        const result = await instance.post("lll", data, { headers: { "content-type": "application/json" } })
+        const date1 = moment(new Date(inputDate)).locale("fr").format('LL');
+        const date2 = moment(new Date(inputDate2)).locale("fr").format('LL');
+        console.log("inputDate",date1);
+        console.log("inputDate2",date2);
+        if (isChecked && date1 && date2 && date1 < date2) {
+            setShowAlert(false);
+            setvarAlert("mmm");
+            const result = await instance.post("lll", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 console.log('the response', response);
             }).catch((err) => {
                 console.error(err);
             });
-        handleClick();
+            handleClick();
+        } else {
+            setShowAlert(true);
+            setvarAlert("probleme de date ");
+        }
+
     }
 
     const divStyle = {
@@ -78,8 +96,24 @@ export default function FormTrajets(props) {
         })();
     }, [inputCity2]);
 
+    useEffect(() => {
+        (async () => {
+            await getCars();
+        })();
+    }, []);
+
+
+    const getCars = async () => {
+        console.log('http://localhost:3001/vehicules/user');
+        await instance.get('vehicules/user', { headers: { "content-type": "application/json" } })
+            .then(async (response) => {
+                setCar(response.data.vehicule.map(elem => elem.name+", "+ elem.available_seats+" Places" ));
+                
+            }).catch((err) => {
+                console.error(err);
+            });
+    }
     const getDataCitys = async () => {
-        console.log("toto le rigolo",'https://vicopo.selfbuild.fr/cherche/'+inputCity) ;
         if(inputCity != ""){
             await axios.get('https://vicopo.selfbuild.fr/cherche/'+inputCity)
                 .then(async (response) => {
@@ -91,7 +125,6 @@ export default function FormTrajets(props) {
         }
     }
     const getDataCitys2 = async () => {
-        console.log("toto le rigolo",'https://vicopo.selfbuild.fr/cherche/'+inputCity2) ;
         if(inputCity2 != ""){
             await axios.get('https://vicopo.selfbuild.fr/cherche/'+inputCity2)
                 .then(async (response) => {
@@ -103,7 +136,7 @@ export default function FormTrajets(props) {
         }
     }
 
-    const { ref: NameRef, ...NameProps } = register("Name", {
+    const { ref: CarRef, ...CarProps } = register("Car", {
         required: true,
     });
     const { ref: City1Ref, ...City1Props } = register("City1", {
@@ -136,71 +169,94 @@ export default function FormTrajets(props) {
                     <h2>Ajouter un Trajets</h2>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'baseline' }}>
-                    <TextField
-                        label="Nom"
-                        name="name"
-                        size="medium"
-                        inputRef={NameRef}
-                        {...NameProps}
+                    <Autocomplete
+                        disablePortal
+                        id="combo-box-demo"
+                        options={car}
+                        sx={{ width: 300, marginTop: '16px' }}
+                        renderInput={(params) => <TextField
+                            {...params}
+                            label="Car"
+                            inputRef={CarRef}
+                            {...CarProps}
+                            onChange={(e) => setinputCars(e.target.value)}
+                        />
+                        }
                     />
-                        <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={City}
-                            sx={{ width: 300, marginTop: '16px' }}
-                            renderInput={(params) => <TextField
-                                {...params}
-                                label="City1"
-                                inputRef={City1Ref}
-                                {...City1Props}
-                                onChange={(e) => setInputCityCitys(e.target.value)}
-                            />
-                            }
+                    <Autocomplete
+                        disablePortal
+                        id="combo-box-demo"
+                        options={City}
+                        sx={{ width: 300, marginTop: '16px' }}
+                        renderInput={(params) => <TextField
+                            {...params}
+                            label="City1"
+                            inputRef={City1Ref}
+                            {...City1Props}
+                            onChange={(e) => setInputCityCitys(e.target.value)}
                         />
-                        <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={City2}
-                            sx={{ width: 300, marginTop: '16px' }}
-                            renderInput={(params) => <TextField
-                                {...params}
-                                label="City2"
-                                inputRef={City2Ref}
-                                {...City2Props}
-                                onChange={(e) => setInputCityCitys2(e.target.value)}
-                            />
-                            }
+                        }
+                    />
+                    <Autocomplete
+                        disablePortal
+                        id="combo-box-demo"
+                        options={City2}
+                        sx={{ width: 300, marginTop: '16px' }}
+                        renderInput={(params) => <TextField
+                            {...params}
+                            label="City2"
+                            inputRef={City2Ref}
+                            {...City2Props}
+                            onChange={(e) => setInputCityCitys2(e.target.value)}
                         />
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        }
+                    />
+                    <label>
+                        <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
+                        trajet recurent ?
+                    </label>
+                    <LocalizationProvider locale={fr} dateAdapter={AdapterDayjs}>
+                        <DemoContainer components={['DatePicker', 'DatePicker']}>
+                        <DatePicker
+                            label="Date du trajet"
+                            value={inputDate}
+                            onChange={(newValue) => setInputDate(newValue)}
+                            format="LL"
+                        />
+                        </DemoContainer>
+                        {isChecked &&
                         <DemoContainer components={['DatePicker', 'DatePicker']}>
                             <DatePicker 
-                                label="Date du trajet"
-                                defaultValue={now}
+                                label="Date au "
+                                value={inputDate2}
+                                onChange={(newValue) => setInputDate2(newValue)}
+                                format="LL"
                             />
                         </DemoContainer>
-                        <label>
-                            <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
-                            trajet recurent ?
-                        </label>
-                        {isChecked &&
-                            <DemoContainer components={['DatePicker', 'DatePicker']}>
-                                <DatePicker 
-                                    label="Date du trajet"
-                                    defaultValue={tomorrow}
-                                />
-                            </DemoContainer>
                         }
-                    
                         <DemoItem label="Mobile variant">
-                            <MobileTimePicker defaultValue={now} />
+                            <MobileTimePicker 
+                                label="Date au "
+                                value={inputTime}
+                                onChange={(newValue) => setInputTime(newValue)}
+                            />
                         </DemoItem>
                         <DemoItem label="Mobile variant">
-                            <MobileTimePicker defaultValue={now} />
+                        <MobileTimePicker 
+                                label="Date au "
+                                value={inputTime2}
+                                onChange={(newValue) => setInputTime2(newValue)}
+                            />
                         </DemoItem>
                     </LocalizationProvider>
                     <Box sx={{ display: 'flex', marginTop: '16px' }}>
                         <Button variant="contained" sx={{ width: 'auto' }} type="submit">Enregistrer</Button>
                     </Box>
+                    {showAlert && (
+                        <Alert severity="error">
+                        {varAlert}
+                        </Alert>
+                    )}
                 </Box>
             </Box>
         </div >
