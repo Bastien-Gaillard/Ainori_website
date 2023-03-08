@@ -34,7 +34,8 @@ export default function App() {
           {/* // <Route path="logout" element={<Home />} />
           // <Route path="messages" element={<Home />} /> */}
           <Route path="home" element={<Home />} />
-          <Route path="profil" element={<Profil />} />
+          <Route path="profil"        element={<Profil obtion={"profil"}/>}    />
+          <Route path="profilVoiturs" element={<Profil obtion={"vehiclues"}/>} />
           <Route path="/*" element={<Index404 />} />
         </Routes>
       </BrowserRouter>
