@@ -256,14 +256,12 @@ app.get("/images", async (req, res) => {
 });
 
 app.post("/upload", uploadVehicles.single("image"), (req, res) => {
-  console.log(req.file.path.split('\\')[3]);
   res.send(req.file.path.split('\\')[3])
 });
 
 app.post('/image/create', authenticateToken, async (req, res) => {
   try {
     if (!!req.body.image) {
-      console.log('create image body', req.body)
       const result = await prisma.images.create({
         data: {
           path: req.body.path + req.body.image
@@ -327,7 +325,6 @@ app.get('/user/check', (req, res) => {
   }
 });
 app.post('/user/id', authenticateToken, async (req, res) => {
-  console.log('req body', req.body);
   const user = await prisma.users.findUnique({
     where: {
       id: parseInt(req.body.id),
@@ -348,7 +345,6 @@ app.post('/user/id', authenticateToken, async (req, res) => {
     }
   });
   res.send(user);
-  console.log('req', req, req.body)
 });
 app.post('/user/create', authenticateToken, async (req, res) => {
   try {
@@ -464,7 +460,6 @@ app.delete('/user/delete', authenticateToken, async (req, res) => {
 
 app.post('/vehicles/create', authenticateToken, async (req, res) => {
   try {
-    console.log('/vehicles/create', req.body);
     const result = await prisma.users_vehicles.create({
       data: {
         user_id: req.user.id,
@@ -488,8 +483,6 @@ app.post('/vehicles/create', authenticateToken, async (req, res) => {
 // *************************************
 app.post('/model', authenticateToken, async (req, res) => {
   try {
-    console.log(req.body);
-
     const result = await prisma.models.findFirst({
       where: {
         mark: req.body.mark,
@@ -516,7 +509,6 @@ app.get('/marks', async (req, res) => {
 
 app.post('/models', async (req, res) => {
   try {
-    console.log(req.body);
     const result = await prisma.models.findMany({
       where: {
         mark: req.body.mark
@@ -561,6 +553,8 @@ app.post('/login', async (req, res) => {
       }
     }
   });
+
+  console.log('user', user);
   //Compare password if user exist
   if (user == null) {
     res.send("null");
@@ -792,7 +786,6 @@ app.post('/route/create', authenticateToken, async (req, res) => {
     const arrivalTime = new Date(req.body.arrival_time);
     const departureDate = new Date(req.body.departure_date);
 
-    console.log('date', departureTime, arrivalTime, departureDate)
     const result = await prisma.routes.create({
       data: {
         user_id: req.user.id,
@@ -1042,7 +1035,6 @@ app.post('/create/images', authenticateToken, async (req, res) => {
     const result = await prisma.images.createMany({
       data: imageData
     });
-    console.log('the result is', result);
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -1070,7 +1062,6 @@ app.post('/create/messages', authenticateToken, async (req, res) => {
     const result = await prisma.messages.createMany({
       data: imageData
     });
-    console.log('the result is', result);
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -1097,7 +1088,6 @@ app.post('/create/notices', authenticateToken, async (req, res) => {
     const result = await prisma.notices.createMany({
       data: imageData
     });
-    console.log('the result is', result);
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -1139,7 +1129,6 @@ app.post('/create/routes', authenticateToken, async (req, res) => {
     const result = await prisma.routes.createMany({
       data: imageData
     });
-    console.log('the result is', result);
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -1165,7 +1154,6 @@ app.post('/create/users', authenticateToken, async (req, res) => {
     const result = await prisma.users.createMany({
       data: userData
     });
-    console.log('the result is', result);
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -1192,7 +1180,6 @@ app.post('/create/usersHasRoutes', authenticateToken, async (req, res) => {
     const result = await prisma.users_has_routes.createMany({
       data: imageData
     });
-    console.log('the result is', result);
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -1205,7 +1192,6 @@ app.post('/create/usersHasRoutes', authenticateToken, async (req, res) => {
 // ROUTES FOR VIEWS
 // *************************************
 app.get('/views/routesHistory', authenticateToken, async (req, res) => {
-  console.log('qzfodjpjdzopqpqodspoqds');
   try {
     const result = await prisma.$queryRaw`
       SELECT * FROM route_history WHERE user_has_route_user_id = ${req.user.id}`
