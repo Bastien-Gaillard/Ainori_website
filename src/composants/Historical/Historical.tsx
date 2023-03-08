@@ -1,11 +1,15 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridCellParams, GridColDef, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import clsx from 'clsx';
 import { useForm } from "react-hook-form";
-import { Container, Typography, Box, CssBaseline, Grid, Link } from '@mui/material';
+import Driver from './Driver'
+import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
 import * as moment from 'moment';
+import MapIcon from '@mui/icons-material/Map';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -17,43 +21,55 @@ const instance = axios.create({
 
 export default function Historical() {
 
-    const [routes, setRoutes] = useState<any>();
     const [data, setData] = useState<any>();
+    const [result, setResult] = useState();
 
-    const frFR =
-        useEffect(() => {
-            const fetchData = async () => {
-                await instance.get('routes/id')
-                    .then(async (response) => {
-                        let rows = [];
-                        response.data.forEach(element => {
-                            const date = new Date(element.departure_date);
-                            console.log(element);
-                            const route = {
-                                id: element.id,
-                                name: element.route.lastname + ' ' + element.route.firstname,
-                                departure_city: element.departure_city.name,
-                                arrival_city: element.arrival_city.name,
-                                departure_date: moment(date).locale("fr").format('LL'),
-                                departure_time: moment(element.departure_time).locale("fr").format('LT'),
-                                arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
-                                remaining_seats: element.remaining_seats
-                            }
-                            rows.push(route);
-                            setData(rows);
-                        });
-                        setRoutes(response.data);
-                    }).catch((err) => {
-                        console.error(err);
+    useEffect(() => {
+        const fetchData = async () => {
+            await instance.get('views/routesHistory')
+                .then(async (response) => {
+                    console.log('my magnifique response', response)
+                    let rows = [];
+                    response.data.forEach(element => {
+                        const date = new Date(element.departure_date);
+                        const today = new Date();
+                        console.log(element, date, new Date());
+                        const route = {
+                            id: element.user_has_route_id,
+                            name: element.driver,
+                            departure_city: element.departure_city_code + ', ' + element.departure_city,
+                            arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
+                            departure_date: date,
+                            departure_time: moment(element.departure_time).locale("fr").format('LT'),
+                            arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
+                            remaining_seats: element.remaining_seats,
+                            status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
+                            vehicles: element.vehicles,
+                            driver_id: element.driver_id,
+                            route_id: element.route_id
+                        }
+                        rows.push(route);
+                        setData(rows);
                     });
-            };
-            fetchData();
-        }, []);
+                }).catch((err) => {
+                    console.error(err);
+                });
+        };
+        fetchData();
+    }, [result]);
 
     const columns: GridColDef[] = [
         {
-            field: 'id',
-            headerName: 'ID',
+            field: 'route_id',
+            headerName: 'Id route',
+            width: 80,
+            hideSortIcons: true,
+            hide: true,
+            filterable: false
+        },
+        {
+            field: 'driver_id',
+            headerName: 'Id conducteur',
             width: 80,
             hideSortIcons: true,
             hide: true,
@@ -65,59 +81,178 @@ export default function Historical() {
             width: 150,
             hideSortIcons: true,
             hideable: false,
+
+            renderCell: (params: GridRenderCellParams<any>) => {
+                console.log('driver id', params.row.driver_id)
+                return (
+                    <Tooltip title={<Driver id={params.row.driver_id} />} placement="top-start" arrow>
+                        <p>{params.value}</p>
+                    </Tooltip>
+                )
+            }
+
         },
         {
             field: 'departure_city',
             headerName: 'Ville de départ',
-            width: 150,
+            width: 300,
             hideSortIcons: true,
             hideable: false,
+            renderCell: (params: GridRenderCellParams<any>) => {
+                const departureZipCode = params.value.split(', ')[0];
+                const departureCity = params.value.split(', ')[1];
+                const arrivalZipCode = params.row.arrival_city.split(', ')[0];
+                const arrivalCity = params.row.arrival_city.split(', ')[1];
 
+                return (
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                        <Tooltip title={params.value}>
+                            <p>{params.value}</p>
+                        </Tooltip>
+                        <Tooltip title="Voir sur Maps">
+                            <Button href={'https://www.google.com/maps/dir/' + departureZipCode + "+" + departureCity + '/' + arrivalZipCode + '+' + arrivalCity} target='_blank'><MapIcon /></Button>
+                        </Tooltip>
+                    </ Box>
+
+                )
+            },
         },
         {
             field: 'arrival_city',
             headerName: 'Ville d\'arrivée',
-            type: 'number',
-            width: 150,
+            width: 300,
             hideSortIcons: true,
             hideable: false,
+            renderCell: (params: GridRenderCellParams<any>) => {
+
+                const departureZipCode = params.row.departure_city.split(', ')[0];
+                const departureCity = params.row.departure_city.split(', ')[1];
+                const arrivalZipCode = params.value.split(',')[0];
+                const arrivalCity = params.value.split(',')[1];
+                return (
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                        <Tooltip title={params.value}>
+                            <p>{params.value}</p>
+                        </Tooltip>
+                        <Tooltip title="Voir sur Maps">
+                            <Button href={'https://www.google.com/maps/dir/' + departureZipCode + "+" + departureCity + '/' + arrivalZipCode + '+' + arrivalCity} about='_blank'><MapIcon /></Button>
+                        </Tooltip>
+                    </ Box>
+
+                )
+            },
         },
         {
             field: 'departure_date',
             headerName: 'Date du trajet',
-            type: 'date',
             width: 150,
             hideSortIcons: true,
             hideable: false,
+            renderCell: (params: GridRenderCellParams<any>) => {
+                const departureDate = moment(params.value);
+                const today = moment(new Date());
+                const diffInDays = today.diff(departureDate, 'days');
+
+                let texte = ""
+                moment(departureDate).format('L') == moment(today).format('L')
+                    ? texte = 'Le trajet est aujourd\'hui'
+                    : moment(departureDate).format('L') > moment(today).format('L')
+                        ? texte = 'Le trajet est dans ' + diffInDays + " jours"
+                        : texte = 'Le trajet était il y a ' + diffInDays + " jours"
+                console.log('the diff is', diffInDays, departureDate, today);
+                return (
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                        <Tooltip title={texte}>
+                            <p>{moment(params.value).locale("fr").format('LL')}</p>
+                        </Tooltip>
+                    </ Box>
+
+                )
+            },
         },
         {
             field: 'departure_time',
             headerName: 'Heure de départ',
-            type: 'number',
             width: 110,
             hideSortIcons: true,
             hideable: false,
+            renderCell: (params: GridRenderCellParams<any>) => {
+                console.log('params', params)
+                return (
+                    <Tooltip title={params.value}>
+                        <p>{params.value}</p>
+                    </Tooltip>
+                )
+            },
         },
         {
             field: 'arrival_time',
             headerName: 'Heure d\'arrivé',
-            type: 'number',
             width: 110,
             hideSortIcons: true,
             hideable: false,
         },
         {
             field: 'remaining_seats',
-            headerName: 'Places disponibles',
-            type: 'number',
+            headerName: 'Places',
+            width: 70,
+            hideSortIcons: true,
+            hideable: false,
+        },
+        {
+            field: 'status',
+            headerName: 'Statut',
             width: 140,
             hideSortIcons: true,
             hideable: false,
-            // cellClassName: (params: GridCellParams<number>) =>
-                
-            //     clsx('super-app', {
-            //         positive: params.value === 0,
-            //     }),
+            cellClassName: (params: GridCellParams<string>) => {
+                if (params.value == null) {
+                    return '';
+                }
+
+                return clsx('super-app', {
+                    end: params.value == "Fini",
+                    today: params.value == "Aujourd\'hui",
+                    after: params.value == "À venir",
+                });
+            },
+        },
+        {
+            field: 'vehicles',
+            headerName: 'Vehicules',
+            width: 140,
+            hideSortIcons: true,
+            hideable: false,
+        },
+        {
+            field: 'id',
+            headerName: 'Annuler',
+            width: 140,
+            hideSortIcons: true,
+            hideable: false,
+            renderCell: (params: GridRenderCellParams<any>) => {
+                const leaveRoute = async () => {
+                    if (window.confirm('⚠️ Voulez vous quitter ce trajet ? ⚠️\n Un message sera envoyé au conducteur')) {
+                        await instance.delete('userHasRoute/delete/' + params.value)
+                            .then(async (response) => {
+                                setResult(response.data);
+                            }).catch((err) => {
+                                console.error(err);
+                            });
+                        await instance.put('route/remainingSeats', { id: params.row.route_id, remaining_seats: params.row.remaining_seats + 1})
+                            .then(async (response) => {
+                                setResult(response.data);
+                            }).catch((err) => {
+                                console.error(err);
+                            });
+                    };
+                }
+                return (
+                    moment(params.row.departure_date).format('L') >= moment(new Date()).format('L') && (
+                        <Button onClick={leaveRoute}><LogoutIcon /></Button>
+                    )
+                )
+            },
         },
     ];
 
@@ -147,14 +282,19 @@ export default function Historical() {
             '@media (min-width: 1200px)': {
                 maxWidth: '100%',
             },
-            '& .super-app.negative': {
-                backgroundColor: 'rgba(157, 255, 118, 0.49)',
-                color: '#1a3e72',
+            '& .super-app.end': {
+                backgroundColor: '#b8f2b2',
+                color: '#212121',
                 fontWeight: '600',
             },
-            '& .super-app.positive': {
-                backgroundColor: '#d47483',
-                color: '#1a3e72',
+            '& .super-app.today': {
+                backgroundColor: '#b2ebf2',
+                color: '#212121',
+                fontWeight: '600',
+            },
+            '& .super-app.after': {
+                backgroundColor: '#f2d2b2',
+                color: '#212121',
                 fontWeight: '600',
             },
         }}>
