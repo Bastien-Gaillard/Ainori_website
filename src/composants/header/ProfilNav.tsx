@@ -71,7 +71,6 @@ export default function ProfilNav() {
         })();
     }, []);
 
-    console.log('user', user);
     const logout = async () => {//for déconnexion delete cookie (cookieLoginUser)
         await instance.get('logout')
             .then(response => {
