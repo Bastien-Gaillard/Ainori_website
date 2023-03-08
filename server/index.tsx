@@ -137,6 +137,18 @@ app.get('/', (req, res) => {
 // *************************************
 // ROUTES CITIES
 // *************************************
+app.get('/get/cities/name', async (req, res) => {
+  try {
+    const result = await prisma.$queryRaw`
+        SELECT name
+        FROM cities
+        GROUP BY name
+      `;
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+  }
+});
 app.post('/cities', authenticateToken, async (req, res) => {
   try {
     if (!!req.body.limit) {
@@ -172,6 +184,21 @@ app.post('/city/id', authenticateToken, async (req, res) => {
     const result = await prisma.cities.findUnique({
       where: {
         id: parseInt(req.body.id)
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+app.post('/city/zip_code/name', authenticateToken, async (req, res) => {
+  try {
+    console.log(req.body);
+    const result = await prisma.cities.findFirst({
+      where: {
+        zip_code: req.body.code,
+        name: req.body.name
       }
     });
     res.send(result);
@@ -762,6 +789,19 @@ app.get('/vehicules/user', authenticateToken, async (req, res) => {
   });
   res.send(cars);
 });
+app.post('/vehicules/id', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_vehicles.findUnique({
+      where: {
+        id: parseInt(req.body.id)
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
 
 app.post('/vehicles/update/status', authenticateToken, async (req, res) => {
   const result = await prisma.users_vehicles.update({
@@ -811,6 +851,7 @@ app.post('/route/departure/arrival', authenticateToken, async (req, res) => {
 });
 app.post('/route/create', authenticateToken, async (req, res) => {
   try {
+    
     const departureTime = new Date(req.body.departure_time);
     const arrivalTime = new Date(req.body.arrival_time);
     const departureDate = new Date(req.body.departure_date);
@@ -831,6 +872,7 @@ app.post('/route/create', authenticateToken, async (req, res) => {
       }
     });
     res.send(result)
+    console.log(result)
   } catch (error) {
     console.log(error);
     res.status(400).send('Une erreur est survenue')

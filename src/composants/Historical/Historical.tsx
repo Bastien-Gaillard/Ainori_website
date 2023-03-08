@@ -7,6 +7,13 @@ import { useForm } from "react-hook-form";
 import Driver from './Driver'
 import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
 import * as moment from 'moment';
+import FormTrajets from "../form/FromTrajets";
+import * as React from 'react';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material//Dialog';
+import CloseIcon from '@mui/icons-material/Close';
+import { Avatar, DialogContent, InputAdornment } from "@mui/material";
+import Button from '@mui/material/Button';
 import MapIcon from '@mui/icons-material/Map';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -22,8 +29,16 @@ const instance = axios.create({
 export default function Historical() {
 
     const [data, setData] = useState<any>();
-    const [result, setResult] = useState();
+    const [openAdd, setOpenAdd] = useState(false);
 
+    const handleClickOpenAdd = () => {
+        setOpenAdd(true);
+    };
+
+    const handleCloseAdd = () => {
+        setOpenAdd(false);
+    };
+    const [result, setResult] = useState();
     useEffect(() => {
         const fetchData = async () => {
             await instance.get('views/routesHistory')
@@ -293,6 +308,19 @@ export default function Historical() {
                 fontWeight: '600',
             },
         }}>
+            <Button key="profil" onClick={handleClickOpenAdd}>New Trajet</Button>
+            <Dialog
+                open={openAdd}
+                onClose={handleCloseAdd}
+                sx={{ width: '100%'}}
+            >
+                <DialogTitle>
+                    <CloseIcon onClick={handleCloseAdd} sx={{color:'red'}}/>
+                </DialogTitle>
+                <DialogContent>
+                    <FormTrajets handleCloseForm={handleCloseAdd} />
+                </DialogContent>
+            </Dialog>
             <h1>Historique de mes trajets</h1>
             {!!data &&
                 <DataGrid
