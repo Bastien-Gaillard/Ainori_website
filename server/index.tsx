@@ -192,6 +192,21 @@ app.post('/city/id', authenticateToken, async (req, res) => {
     res.status(400).send('Une erreur est survenue')
   }
 });
+app.post('/city/zip_code/name', authenticateToken, async (req, res) => {
+  try {
+    console.log(req.body);
+    const result = await prisma.cities.findFirst({
+      where: {
+        zip_code: req.body.code,
+        name: req.body.name
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
 app.post('/cities', authenticateToken, async (req, res) => {
   try {
     const result = await prisma.cities.findMany();
@@ -751,6 +766,19 @@ app.get('/vehicules/user', authenticateToken, async (req, res) => {
   });
   res.send(cars);
 });
+app.post('/vehicules/id', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.users_vehicles.findUnique({
+      where: {
+        id: parseInt(req.body.id)
+      }
+    });
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
 
 app.post('/vehicles/update/status', authenticateToken, async (req, res) => {
   const result = await prisma.users_vehicles.update({
@@ -800,6 +828,7 @@ app.post('/route/departure/arrival', authenticateToken, async (req, res) => {
 });
 app.post('/route/create', authenticateToken, async (req, res) => {
   try {
+    
     const departureTime = new Date(req.body.departure_time);
     const arrivalTime = new Date(req.body.arrival_time);
     const departureDate = new Date(req.body.departure_date);
@@ -813,12 +842,14 @@ app.post('/route/create', authenticateToken, async (req, res) => {
         departure_time: departureTime,
         arrival_time: arrivalTime,
         departure_date: departureDate,
+        vehicules_id: parseInt(req.body.vehicules_id),
         available_seats: parseInt(req.body.available_seats),
         remaining_seats: parseInt(req.body.remaining_seats),
         statuts: true,
       }
     });
     res.send(result)
+    console.log(result)
   } catch (error) {
     console.log(error);
     res.status(400).send('Une erreur est survenue')

@@ -1407,6 +1407,25 @@
           }
         }
       }
+    },
+    "/vehicules/id": {
+      "post": {
+        "tags": ["create"],
+        "description": "Obtenir vehicules par id",
+        "parameters": [{
+          "name": "id",
+          "in": "formData",
+          "type": "integer",
+          "required": true,
+          "default": 1
+        }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
+
   }
 }
