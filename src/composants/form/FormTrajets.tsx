@@ -5,12 +5,8 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
-import { Autocomplete, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { Autocomplete } from "@mui/material";
 const cryptoJs = require('crypto-js');
-
-import * as React from 'react';
-import * as moment from 'moment';
-import { TimePicker } from '@mui/lab';
 import 'dayjs/locale/fr';
 import { format } from 'date-fns';
 import fr from 'date-fns/locale/fr';
@@ -18,7 +14,6 @@ import { DemoContainer , DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Alert from '@mui/material/Alert';
 import MultipleDatesPicker from '@ambiot/material-ui-multiple-dates-picker'
 import List from '@mui/material/List';
