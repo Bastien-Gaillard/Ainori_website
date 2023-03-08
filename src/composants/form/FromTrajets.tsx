@@ -32,6 +32,7 @@ export default function FormTrajets(props) {
     const [inputTime2,  setInputTime2]     = useState<Date | null>(null);
     const [inputCity , setInputCityCitys ] = useState("");
     const [inputCity2, setInputCityCitys2] = useState("");
+    const [inputcars, setinputCars]        = useState("");
 
     const [datesList, setdatesList] = useState([]);
 
@@ -40,6 +41,7 @@ export default function FormTrajets(props) {
 
 
     const [car, setCar] = useState([]);
+    const [isChecked, setIsChecked] = useState(false);
 
     const [showAlert, setShowAlert] = useState(false);
     const [varAlert, setvarAlert] = useState("");
@@ -199,7 +201,7 @@ export default function FormTrajets(props) {
                             label="Car"
                             inputRef={CarRef}
                             {...CarProps}
-                            onChange={(e) => console.log(e.target.value)}
+                            onChange={(e) => setinputCars(e.target.value)}
                         />
                         }
                     />
@@ -213,7 +215,7 @@ export default function FormTrajets(props) {
                             label="City1"
                             inputRef={City1Ref}
                             {...City1Props}
-                            onChange={(e) => console.log(e.target.value)}
+                            onChange={(e) => setInputCityCitys(e.target.value)}
                         />
                         }
                     />
@@ -227,7 +229,7 @@ export default function FormTrajets(props) {
                             label="City2"
                             inputRef={City2Ref}
                             {...City2Props}
-                            onChange={(e) => console.log(e.target.value)}
+                            onChange={(e) => setInputCityCitys2(e.target.value)}
                         />
                         }
                     />
