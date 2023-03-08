@@ -18,13 +18,10 @@ export default function Driver(id) {
     const [driver, setDriver] = useState<any>();
     const emailRef = useRef(null);
     const [driverId, setDriverId] = useState<number>(id)
-    console.log('the id in Driver', id)
     useEffect(() => {
         const fetchData = async () => {
-            console.log('qdozjjpoqpjkqdspqdspoqsd', driverId)
             await instance.post('user/id', id, { headers: { "content-type": "application/json" } })
                 .then(async (response) => {
-                    console.log('driver response', response.data);
                     setDriver(response.data);
                 }).catch((err) => {
                     console.error(err);

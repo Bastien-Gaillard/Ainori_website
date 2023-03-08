@@ -28,12 +28,10 @@ export default function Historical() {
         const fetchData = async () => {
             await instance.get('views/routesHistory')
                 .then(async (response) => {
-                    console.log('my magnifique response', response)
                     let rows = [];
                     response.data.forEach(element => {
                         const date = new Date(element.departure_date);
                         const today = new Date();
-                        console.log(element, date, new Date());
                         const route = {
                             id: element.user_has_route_id,
                             name: element.driver,
@@ -83,7 +81,6 @@ export default function Historical() {
             hideable: false,
 
             renderCell: (params: GridRenderCellParams<any>) => {
-                console.log('driver id', params.row.driver_id)
                 return (
                     <Tooltip title={<Driver id={params.row.driver_id} />} placement="top-start" arrow>
                         <p>{params.value}</p>
@@ -159,7 +156,6 @@ export default function Historical() {
                     : moment(departureDate).format('L') > moment(today).format('L')
                         ? texte = 'Le trajet est dans ' + diffInDays + " jours"
                         : texte = 'Le trajet était il y a ' + diffInDays + " jours"
-                console.log('the diff is', diffInDays, departureDate, today);
                 return (
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                         <Tooltip title={texte}>
@@ -177,7 +173,6 @@ export default function Historical() {
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
-                console.log('params', params)
                 return (
                     <Tooltip title={params.value}>
                         <p>{params.value}</p>
