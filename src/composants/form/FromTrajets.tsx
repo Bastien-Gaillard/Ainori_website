@@ -11,6 +11,9 @@ const cryptoJs = require('crypto-js');
 import * as React from 'react';
 import * as moment from 'moment';
 import { TimePicker } from '@mui/lab';
+import 'dayjs/locale/fr';
+import { format } from 'date-fns';
+import fr from 'date-fns/locale/fr';
 import { DemoContainer , DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -18,6 +21,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Alert from '@mui/material/Alert';
 import MultipleDatesPicker from '@ambiot/material-ui-multiple-dates-picker'
+import List from '@mui/material/List';
+import ListItemText from '@mui/material/ListItemText';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import CalendarTodayTwoToneIcon from '@mui/icons-material/CalendarTodayTwoTone';
 
 
 
@@ -27,63 +35,66 @@ const instance = axios.create({
 
 export default function FormTrajets(props) {
 
-    const { handleSubmit, formState: { errors }, register, setValue, getValues } = useForm();
-    const [inputTime,  setInputTime]       = useState<Date | null>(null);
-    const [inputTime2,  setInputTime2]     = useState<Date | null>(null);
-    const [inputCity , setInputCityCitys ] = useState("");
-    const [inputCity2, setInputCityCitys2] = useState("");
-    const [inputcars, setinputCars]        = useState("");
-
-    const [datesList, setdatesList] = useState([]);
-
-    const [City , setCitys ] = useState([]);
-    const [City2, setCitys2] = useState([]);
-
-
-    const [car, setCar] = useState([]);
-    const [isChecked, setIsChecked] = useState(false);
-
-    const [showAlert, setShowAlert] = useState(false);
-    const [varAlert, setvarAlert] = useState("");
-
-    const [open, setOpen] = useState(false)
-
-    
-
-    var now = moment();
+    const { handleSubmit, formState: { errors }, register } = useForm();
+    // set value of input time
+    const [departure_time ,  setDeparture_time ] = useState<Date | null>(null);
+    const [arrival_time   ,  setArrival_time   ] = useState<Date | null>(null);
+    // set value of input city 
+    const [departure_city ,  setDeparture_city ] = useState("");
+    const [arrival_city   ,  setArrival_city   ] = useState("");
+    // liste date for travel
+    const [datesList      ,  setdatesList      ] = useState([]);
+    // liste city in input obtion
+    const [inputDepartureCity  ,  setinputDepartureCity ] = useState([]);
+    const [inputArrivalCity    ,  setInputArrivalCity   ] = useState([]);
+    // liste cars in input obtion
+    const [inputCar  ,  setInputCar  ] = useState([]);
+    // Alert value
+    const [showAlert ,  setShowAlert ] = useState(false);
+    const [varAlert  ,  setvarAlert  ] = useState("");
+    // open input date
+    const [open      ,  setOpen      ] = useState(false)
 
     const handleClick = () => {
         props.handleCloseForm(); // Call the handleCloseAdd function here
     }
 
-
     const onSubmit = async (data) => {
+        console.log("data",data);
+        console.log(departure_time);
 
-        const myInputCar = data.Car.split(":");
-        const myIdCar = parseInt(myInputCar[0]);
+        const car_split = data.inputCar.split(":");
+        const idCar = parseInt(car_split[0]);
+        const dataCar = { id: idCar}
+        const resultGetCar = await instance.post("vehicules/id", dataCar, { headers: { "content-type": "application/json" } });
 
-        const dataCar = { id: myIdCar}
-        const result3 = await instance.post("vehicules/id", dataCar, { headers: { "content-type": "application/json" } });
+        const departure_city_split = data.inputDepartureCity.split(",");
+        const codeDepartureCity = departure_city_split[0];
+        const nameDepartureCity = departure_city_split[1];
+        const dataInputDepartureCity = { code: codeDepartureCity , name : nameDepartureCity}
+        const resultGetDepartureCity = await instance.post("city/zip_code/name", dataInputDepartureCity, { headers: { "content-type": "application/json" } });
 
-        const myInputCity1 = data.City1.split(",");
-        const myIdCity1 = myInputCity1[0];
-        const myNameCity1 = myInputCity1[1];
-         
-        const dataCity1 = { code: myIdCity1 , name : myNameCity1}
-        const result2 = await instance.post("city/zip_code/name", dataCity1, { headers: { "content-type": "application/json" } });
+        const arrival_city_split= data.inputArrivalCity.split(",");
+        const codeArrivalCity = arrival_city_split[0];
+        const nameArrivalCity = arrival_city_split[1];
+        const dataInputArrivalCity= { code: codeArrivalCity , name : nameArrivalCity}
+        const resultGetArrivalCity = await instance.post("city/zip_code/name", dataInputArrivalCity, { headers: { "content-type": "application/json" } });
 
-        const myInputCity2= data.City2.split(",");
-        const myIdCity2 = myInputCity2[0];
-        const myNameCity2 = myInputCity2[1];
-
-        const dataCity2 = { code: myIdCity2 , name : myNameCity2}
-        const result1 = await instance.post("city/zip_code/name", dataCity2, { headers: { "content-type": "application/json" } });
-
-        if (inputTime  && inputTime2 && result2.data.id && result1.data.id && result3.data.id &&  result3.data.available_seats) {      
+        if (departure_time  && arrival_time && resultGetDepartureCity.data.id && resultGetArrivalCity.data.id && resultGetCar.data.id &&  resultGetCar.data.available_seats) {      
             for (let i = 0; i < datesList.length; i++) {
-                const datatest = { arrival_city_id: result2.data.id , departure_city_id : result1.data.id , departure_time: new Date(inputTime2), arrival_time: new Date(inputTime) , departure_date: new Date(datesList[i]) , vehicules_id: result3.data.id , available_seats: result3.data.available_seats , remaining_seats: result3.data.available_seats , statuts: true};
-                console.log("data",datatest);
-                const result = await instance.post("route/create", datatest, { headers: { "content-type": "application/json" } })
+                const dataSend = { 
+                    arrival_city_id   : resultGetArrivalCity.data.id   , 
+                    departure_city_id : resultGetDepartureCity.data.id , 
+                    departure_time    : new Date(departure_time), 
+                    arrival_time      : new Date(arrival_time)  , 
+                    departure_date    : new Date(datesList[i])  , 
+                    vehicules_id      : resultGetCar.data.id    , 
+                    available_seats   : resultGetCar.data.available_seats , 
+                    remaining_seats   : resultGetCar.data.available_seats , 
+                    statuts           : true
+                };
+                console.log("dataSend",dataSend);
+                const result = await instance.post("route/create", dataSend, { headers: { "content-type": "application/json" } })
                 .then(async (response) => {
                     console.log('the response', response);
                 }).catch((err) => {
@@ -94,14 +105,13 @@ export default function FormTrajets(props) {
             handleClick();
         } else {
             setShowAlert(true);
-            setvarAlert("probleme de form ");
+            setvarAlert("remplir le formulaire");
         }
 
     }
 
     const divStyle = {
         width: '100%',
-        height: '72vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -109,48 +119,64 @@ export default function FormTrajets(props) {
 
     useEffect(() => {
         (async () => {
-            await getDataCitys();
+            await getDataCityDeparture();
         })();
-    }, [inputCity]);
+    }, [departure_city]);
 
     useEffect(() => {
         (async () => {
-            await getDataCitys2();
+            await getDataCityArrival();
         })();
-    }, [inputCity2]);
+    }, [arrival_city]);
 
     useEffect(() => {
         (async () => {
-            await getCars();
+            await getCar();
         })();
     }, []);
 
 
-    const getCars = async () => {
+    function ListeDesDates({ datesList }) {
+        return (
+        <List >
+            {datesList.map((date, index) => (
+              <ListItem>
+                <ListItemIcon>
+                    <CalendarTodayTwoToneIcon />
+                </ListItemIcon>
+                <ListItemText key={index} primary={format(date, "EEEE d MMMM ' 'yyyy", { locale: fr })} />
+              </ListItem>
+            ))}
+          </List>
+        );
+      }
+      
+
+    const getCar = async () => {
         await instance.get('vehicules/user', { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                setCar(response.data.vehicule.map(elem => elem.id+": "+elem.name+", "+ elem.available_seats+" Places" ));
+                setInputCar(response.data.vehicule.map(elem => elem.id+": "+elem.name+", "+ elem.available_seats+" Places" ));
                 
             }).catch((err) => {
                 console.error(err);
             });
     }
-    const getDataCitys = async () => {
-        if(inputCity != ""){
-            await axios.get('https://vicopo.selfbuild.fr/cherche/'+inputCity)
+    const getDataCityDeparture = async () => {
+        if(departure_city != ""){
+            await axios.get('https://vicopo.selfbuild.fr/cherche/'+departure_city)
                 .then(async (response) => {
-                    setCitys(response.data.cities.map(elem => elem.code +","+ elem.city ));
+                    setinputDepartureCity(response.data.cities.map(elem => elem.code +","+ elem.city ));
                     
                 }).catch((err) => {
                     console.error(err);
                 });
         }
     }
-    const getDataCitys2 = async () => {
-        if(inputCity2 != ""){
-            await axios.get('https://vicopo.selfbuild.fr/cherche/'+inputCity2)
+    const getDataCityArrival = async () => {
+        if(arrival_city != ""){
+            await axios.get('https://vicopo.selfbuild.fr/cherche/'+arrival_city)
                 .then(async (response) => {
-                    setCitys2(response.data.cities.map(elem => elem.code +","+ elem.city ));
+                    setInputArrivalCity(response.data.cities.map(elem => elem.code +","+ elem.city ));
                     
                 }).catch((err) => {
                     console.error(err);
@@ -158,13 +184,13 @@ export default function FormTrajets(props) {
         }
     }
 
-    const { ref: CarRef, ...CarProps } = register("Car", {
+    const { ref: inputCarRef, ...inputCarProps } = register("inputCar", {
         required: true,
     });
-    const { ref: City1Ref, ...City1Props } = register("City1", {
+    const { ref: inputDepartureCityRef, ...inputDepartureCityProps } = register("inputDepartureCity", {
         required: true,
     });
-    const { ref: City2Ref, ...City2Props } = register("City2", {
+    const { ref: inputArrivalCityRef, ...inputArrivalCityProps } = register("inputArrivalCity", {
         required: true,
     });
 
@@ -187,54 +213,69 @@ export default function FormTrajets(props) {
                 autoComplete="off"
                 onSubmit={handleSubmit(onSubmit)}
             >
-                <Box sx={{ display: 'flex' }}>
-                    <h2>Ajouter un Trajets</h2>
-                </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'baseline' }}>
+                    <Box sx={{ display: 'flex' }}>
+                        <h2>Ajouter un Trajet</h2>
+                    </Box>
                     <Autocomplete
                         disablePortal
                         id="combo-box-demo"
-                        options={car}
+                        options={inputCar}
                         sx={{ width: 300, marginTop: '16px' }}
                         renderInput={(params) => <TextField
                             {...params}
-                            label="Car"
-                            inputRef={CarRef}
-                            {...CarProps}
-                            onChange={(e) => setinputCars(e.target.value)}
+                            label="vehicule du Trajet"
+                            inputRef={inputCarRef}
+                            {...inputCarProps}
+                            onChange={(e) => console.log(e.target.value)}
                         />
                         }
                     />
                     <Autocomplete
                         disablePortal
                         id="combo-box-demo"
-                        options={City}
+                        options={inputDepartureCity}
                         sx={{ width: 300, marginTop: '16px' }}
                         renderInput={(params) => <TextField
                             {...params}
-                            label="City1"
-                            inputRef={City1Ref}
-                            {...City1Props}
-                            onChange={(e) => setInputCityCitys(e.target.value)}
+                            label="Departure City"
+                            inputRef={inputDepartureCityRef}
+                            {...inputDepartureCityProps}
+                            onChange={(e) => setDeparture_city(e.target.value)}
                         />
                         }
                     />
                     <Autocomplete
                         disablePortal
                         id="combo-box-demo"
-                        options={City2}
+                        options={inputArrivalCity}
                         sx={{ width: 300, marginTop: '16px' }}
                         renderInput={(params) => <TextField
                             {...params}
-                            label="City2"
-                            inputRef={City2Ref}
-                            {...City2Props}
-                            onChange={(e) => setInputCityCitys2(e.target.value)}
+                            label="Arrival City"
+                            inputRef={inputArrivalCityRef}
+                            {...inputArrivalCityProps}
+                            onChange={(e) => setArrival_city(e.target.value)}
                         />
                         }
                     />
-                    <div>
-                        <Button onClick={() => setOpen(!open)}>
+                    <LocalizationProvider locale={fr}  dateAdapter={AdapterDayjs}>
+                        <Button 
+                            onClick={() => setOpen(!open)} 
+                            sx={{     
+                                width: '100%',
+                                marginTop: '10px',
+                                marginBottom: '10px',
+                                height: '50px',
+                                backgroundColor: '#e4c926',
+                                color: 'black',
+                                '&:hover': {
+                                    backgroundColor: '#c5a522',
+                                    color: 'white',
+                                    cursor: 'pointer'
+                                }
+                            }}
+                        >
                             Select Dates
                         </Button>
                         <MultipleDatesPicker
@@ -243,20 +284,29 @@ export default function FormTrajets(props) {
                             onCancel={() => setOpen(false)}
                             onSubmit={dates => {setdatesList(dates),setOpen(false)}}
                         />
-                    </div>
-                    <LocalizationProvider  dateAdapter={AdapterDayjs}>
-                        <DemoItem label="Mobile variant">
+                        {datesList.length > 0 && (
+                            <Box
+                                sx={{
+                                    marginTop: '15px',
+                                    marginBottom: '30px'
+                                }}
+                            >
+                                <h3>Liste de dates selectioner :</h3>
+                                <ListeDesDates datesList={datesList} />
+                            </Box>
+                        )}
+                        <DemoItem label="Departure time">
                             <MobileTimePicker 
-                                label="Date au "
-                                value={inputTime}
-                                onChange={(newValue) => setInputTime(newValue)}
+                                label="Departure time"
+                                value={departure_time}
+                                onChange={(newValue) => setDeparture_time(newValue)}
                             />
                         </DemoItem>
-                        <DemoItem label="Mobile variant">
+                        <DemoItem label="Arrival time">
                         <MobileTimePicker 
-                                label="Date au "
-                                value={inputTime2}
-                                onChange={(newValue) => setInputTime2(newValue)}
+                                label="Arrival time"
+                                value={arrival_time}
+                                onChange={(newValue) => setArrival_time(newValue)}
                             />
                         </DemoItem>
                     </LocalizationProvider>
