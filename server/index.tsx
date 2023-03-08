@@ -1222,7 +1222,7 @@ app.post('/create/usersHasRoutes', authenticateToken, async (req, res) => {
       imageData.push({
         user_id: faker.datatype.number({
           'min': 1,
-          'max': 3
+          'max': 1
         }),
         route_id: faker.datatype.number({
           'min': 1,
@@ -1250,7 +1250,8 @@ app.get('/views/routesHistory', authenticateToken, async (req, res) => {
   console.log('qzfodjpjdzopqpqodspoqds');
   try {
     const result = await prisma.$queryRaw`
-      SELECT * FROM route_history WHERE user_id = ${req.user.id}`
+      SELECT * FROM route_history WHERE user_has_route_user_id = ${req.user.id}`
+    console.log(result)
     res.send(result);
   } catch (error) {
     console.log(error);

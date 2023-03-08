@@ -62,7 +62,6 @@ export default function Cars() {
     const dataCarsSet = async () => {
         return await instance.get('vehicules/user', { headers: { "content-type": "application/json" } })
             .then(response => {
-                console.log('response.data', response.data);
                 setResponseData(response.data)
             })
             .catch((err) => {
@@ -85,7 +84,6 @@ export default function Cars() {
     function luminance(hex) {
         const color = hexToRgb(hex);
         const luminance = (0.2126 * color.r) + (0.7152 * color.g) + (0.0722 * color.b);
-        console.log(luminance);
         const backgroundColor = luminance > 128 ? '#2f2f2f' : '#E8E7E7';
         return backgroundColor;
     }
@@ -116,7 +114,6 @@ export default function Cars() {
     };
 
     const handleCloseAdd = () => {
-        console.log('fiqnoqdfioqsfdjisqfjiqsfjFJOPFQSPJOSFQJÖPQSFJQFDSOPJQDSF¨JQSDFQOJSIDFOPJDFS¨JDFSPÖJQDSFJQOPSFDJPODFQJPO¨DQFSJPOQDFS')
         dataCarsSet();
         setOpenAdd(false);
     };

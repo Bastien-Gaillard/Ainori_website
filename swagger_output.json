@@ -700,6 +700,13 @@
             "default": "2022-11-11"
           },
           {
+            "name": "vehicules_id",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "2"
+          },
+          {
             "name": "available_seats",
             "in": "formData",
             "type": "string",

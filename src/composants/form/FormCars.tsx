@@ -34,7 +34,6 @@ export default function FormCars(props) {
     const onSubmit = async (data) => {
         const vehicles = await instance.post("model", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                console.log('response vehicules', response.data)
                 data.models = response.data;
             }).catch((err) => {
                 console.error(err);
@@ -43,15 +42,12 @@ export default function FormCars(props) {
         data.path = 'images/vehicles/';
         const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                console.log('response', response.data);
                 data.images = response.data;
             }).catch((err) => {
                 console.error(err);
             });
-        console.log('data after images', data)
         const result = await instance.post("vehicles/create", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                console.log('the response', response);
             }).catch((err) => {
                 console.error(err);
             });
@@ -64,7 +60,6 @@ export default function FormCars(props) {
     };
 
     const handleUpload = async (selectedFile) => {
-        console.log('select', selectedFile);
         const formData = new FormData();
         formData.append("image", selectedFile);
         await axios.post("upload", formData, { headers: { "Content-Type": "multipart/form-data" } })
@@ -72,7 +67,6 @@ export default function FormCars(props) {
                 setValue('image', response.data);
                 setSelectedFile(response.data);
                 setDisplayImage(true);
-                console.log(getValues())
             }).catch((err) => {
                 console.error(err);
                 return false;
@@ -130,7 +124,6 @@ export default function FormCars(props) {
 
     function handleInputChange(event, value) {
         setModels(null);
-        console.log('value', value);
         getDataModels(value);
     }
 
@@ -196,7 +189,6 @@ export default function FormCars(props) {
                                 label="Marque"
                                 inputRef={markRef}
                                 {...markProps}
-                                onChange={(e) => console.log(e.target)}
                             />
                             }
                         />
@@ -235,7 +227,6 @@ export default function FormCars(props) {
                             color={color}
                             onChangeComplete={(color) => {
                                 setColor(color);
-                                console.log(color);
                                 setValue('color', color.hex);
                             }} />
                     </ Box>
