@@ -35,20 +35,14 @@ export default function Profil() {
         })();
     }, []);
 
-    useEffect(() => {
-        console.log('second use effect', user)
-    }, [user]);
-
     const updateUser = (updatedUser: UserModel) => {
         setUser(updatedUser);
-        console.log('userUpdate');
     };
 
     const getUser = async () => {
         await instance.get('user/current/id')
             .then((response) => {
                 if (response.data) {
-                    console.log('the response', response.data);
                     setUser(response.data);
                 }
             }).catch((err) => {
