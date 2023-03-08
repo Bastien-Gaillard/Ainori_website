@@ -232,7 +232,7 @@ export default function Cars() {
                         aria-describedby="alert-dialog-description"
                     >
                         <DialogTitle id="alert-dialog-title">{"Modifier véhicules"}</DialogTitle>
-                        {<FormUpdateVehicule cars={Car} />}
+                        {<FormUpdateVehicule cars={Car} handleCloseForm={handleCloseDelete}/>}
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">
                                 Retour
