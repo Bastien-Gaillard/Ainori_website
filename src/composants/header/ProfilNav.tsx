@@ -84,6 +84,13 @@ export default function ProfilNav() {
             });
     }
 
+    const Profil = () => {
+        navigate('/Profil');
+    };
+    const Voiturs = () => {
+        navigate('/profilVoiturs');
+    };
+
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
@@ -155,7 +162,7 @@ export default function ProfilNav() {
                                 <Typography textAlign="center" onClick={goMessages}>{setting.name}</Typography>
                             </Badge>
                             :
-                            <Typography textAlign="center" onClick={setting.name === 'Deconnexion' ? logout : null}>{setting.name}</Typography>
+                            <Typography textAlign="center" onClick={setting.name === 'Deconnexion' ? logout : setting.name === 'Profile' ? Profil : setting.name === 'Mes voitures' ? Voiturs : null}>{setting.name}</Typography>
                         }
                     </MenuItem>
                 ))}
