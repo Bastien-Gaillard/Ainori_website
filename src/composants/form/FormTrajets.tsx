@@ -32,11 +32,11 @@ export default function FormTrajets(props) {
 
     const { handleSubmit, formState: { errors }, register } = useForm();
     // set value of input time
-    const [departure_time ,  setDeparture_time ] = useState<Date | null>(null);
-    const [arrival_time   ,  setArrival_time   ] = useState<Date | null>(null);
+    const [departureTime ,  setDepartureTime ] = useState<Date | null>(null);
+    const [arrivalTime   ,  setArrivalTime   ] = useState<Date | null>(null);
     // set value of input city 
-    const [departure_city ,  setDeparture_city ] = useState("");
-    const [arrival_city   ,  setArrival_city   ] = useState("");
+    const [departureCity ,  setDepartureCity ] = useState("");
+    const [arrivalCity   ,  setArrivalCity   ] = useState("");
     // liste date for travel
     const [datesList      ,  setdatesList      ] = useState([]);
     // liste city in input obtion
@@ -56,32 +56,32 @@ export default function FormTrajets(props) {
 
     const onSubmit = async (data) => {
         console.log("data",data);
-        console.log(departure_time);
+        console.log(departureTime);
 
         const car_split = data.inputCar.split(":");
         const idCar = parseInt(car_split[0]);
         const dataCar = { id: idCar}
         const resultGetCar = await instance.post("vehicules/id", dataCar, { headers: { "content-type": "application/json" } });
 
-        const departure_city_split = data.inputDepartureCity.split(",");
-        const codeDepartureCity = departure_city_split[0];
-        const nameDepartureCity = departure_city_split[1];
+        const departureCitySplit = data.inputDepartureCity.split(",");
+        const codeDepartureCity = departureCitySplit[0];
+        const nameDepartureCity = departureCitySplit[1];
         const dataInputDepartureCity = { code: codeDepartureCity , name : nameDepartureCity}
         const resultGetDepartureCity = await instance.post("city/zip_code/name", dataInputDepartureCity, { headers: { "content-type": "application/json" } });
 
-        const arrival_city_split= data.inputArrivalCity.split(",");
-        const codeArrivalCity = arrival_city_split[0];
-        const nameArrivalCity = arrival_city_split[1];
+        const arrivalCitySplit= data.inputArrivalCity.split(",");
+        const codeArrivalCity = arrivalCitySplit[0];
+        const nameArrivalCity = arrivalCitySplit[1];
         const dataInputArrivalCity= { code: codeArrivalCity , name : nameArrivalCity}
         const resultGetArrivalCity = await instance.post("city/zip_code/name", dataInputArrivalCity, { headers: { "content-type": "application/json" } });
 
-        if (departure_time  && arrival_time && resultGetDepartureCity.data.id && resultGetArrivalCity.data.id && resultGetCar.data.id &&  resultGetCar.data.available_seats) {      
+        if (departureTime  && arrivalTime && resultGetDepartureCity.data.id && resultGetArrivalCity.data.id && resultGetCar.data.id &&  resultGetCar.data.available_seats) {      
             for (let i = 0; i < datesList.length; i++) {
                 const dataSend = { 
                     arrival_city_id   : resultGetArrivalCity.data.id   , 
                     departure_city_id : resultGetDepartureCity.data.id , 
-                    departure_time    : new Date(departure_time), 
-                    arrival_time      : new Date(arrival_time)  , 
+                    departure_time    : new Date(departureTime), 
+                    arrival_time      : new Date(arrivalTime)  , 
                     departure_date    : new Date(datesList[i])  , 
                     vehicules_id      : resultGetCar.data.id    , 
                     available_seats   : resultGetCar.data.available_seats , 
@@ -116,13 +116,13 @@ export default function FormTrajets(props) {
         (async () => {
             await getDataCityDeparture();
         })();
-    }, [departure_city]);
+    }, [departureCity]);
 
     useEffect(() => {
         (async () => {
             await getDataCityArrival();
         })();
-    }, [arrival_city]);
+    }, [arrivalCity]);
 
     useEffect(() => {
         (async () => {
@@ -157,8 +157,8 @@ export default function FormTrajets(props) {
             });
     }
     const getDataCityDeparture = async () => {
-        if(departure_city != ""){
-            await axios.get('https://vicopo.selfbuild.fr/cherche/'+departure_city)
+        if(departureCity != ""){
+            await axios.get('https://vicopo.selfbuild.fr/cherche/'+departureCity)
                 .then(async (response) => {
                     setinputDepartureCity(response.data.cities.map(elem => elem.code +","+ elem.city ));
                     
@@ -168,8 +168,8 @@ export default function FormTrajets(props) {
         }
     }
     const getDataCityArrival = async () => {
-        if(arrival_city != ""){
-            await axios.get('https://vicopo.selfbuild.fr/cherche/'+arrival_city)
+        if(arrivalCity != ""){
+            await axios.get('https://vicopo.selfbuild.fr/cherche/'+arrivalCity)
                 .then(async (response) => {
                     setInputArrivalCity(response.data.cities.map(elem => elem.code +","+ elem.city ));
                     
@@ -236,7 +236,7 @@ export default function FormTrajets(props) {
                             label="Departure City"
                             inputRef={inputDepartureCityRef}
                             {...inputDepartureCityProps}
-                            onChange={(e) => setDeparture_city(e.target.value)}
+                            onChange={(e) => setDepartureCity(e.target.value)}
                         />
                         }
                     />
@@ -250,7 +250,7 @@ export default function FormTrajets(props) {
                             label="Arrival City"
                             inputRef={inputArrivalCityRef}
                             {...inputArrivalCityProps}
-                            onChange={(e) => setArrival_city(e.target.value)}
+                            onChange={(e) => setArrivalCity(e.target.value)}
                         />
                         }
                     />
@@ -293,15 +293,15 @@ export default function FormTrajets(props) {
                         <DemoItem label="Departure time">
                             <MobileTimePicker 
                                 label="Departure time"
-                                value={departure_time}
-                                onChange={(newValue) => setDeparture_time(newValue)}
+                                value={departureTime}
+                                onChange={(newValue) => setDepartureTime(newValue)}
                             />
                         </DemoItem>
                         <DemoItem label="Arrival time">
                         <MobileTimePicker 
                                 label="Arrival time"
-                                value={arrival_time}
-                                onChange={(newValue) => setArrival_time(newValue)}
+                                value={arrivalTime}
+                                onChange={(newValue) => setArrivalTime(newValue)}
                             />
                         </DemoItem>
                     </LocalizationProvider>
