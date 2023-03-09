@@ -1,92 +1,72 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
-import CreateIcon from '@mui/icons-material/Create';
-import { Autocomplete, Avatar, FormControl, IconButton, Input, InputAdornment, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { isTemplateSpan } from "typescript";
-import { ThemeProvider } from "@emotion/react";
+import { Autocomplete, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { CompactPicker } from 'react-color';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { PhotoCamera } from "@mui/icons-material";
+import { getValue } from "@mui/system";
+import Alert from "@composants/features/Alert";
 const cryptoJs = require('crypto-js');
+
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
-export default function FormUpdateVehicule({cars ,handleCloseForm }) {
-    const { handleSubmit, formState: { errors }, register, setValue, getValues} = useForm({ defaultValues: cars });
 
-    const [numberplate, setNumberplate] = useState(getValues("lisence_plate"));
-    const [color, setColor] = useState({ hex: getValues("color") });
-    const [seats, setSeats] = useState(getValues("available_seats"));
-    const [selectedFile, setSelectedFile] = useState(getValues("images"));
-    const [displayImage, setDisplayImage] = useState(true);
-    const [bImgDefaut, setImgDefaut] = useState(true);
+export default function FormCars(props) {
+
+    console.log(props.cars);
+
+    const { handleSubmit, formState: { errors }, register, setValue, getValues } = useForm();
+    const [name, setName] = useState(props.cars.name);
+    const [licencePlate, setLicencePlate] = useState(props.cars.lisence_plate);
+    const [color, setColor] = useState({ hex: props.cars.color });
+    const [seats, setSeats] = useState(props.cars.available_seats.toString());
+    const [selectedFile, setSelectedFile] = useState(!!props?.cars?.images?.path ? props.cars.images.path : null);
+    const [open, setOpen] = useState(false);
+    const [displayImage, setDisplayImage] = useState(false);
+
+
+    useEffect(() => {
+        if (!!props?.cars?.images?.path) {
+            setDisplayImage(true);
+        }
+    }, []);
+
     const handleClick = () => {
-        handleCloseForm.handleCloseForm(); // Call the handleCloseAdd function here
+        props.handleCloseForm(); // Call the handleCloseAdd function here
     }
 
     const onSubmit = async (data) => {
-        console.log(data);
-        /*const vehicles = await instance.post("model", data, { headers: { "content-type": "application/json" } })
-            .then(async (response) => {
-                console.log('response vehicules', response.data)
-                data.models = response.data;
-            }).catch((err) => {
-                console.error(err);
-            });
 
-        data.path = 'images/vehicles/';
-        const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
+        if (data.image) {
+            data.path = 'images/vehicles/';
+            const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
+                .then(async (response) => {
+                    data.images = response.data;
+                }).catch((err) => {
+                    console.error(err);
+                });
+        }
+        data.id = props.cars.id;
+        const result = await instance.put("vehicles/update", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                console.log('response', response.data);
-                data.images = response.data;
+                console.log(response)
             }).catch((err) => {
                 console.error(err);
             });
-        console.log('data after images', data)
-        const result = await instance.post("vehicles/update", data, { headers: { "content-type": "application/json" } })
-            .then(async (response) => {
-                console.log('the response', response);
-            }).catch((err) => {
-                console.error(err);
-            });
-        handleClick();*/
+        handleClick();
     }
-    
-    const handleFileSelect = event => {
+
+    const handleFileSelect = (event) => {
+        props.cars.images.path = null
         setSelectedFile(event.target.files[0]);
         handleUpload(event.target.files[0]);
+        setDisplayImage(true);
     };
-
-    const divStyle = {
-        width: '100%',
-        height: '88vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    };
-
-
-
-    const { ref: numberplateRef, ...numberplateProps } = register("lisence_plate", {
-        required: true,
-        pattern: /^[A-Z]{2}[-][0-9]{3}[-][A-Z]{2}$/
-    });
-    const { ref: colorRef, ...colorProps } = register("color_code", {
-        required: true,
-    });
-    const { ref: nameRef, ...nameProps } = register("name", {
-        required: true,
-    });1
-    const { ref: avaiblesseatsRef, ...avaiblesseatsProps } = register("available_seats", {
-        required: true,
-    });
-
 
     const handleUpload = async (selectedFile) => {
         const formData = new FormData();
@@ -95,14 +75,28 @@ export default function FormUpdateVehicule({cars ,handleCloseForm }) {
             .then(async (response) => {
                 setValue('image', response.data);
                 setSelectedFile(response.data);
-                setImgDefaut(false);
                 setDisplayImage(true);
             }).catch((err) => {
                 console.error(err);
                 return false;
             });
-
     };
+
+    const divStyle = {
+        width: '100%',
+        height: '72vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    };
+
+    const { ref: lisencePlateRef, ...lisencePlateProps } = register("lisence_plate", {
+        required: true,
+        pattern: /^[A-Z]{2}[-][0-9]{3}[-][A-Z]{2}$/
+    });
+    const { ref: nameRef, ...nameProps } = register("name", {
+        required: false,
+    });
 
     const handleNumberPlateChange = (event) => {
         let inputValue = event.target.value;
@@ -113,16 +107,15 @@ export default function FormUpdateVehicule({cars ,handleCloseForm }) {
             inputValue = inputValue.slice(0, 2) + "-" + inputValue.slice(2);
         }
         if (inputValue.length > 6 && inputValue[6] !== "-") {
-            inputValue = inputValue.slice(0, 6) + "-" + inputValue.slice(5);
+            inputValue = inputValue.slice(0, 6) + "-" + inputValue.slice(6);
         }
 
-        setNumberplate(inputValue);
+        setLicencePlate(inputValue);
     };
 
     const handleChange = (event: SelectChangeEvent) => {
         setSeats(parseInt(event.target.value));
         setValue('available_seats', parseInt(event.target.value));
-        
     };
 
     return (
@@ -130,12 +123,13 @@ export default function FormUpdateVehicule({cars ,handleCloseForm }) {
             <Box
                 component="form"
                 sx={{
+                    width: '100%',
                     '& .MuiTextField-root': { m: 1, width: '42ch' },
+                    '& .css-1t1j96h-MuiPaper-root-MuiDialog-paper': { width: '100%' },
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    minWidth: '28%',
                     minHeight: '60vh',
                     boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'
                 }}
@@ -146,40 +140,44 @@ export default function FormUpdateVehicule({cars ,handleCloseForm }) {
                 <Box sx={{ display: 'flex' }}>
                     <h2>Modifier un véhicule</h2>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'center' }}>
+                    <TextField
+                        label="Nom"
+                        name="name"
+                        size="medium"
+                        value={name}
+                        inputRef={nameRef}
+                        {...nameProps}
+                        onChange={(e) => setName(e.target.value)}
+                    />
                     <TextField
                         label="Plaque d'immatriculation"
-                        name="numberplate"
+                        name="lisence_plate"
                         size="medium"
                         placeholder="AA-000-AA"
-                        value={numberplate}
-                        inputRef={numberplateRef}
-                        {...numberplateProps}
-                        error={!!errors.numberplate}
-                        helperText={errors.numberplate && "Plaque d'immatriculation invalide"}
+                        sx={{ marginTop: '16px' }}
+                        value={licencePlate}
+                        inputRef={lisencePlateRef}
+                        {...lisencePlateProps}
+                        error={!!errors.lisence_plate}
+                        helperText={errors.lisence_plate && "Plaque d'immatriculation invalide"}
                         onChange={handleNumberPlateChange}
                     />
-
-                    <Box sx={{ marginBottom: '10px'}}>
+                    <Box sx={{ marginBottom: '16px', marginTop: '16px' }}>
                         <InputLabel id="color-picker">Couleurs :</InputLabel>
                         <CompactPicker
                             id="color-picker"
                             color={color}
-                            inputRef={colorRef}
-                            {...colorProps}
                             onChangeComplete={(color) => {
                                 setColor(color);
                                 setValue('color', color.hex);
                             }} />
-                            
                     </ Box>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth sx={{ marginTop: '16px' }}>
                         <InputLabel id="available-seats">Place disponible</InputLabel>
                         <Select
                             labelId="available-seats"
                             name="seats"
-                            inputRef={avaiblesseatsRef}
-                            {...avaiblesseatsProps}
                             value={seats.toString()}
                             label="Place disponible"
                             onChange={handleChange}
@@ -190,6 +188,9 @@ export default function FormUpdateVehicule({cars ,handleCloseForm }) {
                             <MenuItem value={4}>Quatre</MenuItem>
                             <MenuItem value={5}>Cinq</MenuItem>
                             <MenuItem value={6}>Six</MenuItem>
+                            <MenuItem value={7}>Sept</MenuItem>
+                            <MenuItem value={8}>Huit</MenuItem>
+
                         </Select>
                     </ FormControl>
                     <InputLabel htmlFor="image-upload" sx={{ marginTop: '16px' }}>Télécharger une image</InputLabel>
@@ -197,20 +198,15 @@ export default function FormUpdateVehicule({cars ,handleCloseForm }) {
                         <input hidden accept="image/*" type="file" onChange={handleFileSelect} />
                         <PhotoCamera />
                     </IconButton>
-                    {displayImage && 
-                        <>
-                            <img width={'128px'} height={'auto'}
-                                alt={selectedFile} src={bImgDefaut? selectedFile.path : 'images/vehicles/' +selectedFile} />
-                        </>
+                    {displayImage &&
+                        <img width={'128px'} height={'auto'}
+                            alt={"L'image n'a pas chargée"} src={!!props?.cars?.images?.path && props?.cars?.images?.path != null ? selectedFile : 'images/vehicles/' + selectedFile} />
                     }
-                    <Box sx={{ display: 'flex', marginTop: '16px' }}>
-                        <Button variant="contained" sx={{ width: 'auto' }} type="submit">Enregistrer</Button>
-                    </Box>
+                    <Button variant="contained" sx={{ width: 'auto', marginTop: '2vh' }} type="submit">Enregistrer</Button>
                 </Box>
             </Box>
         </div >
     );
-
 }
 
 

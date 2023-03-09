@@ -46,6 +46,9 @@ export default function FormCars(props) {
             }).catch((err) => {
                 console.error(err);
             });
+        if (!data.name) {
+            data.name = data.models.mark + ' ' + data.models.model
+        }
         const result = await instance.post("vehicles/create", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
             }).catch((err) => {
@@ -169,7 +172,7 @@ export default function FormCars(props) {
                 <Box sx={{ display: 'flex' }}>
                     <h2>Ajouter un véhicule</h2>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'baseline' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'center' }}>
                     <TextField
                         label="Nom"
                         name="name"
@@ -261,9 +264,7 @@ export default function FormCars(props) {
                                 alt={selectedFile} src={'images/vehicles/' + selectedFile} />
                         </>
                     }
-                    <Box sx={{ display: 'flex', marginTop: '16px' }}>
-                        <Button variant="contained" sx={{ width: 'auto' }} type="submit">Enregistrer</Button>
-                    </Box>
+                        <Button variant="contained" sx={{ width: 'auto', marginTop: '2vh' }} type="submit">Enregistrer</Button>
                 </Box>
             </Box>
         </div >
