@@ -7,12 +7,12 @@ import { useForm } from "react-hook-form";
 import Driver from './Driver'
 import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
 import * as moment from 'moment';
-import FormTrajets from "../form/FromTrajets";
+import FormTrajets from "../form/FormTrajets";
 import * as React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material//Dialog';
 import CloseIcon from '@mui/icons-material/Close';
-import { DialogContent } from "@mui/material";
+import { Avatar, DialogContent, InputAdornment } from "@mui/material";
 import MapIcon from '@mui/icons-material/Map';
 import LogoutIcon from '@mui/icons-material/Logout';
 
