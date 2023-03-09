@@ -55,8 +55,6 @@ export default function FormTrajets(props) {
     }
 
     const onSubmit = async (data) => {
-        console.log("data",data);
-        console.log(departureTime);
 
         const car_split = data.inputCar.split(":");
         const idCar = parseInt(car_split[0]);
@@ -69,12 +67,12 @@ export default function FormTrajets(props) {
         const dataInputDepartureCity = { code: codeDepartureCity , name : nameDepartureCity}
         const resultGetDepartureCity = await instance.post("city/zip_code/name", dataInputDepartureCity, { headers: { "content-type": "application/json" } });
 
+
         const arrivalCitySplit= data.inputArrivalCity.split(",");
         const codeArrivalCity = arrivalCitySplit[0];
         const nameArrivalCity = arrivalCitySplit[1];
-        const dataInputArrivalCity= { code: codeArrivalCity , name : nameArrivalCity}
+        const dataInputArrivalCity = { code: codeArrivalCity , name : nameArrivalCity}
         const resultGetArrivalCity = await instance.post("city/zip_code/name", dataInputArrivalCity, { headers: { "content-type": "application/json" } });
-
         if (departureTime  && arrivalTime && resultGetDepartureCity.data.id && resultGetArrivalCity.data.id && resultGetCar.data.id &&  resultGetCar.data.available_seats) {      
             for (let i = 0; i < datesList.length; i++) {
                 const dataSend = { 
@@ -133,18 +131,19 @@ export default function FormTrajets(props) {
 
     function ListeDesDates({ datesList }) {
         return (
-        <List >
-            {datesList.map((date, index) => (
-              <ListItem>
-                <ListItemIcon>
-                    <CalendarTodayTwoToneIcon />
-                </ListItemIcon>
-                <ListItemText key={index} primary={format(date, "EEEE d MMMM ' 'yyyy", { locale: fr })} />
-              </ListItem>
-            ))}
-          </List>
+            <List>
+                {datesList.map((date, index) => (
+                    <ListItem key={index}>
+                        <ListItemIcon>
+                            <CalendarTodayTwoToneIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={format(date, "EEEE d MMMM ' 'yyyy", { locale: fr })} />
+                    </ListItem>
+                ))}
+            </List>
         );
-      }
+    }
+    
       
 
     const getCar = async () => {
