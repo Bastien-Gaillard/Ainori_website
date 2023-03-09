@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import CreateIcon from '@mui/icons-material/Create';
-import { Avatar, DialogContent, InputAdornment } from "@mui/material";
+import { Avatar, DialogContent, InputAdornment, Tooltip } from "@mui/material";
 import { isTemplateSpan } from "typescript";
 import { ThemeProvider } from "@emotion/react";
 
@@ -155,7 +155,9 @@ export default function Cars() {
                             {responseData.vehicule.map(({ id, name, images, lisence_plate, color, models, available_seats }) => (
                                 <ListItem alignItems="flex-start" sx={{ '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' } }} key={id} onDoubleClick={() => handleClickOpen({ id, name, images, lisence_plate, color, models, available_seats })} >
                                     <ListItemAvatar>
-                                        <Avatar alt={name} src={images && images.path} />
+                                        <Tooltip title={<img alt={name} src={images && images.path}  />} placement='top'>
+                                            <Avatar alt={name} src={images && images.path} />
+                                        </Tooltip>
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={name}
@@ -192,10 +194,10 @@ export default function Cars() {
                     <Dialog
                         open={openAdd}
                         onClose={handleCloseAdd}
-                        sx={{ width: '100%'}}
+                        sx={{ width: '100%' }}
                     >
                         <DialogTitle>
-                            <CloseIcon onClick={handleCloseAdd} sx={{color:'red'}}/>
+                            <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
                         </DialogTitle>
                         <DialogContent>
                             <FormCars handleCloseForm={handleCloseAdd} />
@@ -230,9 +232,12 @@ export default function Cars() {
                         onClose={handleClose}
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
+                        sx={{ width: '100%' }}
                     >
-                        <DialogTitle id="alert-dialog-title">{"Modifier véhicules"}</DialogTitle>
-                        {<FormUpdateVehicule cars={Car} handleCloseForm={handleCloseDelete}/>}
+                        <DialogTitle>
+                            <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
+                        </DialogTitle>
+                        {<FormUpdateVehicule cars={Car} handleCloseForm={handleClose} />}
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">
                                 Retour
