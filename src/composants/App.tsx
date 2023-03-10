@@ -9,6 +9,7 @@ import { ThemeProvider } from '@emotion/react';
 import theme from '../cusotmization/palette';
 
 import Historical from './Historical/Historical'
+import Carpool from './Carpool'
 import Home from './Home';
 import Profil from './Profil/Profil';
 import RoutesElement from './RoutesElement';
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="mycars" element={<Home />} />
           <Route path="route" element={<RoutesElement />} />
           <Route path="historical" element={<Historical />} />
+          <Route path="carpool" element={<Carpool />} />
 
           {/* // <Route path="logout" element={<Home />} />
           // <Route path="messages" element={<Home />} /> */}

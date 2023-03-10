@@ -21,7 +21,7 @@ const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 
-const pages = [{name: 'Covoiturage', navigation: 'travels'}, {name: 'Mes trajets', navigation: 'historical'}];
+const pages = [{name: 'Covoiturage', navigation: 'carpool'}, {name: 'Mes trajets', navigation: 'historical'}];
 
 export default function Nav() {
 
