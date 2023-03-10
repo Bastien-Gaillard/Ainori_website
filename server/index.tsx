@@ -1305,10 +1305,52 @@ app.get('/views/routesComming', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/views/existingRoutes', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.$queryRaw`
+      SELECT * FROM existing_routes WHERE user_id != ${req.user.id} AND remaining_seats!=0 AND status=1 AND (CONCAT(departure_date, ' ', ADDTIME(departure_time, '01:00:00')) > NOW())
+    ORDER BY departure_date DESC , departure_time DESC`
+    console.log(result)
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+// *************************************
+// ROUTES FOR Note
+// *************************************
+
+
+app.get('/notices/user', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.$queryRaw`
+      SELECT notices.score as  "note", notices.comment as "comantaire"  FROM notices WHERE user_id = ${req.user.id};
+    `;
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+app.get('/notices/user/moyen', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.$queryRaw`
+      SELECT notices.user_id as "user",SUM(notices.score)/COUNT(*) as "moyenne" FROM notices  WHERE user_id = ${req.user.id} GROUP BY  user_id;
+    `;
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
 app.get('*', (req, res) => res.sendFile(path.resolve('dist', 'index.html')));
+
 
 app.listen(port, function () {
   console.log('App listening on port: ' + port);
 });
-
 

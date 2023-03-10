@@ -9,6 +9,7 @@ import { ThemeProvider } from '@emotion/react';
 import theme from '../cusotmization/palette';
 
 import Historical from './Routes/Historical/Historical'
+import Carpool from './Carpool'
 import Home from './Home';
 import Profil from './Profil/Profil';
 import { RouteSharp } from '@mui/icons-material';
@@ -28,7 +29,7 @@ export default function App() {
           <Route path="forgot/:token" element={<ForgotPassword />} />
           <Route path="mycars" element={<Home />} />
           <Route path="myroutes" element={<RoutesList />} />
-          <Route path="historical" element={<Historical />} />
+          <Route path="carpool" element={<Carpool />} />
 
           {/* // <Route path="logout" element={<Home />} />
           // <Route path="messages" element={<Home />} /> */}
