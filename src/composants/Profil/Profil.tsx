@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Stack from '@mui/material/Stack';
+import Avis from './Avis';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -75,7 +76,7 @@ export default function Profil({ obtion }) {
                         {buttons}
                     </ButtonGroup>
                     <Box sx={{ width: '68vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} /> : showBox == "vehiclues" ? <Cars /> : <p>Ahhhhhh</p>}
+                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} /> : showBox == "vehiclues" ? <Cars /> : <Avis />}
                     </Box>
                 </Box>
             </>
