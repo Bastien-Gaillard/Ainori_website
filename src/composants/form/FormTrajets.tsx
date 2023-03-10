@@ -10,7 +10,7 @@ const cryptoJs = require('crypto-js');
 import 'dayjs/locale/fr';
 import { format } from 'date-fns';
 import fr from 'date-fns/locale/fr';
-import { DemoContainer , DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -32,69 +32,69 @@ export default function FormTrajets(props) {
 
     const { handleSubmit, formState: { errors }, register } = useForm();
     // set value of input time
-    const [departureTime ,  setDepartureTime ] = useState<Date | null>(null);
-    const [arrivalTime   ,  setArrivalTime   ] = useState<Date | null>(null);
+    const [departureTime, setDepartureTime] = useState<Date | null>(null);
+    const [arrivalTime, setArrivalTime] = useState<Date | null>(null);
     // set value of input city 
-    const [departureCity ,  setDepartureCity ] = useState("");
-    const [arrivalCity   ,  setArrivalCity   ] = useState("");
+    const [departureCity, setDepartureCity] = useState("");
+    const [arrivalCity, setArrivalCity] = useState("");
     // liste date for travel
-    const [datesList      ,  setdatesList      ] = useState([]);
+    const [datesList, setdatesList] = useState([]);
     // liste city in input obtion
-    const [inputDepartureCity  ,  setinputDepartureCity ] = useState([]);
-    const [inputArrivalCity    ,  setInputArrivalCity   ] = useState([]);
+    const [inputDepartureCity, setinputDepartureCity] = useState([]);
+    const [inputArrivalCity, setInputArrivalCity] = useState([]);
     // liste cars in input obtion
-    const [inputCar  ,  setInputCar  ] = useState([]);
+    const [inputCar, setInputCar] = useState([]);
     // Alert value
-    const [showAlert ,  setShowAlert ] = useState(false);
-    const [varAlert  ,  setvarAlert  ] = useState("");
+    const [showAlert, setShowAlert] = useState(false);
+    const [varAlert, setvarAlert] = useState("");
     // open input date
-    const [open      ,  setOpen      ] = useState(false)
+    const [open, setOpen] = useState(false)
 
     const handleClick = () => {
         props.handleCloseForm(); // Call the handleCloseAdd function here
     }
 
     const onSubmit = async (data) => {
-        console.log("data",data);
+        console.log("data", data);
         console.log(departureTime);
 
         const car_split = data.inputCar.split(":");
         const idCar = parseInt(car_split[0]);
-        const dataCar = { id: idCar}
+        const dataCar = { id: idCar }
         const resultGetCar = await instance.post("vehicules/id", dataCar, { headers: { "content-type": "application/json" } });
 
         const departureCitySplit = data.inputDepartureCity.split(",");
         const codeDepartureCity = departureCitySplit[0];
         const nameDepartureCity = departureCitySplit[1];
-        const dataInputDepartureCity = { code: codeDepartureCity , name : nameDepartureCity}
+        const dataInputDepartureCity = { code: codeDepartureCity, name: nameDepartureCity }
         const resultGetDepartureCity = await instance.post("city/zip_code/name", dataInputDepartureCity, { headers: { "content-type": "application/json" } });
 
-        const arrivalCitySplit= data.inputArrivalCity.split(",");
+        const arrivalCitySplit = data.inputArrivalCity.split(",");
         const codeArrivalCity = arrivalCitySplit[0];
         const nameArrivalCity = arrivalCitySplit[1];
-        const dataInputArrivalCity= { code: codeArrivalCity , name : nameArrivalCity}
+        const dataInputArrivalCity = { code: codeArrivalCity, name: nameArrivalCity }
         const resultGetArrivalCity = await instance.post("city/zip_code/name", dataInputArrivalCity, { headers: { "content-type": "application/json" } });
 
-        if (departureTime  && arrivalTime && resultGetDepartureCity.data.id && resultGetArrivalCity.data.id && resultGetCar.data.id &&  resultGetCar.data.available_seats) {      
+        if (departureTime && arrivalTime && resultGetDepartureCity.data.id && resultGetArrivalCity.data.id && resultGetCar.data.id && resultGetCar.data.available_seats) {
             for (let i = 0; i < datesList.length; i++) {
-                const dataSend = { 
-                    arrival_city_id   : resultGetArrivalCity.data.id   , 
-                    departure_city_id : resultGetDepartureCity.data.id , 
-                    departure_time    : new Date(departureTime), 
-                    arrival_time      : new Date(arrivalTime)  , 
-                    departure_date    : new Date(datesList[i])  , 
-                    vehicules_id      : resultGetCar.data.id    , 
-                    available_seats   : resultGetCar.data.available_seats , 
-                    remaining_seats   : resultGetCar.data.available_seats , 
-                    statuts           : true
+                const dataSend = {
+                    arrival_city_id: resultGetArrivalCity.data.id,
+                    departure_city_id: resultGetDepartureCity.data.id,
+                    departure_time: new Date(departureTime),
+                    arrival_time: new Date(arrivalTime),
+                    departure_date: new Date(datesList[i]),
+                    vehicules_id: resultGetCar.data.id,
+                    available_seats: resultGetCar.data.available_seats,
+                    remaining_seats: resultGetCar.data.available_seats,
+                    statuts: true
                 };
-                console.log("dataSend",dataSend);
+                console.log("dataSend", dataSend);
                 const result = await instance.post("route/create", dataSend, { headers: { "content-type": "application/json" } })
-                .then(async (response) => {
-                    console.log('the response', response);
-                }).catch((err) => {
-                    console.error(err);
-                });
+                    .then(async (response) => {
+                        console.log('the response', response);
+                    }).catch((err) => {
+                        console.error(err);
+                    });
             }
             setShowAlert(false);
             handleClick();
@@ -133,46 +133,46 @@ export default function FormTrajets(props) {
 
     function ListeDesDates({ datesList }) {
         return (
-        <List >
-            {datesList.map((date, index) => (
-              <ListItem>
-                <ListItemIcon>
-                    <CalendarTodayTwoToneIcon />
-                </ListItemIcon>
-                <ListItemText key={index} primary={format(date, "EEEE d MMMM ' 'yyyy", { locale: fr })} />
-              </ListItem>
-            ))}
-          </List>
+            <List >
+                {datesList.map((date, index) => (
+                    <ListItem>
+                        <ListItemIcon>
+                            <CalendarTodayTwoToneIcon />
+                        </ListItemIcon>
+                        <ListItemText key={index} primary={format(date, "EEEE d MMMM ' 'yyyy", { locale: fr })} />
+                    </ListItem>
+                ))}
+            </List>
         );
-      }
-      
+    }
+
 
     const getCar = async () => {
         await instance.get('vehicules/user', { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                setInputCar(response.data.vehicule.map(elem => elem.id+": "+elem.name+", "+ elem.available_seats+" Places" ));
-                
+                setInputCar(response.data.vehicule.map(elem => elem.id + ": " + elem.name + ", " + elem.available_seats + " Places"));
+
             }).catch((err) => {
                 console.error(err);
             });
     }
     const getDataCityDeparture = async () => {
-        if(departureCity != ""){
-            await axios.get('https://vicopo.selfbuild.fr/cherche/'+departureCity)
+        if (departureCity != "") {
+            await axios.get('https://vicopo.selfbuild.fr/cherche/' + departureCity)
                 .then(async (response) => {
-                    setinputDepartureCity(response.data.cities.map(elem => elem.code +","+ elem.city ));
-                    
+                    setinputDepartureCity(response.data.cities.map(elem => elem.code + "," + elem.city));
+
                 }).catch((err) => {
                     console.error(err);
                 });
         }
     }
     const getDataCityArrival = async () => {
-        if(arrivalCity != ""){
-            await axios.get('https://vicopo.selfbuild.fr/cherche/'+arrivalCity)
+        if (arrivalCity != "") {
+            await axios.get('https://vicopo.selfbuild.fr/cherche/' + arrivalCity)
                 .then(async (response) => {
-                    setInputArrivalCity(response.data.cities.map(elem => elem.code +","+ elem.city ));
-                    
+                    setInputArrivalCity(response.data.cities.map(elem => elem.code + "," + elem.city));
+
                 }).catch((err) => {
                     console.error(err);
                 });
@@ -254,10 +254,10 @@ export default function FormTrajets(props) {
                         />
                         }
                     />
-                    <LocalizationProvider locale={fr}  dateAdapter={AdapterDayjs}>
-                        <Button 
-                            onClick={() => setOpen(!open)} 
-                            sx={{     
+                    <LocalizationProvider locale={fr} dateAdapter={AdapterDayjs}>
+                        <Button
+                            onClick={() => setOpen(!open)}
+                            sx={{
                                 width: '100%',
                                 marginTop: '10px',
                                 marginBottom: '10px',
@@ -277,7 +277,7 @@ export default function FormTrajets(props) {
                             open={open}
                             selectedDates={datesList}
                             onCancel={() => setOpen(false)}
-                            onSubmit={dates => {setdatesList(dates),setOpen(false)}}
+                            onSubmit={dates => { setdatesList(dates), setOpen(false) }}
                         />
                         {datesList.length > 0 && (
                             <Box
@@ -291,14 +291,14 @@ export default function FormTrajets(props) {
                             </Box>
                         )}
                         <DemoItem label="Departure time">
-                            <MobileTimePicker 
+                            <MobileTimePicker
                                 label="Departure time"
                                 value={departureTime}
                                 onChange={(newValue) => setDepartureTime(newValue)}
                             />
                         </DemoItem>
                         <DemoItem label="Arrival time">
-                        <MobileTimePicker 
+                            <MobileTimePicker
                                 label="Arrival time"
                                 value={arrivalTime}
                                 onChange={(newValue) => setArrivalTime(newValue)}
@@ -310,7 +310,7 @@ export default function FormTrajets(props) {
                     </Box>
                     {showAlert && (
                         <Alert severity="error">
-                        {varAlert}
+                            {varAlert}
                         </Alert>
                     )}
                 </Box>

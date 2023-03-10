@@ -8,12 +8,11 @@ import Index404 from './404/Index';
 import { ThemeProvider } from '@emotion/react';
 import theme from '../cusotmization/palette';
 
-import Historical from './Historical/Historical'
+import Historical from './Routes/Historical/Historical'
 import Home from './Home';
 import Profil from './Profil/Profil';
-import RoutesElement from './RoutesElement';
 import { RouteSharp } from '@mui/icons-material';
-
+import RoutesList from './Routes/RoutesList'
 export default function App() {
 
   //new Route for test page Home.js by thomas
@@ -28,7 +27,7 @@ export default function App() {
           <Route path="forgot" element={<Forgot />} />
           <Route path="forgot/:token" element={<ForgotPassword />} />
           <Route path="mycars" element={<Home />} />
-          <Route path="route" element={<RoutesElement />} />
+          <Route path="myroutes" element={<RoutesList />} />
           <Route path="historical" element={<Historical />} />
 
           {/* // <Route path="logout" element={<Home />} />
