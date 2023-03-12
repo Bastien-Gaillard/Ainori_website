@@ -109,7 +109,7 @@ export default function Avis() {
                                 <Typography variant="h3" >
                                             Vos avis :
                                 </Typography>                 
-                                    <List>
+                                <List sx={{ overflow: 'auto', maxHeight: '35vh' }}>
                                     {responseData.map((data, index) => (
                                         <ListItem key={index}>
                                             <Rating name="read-only" value={data.note} readOnly />

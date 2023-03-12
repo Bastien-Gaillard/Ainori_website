@@ -151,7 +151,7 @@ export default function Cars() {
                         <Typography variant="h3" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px' }}>
                             Vos véhicules
                         </Typography>
-                        <List >
+                        <List sx={{ overflow: 'auto', maxHeight: '50vh' }} >
                             {responseData.vehicule.map(({ id, name, images, lisence_plate, color, models, available_seats }) => (
                                 <ListItem alignItems="flex-start" sx={{ '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' } }} key={id} onDoubleClick={() => handleClickOpen({ id, name, images, lisence_plate, color, models, available_seats })} >
                                     <ListItemAvatar>
