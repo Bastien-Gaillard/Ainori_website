@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import Driver from './Driver'
 import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
 import * as moment from 'moment';
-import FormTrajets from "../form/FormTrajets";
+import FormTrajets from "../../form/FormTrajets";
 import * as React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material//Dialog';
@@ -15,6 +15,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Avatar, DialogContent, InputAdornment } from "@mui/material";
 import MapIcon from '@mui/icons-material/Map';
 import LogoutIcon from '@mui/icons-material/Logout';
+import LeaveRoute from '../features/LeaveRoute';
+import DeleteRoutes from '../features/DeleteRoutes';
 
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
@@ -25,7 +27,7 @@ const instance = axios.create({
 });
 
 
-export default function Historical() {
+export default function Comming() {
 
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
@@ -38,34 +40,52 @@ export default function Historical() {
         setOpenAdd(false);
     };
     const [result, setResult] = useState();
+
+
+
     useEffect(() => {
         const fetchData = async () => {
-            await instance.get('views/routesHistory')
+            await instance.get('user/current/id')
                 .then(async (response) => {
-                    let rows = [];
-                    response.data.forEach(element => {
-                        const date = new Date(element.departure_date);
-                        const today = new Date();
-                        const route = {
-                            id: element.user_has_route_id,
-                            name: element.driver,
-                            departure_city: element.departure_city_code + ', ' + element.departure_city,
-                            arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
-                            departure_date: date,
-                            departure_time: moment(element.departure_time).locale("fr").format('LT'),
-                            arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
-                            remaining_seats: element.remaining_seats,
-                            status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
-                            vehicles: element.vehicles,
-                            driver_id: element.driver_id,
-                            route_id: element.route_id
-                        }
-                        rows.push(route);
-                        setData(rows);
-                    });
+                    const connectUser = response.data.id
+                    await instance.get('views/routesComming')
+                        .then(async (response) => {
+                            let rows = [];
+                            response.data.forEach(element => {
+                                const date = new Date(element.departure_date);
+                                const today = new Date();
+                                let isDriver = false;
+                                if (element.driver == element.participant) {
+                                    isDriver = true;
+                                } else {
+                                    isDriver = false;
+                                }
+                                const route = {
+                                    id: element.user_has_route_id,
+                                    name: element.driver,
+                                    departure_city: element.departure_city_code + ', ' + element.departure_city,
+                                    arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
+                                    departure_date: date,
+                                    departure_time: moment(element.departure_time).locale("fr").format('LT'),
+                                    arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
+                                    remaining_seats: element.remaining_seats,
+                                    status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
+                                    vehicles: element.vehicles,
+                                    driver_id: element.driver_id,
+                                    route_id: element.route_id,
+                                    user_has_route_id: element.user_has_route_id,
+                                    is_driver: element.driver_id == connectUser ? true : false,
+                                }
+                                rows.push(route);
+                                setData(rows);
+                            });
+                        }).catch((err) => {
+                            console.error(err);
+                        });
                 }).catch((err) => {
                     console.error(err);
                 });
+
         };
         fetchData();
     }, [result]);
@@ -82,6 +102,22 @@ export default function Historical() {
         {
             field: 'driver_id',
             headerName: 'Id conducteur',
+            width: 80,
+            hideSortIcons: true,
+            hide: true,
+            filterable: false
+        },
+        {
+            field: 'user_has_route_id',
+            headerName: 'Id participant',
+            width: 80,
+            hideSortIcons: true,
+            hide: true,
+            filterable: false
+        },
+        {
+            field: 'is_driver',
+            headerName: 'Je suis conducteur',
             width: 80,
             hideSortIcons: true,
             hide: true,
@@ -164,17 +200,9 @@ export default function Historical() {
                 const today = moment(new Date());
                 const diffInDays = today.diff(departureDate, 'days');
 
-                let texte = ""
-                moment(departureDate).format('L') == moment(today).format('L')
-                    ? texte = 'Le trajet est aujourd\'hui'
-                    : moment(departureDate).format('L') > moment(today).format('L')
-                        ? texte = 'Le trajet est dans ' + diffInDays + " jours"
-                        : texte = 'Le trajet était il y a ' + diffInDays + " jours"
                 return (
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                        <Tooltip title={texte}>
-                            <p>{moment(params.value).locale("fr").format('LL')}</p>
-                        </Tooltip>
+                        <p>{moment(params.value).locale("fr").format('LL')}</p>
                     </ Box>
 
                 )
@@ -186,13 +214,6 @@ export default function Historical() {
             width: 110,
             hideSortIcons: true,
             hideable: false,
-            renderCell: (params: GridRenderCellParams<any>) => {
-                return (
-                    <Tooltip title={params.value}>
-                        <p>{params.value}</p>
-                    </Tooltip>
-                )
-            },
         },
         {
             field: 'arrival_time',
@@ -209,24 +230,6 @@ export default function Historical() {
             hideable: false,
         },
         {
-            field: 'status',
-            headerName: 'Statut',
-            width: 140,
-            hideSortIcons: true,
-            hideable: false,
-            cellClassName: (params: GridCellParams<string>) => {
-                if (params.value == null) {
-                    return '';
-                }
-
-                return clsx('super-app', {
-                    end: params.value == "Fini",
-                    today: params.value == "Aujourd\'hui",
-                    after: params.value == "À venir",
-                });
-            },
-        },
-        {
             field: 'vehicles',
             headerName: 'Vehicules',
             width: 140,
@@ -236,32 +239,21 @@ export default function Historical() {
         {
             field: 'id',
             headerName: 'Annuler',
-            width: 140,
+            width: 80,
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
-                const leaveRoute = async () => {
-                    if (window.confirm('⚠️ Voulez vous quitter ce trajet ? ⚠️\n Un message sera envoyé au conducteur')) {
-                        await instance.delete('userHasRoute/delete/' + params.value)
-                            .then(async (response) => {
-                                setResult(response.data);
-                            }).catch((err) => {
-                                console.error(err);
-                            });
-                        await instance.put('route/remainingSeats', { id: params.row.route_id, remaining_seats: params.row.remaining_seats + 1})
-                            .then(async (response) => {
-                                setResult(response.data);
-                            }).catch((err) => {
-                                console.error(err);
-                            });
-                    };
-                }
-                return (
-                    moment(params.row.departure_date).format('L') >= moment(new Date()).format('L') && (
-                        <Button onClick={leaveRoute}><LogoutIcon /></Button>
+                console.log(params.row.is_driver);
+                if (params.row.is_driver) {
+                    return (
+                        <DeleteRoutes routeId={params.value} />
                     )
-                )
-            },
+                } else {
+                    return (
+                        <LeaveRoute routeId={params.value} userHasRouteId={params.row.user_has_route_id} remainingSeats={params.row.remaining_seats} />
+                    )
+                }
+            }
         },
     ];
 
@@ -282,6 +274,14 @@ export default function Historical() {
         columnMenuShowColumns: "",
 
     };
+
+    const getRowClassName = (params) => {
+        if (params.row.is_driver) {
+          return 'MuiDataGrid-row-red';
+        } else {
+
+        }
+      };
     return (
         <Container sx={{
             height: '93vh',
@@ -306,21 +306,29 @@ export default function Historical() {
                 color: '#212121',
                 fontWeight: '600',
             },
+            '& .super-app-true': {
+                backgroundColor: '#d7eff2',
+                color: '#212121',
+            },
+            '& .super-app-false': {
+                backgroundColor: '#ffeebb',
+                color: '#212121',
+            },
         }}>
             <Button key="profil" onClick={handleClickOpenAdd}>New Trajet</Button>
             <Dialog
                 open={openAdd}
                 onClose={handleCloseAdd}
-                sx={{ width: '100%'}}
+                sx={{ width: '100%' }}
             >
                 <DialogTitle>
-                    <CloseIcon onClick={handleCloseAdd} sx={{color:'red'}}/>
+                    <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
                 </DialogTitle>
                 <DialogContent>
                     <FormTrajets handleCloseForm={handleCloseAdd} />
                 </DialogContent>
             </Dialog>
-            <h1>Historique de mes trajets</h1>
+            <h1>Trajet à venir</h1>
             {!!data &&
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}
@@ -336,6 +344,7 @@ export default function Historical() {
                         },
                     }}
                     localeText={localizedTextsMap}
+                    getRowClassName={(params) => `super-app-${params.row.is_driver}`}
                 />
             }
         </Container>

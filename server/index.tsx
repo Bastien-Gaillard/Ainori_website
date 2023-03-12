@@ -960,13 +960,14 @@ app.put('/route/enable', authenticateToken, async (req, res) => {
   }
 });
 
-app.delete('/route/delete', authenticateToken, async (req, res) => {
+app.delete('/route/delete/:id', authenticateToken, async (req, res) => {
   try {
     const result = await prisma.routes.delete({
       where: {
-        id: parseInt(req.body.id)
+        id: parseInt(req.params.id)
       }
     });
+    console.log('the result is', result)
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -1275,8 +1276,28 @@ app.post('/create/usersHasRoutes', authenticateToken, async (req, res) => {
 app.get('/views/routesHistory', authenticateToken, async (req, res) => {
   try {
     const result = await prisma.$queryRaw`
-      SELECT * FROM route_history WHERE user_has_route_user_id = ${req.user.id}`
-    console.log(result)
+    SELECT * FROM route_history 
+    WHERE user_has_route_user_id = ${ req.user.id } 
+    AND status = 0 
+    AND (CONCAT(departure_date, ' ', ADDTIME(arrival_time, '01:00:00')) < NOW())
+    OR driver_id = ${req.user.id} AND status = 0 AND (CONCAT(departure_date, ' ', ADDTIME(arrival_time, '01:00:00')) < NOW())
+    ORDER BY departure_date DESC, departure_time DESC`
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('Une erreur est survenue')
+  }
+});
+
+app.get('/views/routesComming', authenticateToken, async (req, res) => {
+  try {
+    const result = await prisma.$queryRaw`
+    SELECT * FROM route_history WHERE user_has_route_user_id = ${ req.user.id }
+    AND status = 1 
+    AND (CONCAT(departure_date, ' ', ADDTIME(departure_time, '01:00:00')) > NOW())
+    OR driver_id = ${req.user.id} AND status = 0 AND (CONCAT(departure_date, ' ', ADDTIME(arrival_time, '01:00:00')) < NOW())
+    ORDER BY departure_date DESC, departure_time DESC`;
+    
     res.send(result);
   } catch (error) {
     console.log(error);

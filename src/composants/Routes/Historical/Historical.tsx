@@ -4,19 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import clsx from 'clsx';
 import { useForm } from "react-hook-form";
-import Driver from './Routes/Historical/Driver'
+import Driver from './Driver'
 import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
 import * as moment from 'moment';
-import FormTrajets from "./form/FormTrajets";
-import FormjoinRoute from './form/FormjoinRoute';
+import FormTrajets from "../../form/FormTrajets";
 import * as React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material//Dialog';
 import CloseIcon from '@mui/icons-material/Close';
 import { Avatar, DialogContent, InputAdornment } from "@mui/material";
 import MapIcon from '@mui/icons-material/Map';
-import { AlertColor } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
+import LeaveRoute from '../features/LeaveRoute';
 
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
@@ -27,13 +26,10 @@ const instance = axios.create({
 });
 
 
-export default function Carpool() {
+export default function Historical() {
 
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
-    const [open, setOpen] = useState<boolean>(false);
-    const [message, setMessage] = useState("Une erreur est survenu");
-    const [severity, setSeverity] = useState<AlertColor>("error");
 
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
@@ -45,35 +41,32 @@ export default function Carpool() {
     const [result, setResult] = useState();
     useEffect(() => {
         const fetchData = async () => {
-            await instance.get('views/existingRoutes')
+            await instance.get('views/routesHistory')
                 .then(async (response) => {
+                    console.log(response.data)
                     let rows = [];
                     response.data.forEach(element => {
-                        console.log("element ",element);
-                        console.log("departure_city ",element.depature_city);
                         const date = new Date(element.departure_date);
                         const today = new Date();
                         const route = {
-                            // id: element.route_id,
+                            id: element.user_has_route_id,
                             name: element.driver,
-                            departure_city: element.departure_city_code + ', ' + element.depature_city,
+                            departure_city: element.departure_city_code + ', ' + element.departure_city,
                             arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
                             departure_date: date,
                             departure_time: moment(element.departure_time).locale("fr").format('LT'),
                             arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
                             remaining_seats: element.remaining_seats,
-                            // status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
+                            status: "Fini",
                             vehicles: element.vehicles,
-                            user_id: element.user_id,
-                            id: element.route_id,
-                            // iduser: element.user_id
+                            driver_id: element.driver_id,
+                            route_id: element.route_id
                         }
                         rows.push(route);
                         setData(rows);
+                        console.log('the data', data)
                     });
-                    console.log("data:",data)
                 }).catch((err) => {
-                    console.log("err "+err);
                     console.error(err);
                 });
         };
@@ -82,7 +75,7 @@ export default function Carpool() {
 
     const columns: GridColDef[] = [
         {
-            field: 'id',
+            field: 'route_id',
             headerName: 'Id route',
             width: 80,
             hideSortIcons: true,
@@ -90,7 +83,7 @@ export default function Carpool() {
             filterable: false
         },
         {
-            field: 'user_id',
+            field: 'driver_id',
             headerName: 'Id conducteur',
             width: 80,
             hideSortIcons: true,
@@ -218,24 +211,22 @@ export default function Carpool() {
             hideSortIcons: true,
             hideable: false,
         },
-        // {
-        //     field: 'status',
-        //     headerName: 'Statut',
-        //     width: 140,
-        //     hideSortIcons: true,
-        //     hideable: false,
-        //     cellClassName: (params: GridCellParams<string>) => {
-        //         if (params.value == null) {
-        //             return '';
-        //         }
+        {
+            field: 'status',
+            headerName: 'Statut',
+            width: 140,
+            hideSortIcons: true,
+            hideable: false,
+            cellClassName: (params: GridCellParams<string>) => {
+                if (params.value == null) {
+                    return '';
+                }
 
-        //         return clsx('super-app', {
-        //             end: params.value == "Fini",
-        //             today: params.value == "Aujourd\'hui",
-        //             after: params.value == "À venir",
-        //         });
-        //     },
-        // },
+                return clsx('super-app', {
+                    end: params.value == "Fini",
+                });
+            },
+        },
         {
             field: 'vehicles',
             headerName: 'Vehicules',
@@ -244,60 +235,15 @@ export default function Carpool() {
             hideable: false,
         },
         // {
-        //     field: 'iduser',
-        //     headerName: "S'ajouter au trajet",
+        //     field: 'id',
+        //     headerName: 'Annuler',
         //     width: 140,
         //     hideSortIcons: true,
         //     hideable: false,
         //     renderCell: (params: GridRenderCellParams<any>) => {
-        //         const joinRoutes = async () => {
-        //             const routeId = 2;
-        //             try {
-        //                 await instance.post('userHasRoute/user/route', { route_id: routeId }, { headers: { "content-type": "application/json" } })
-        //                     .then(async (response) => {
-        //                         if (response.data[0]) {
-        //                             setMessage("Vous êtes déja inscrit au trajet");
-        //                             setSeverity("info");
-        //                             setOpen(true);
-        //                         } else {
-        //                             await instance.post('route', { id: routeId }, { headers: { "content-type": "application/json" } })
-        //                                 .then(async (response) => {
-        //                                     const remainingSeats = response.data.remaining_seats;
-        //                                     if (remainingSeats == 0) {
-        //                                         setMessage("Le trajet n'a plus de place disponible");
-        //                                         setSeverity("error");
-        //                                         setOpen(true);
-        //                                         return;
-        //                                     } else {
-        //                                         await instance.post('userHasRoute/create', { route_id: routeId, status_notice: 0 }, { headers: { "content-type": "application/json" } })
-        //                                             .then(async (response) => {
-        //                                                 await instance.put('route/remainingSeats', { id: routeId, remaining_seats: remainingSeats - 1 }, { headers: { "content-type": "application/json" } })
-        //                                                     .then(async (response) => {
-        //                                                         setMessage("Inscription validée");
-        //                                                         setSeverity("success");
-        //                                                         setOpen(true);
-        //                                                     }).catch((err) => {
-        //                                                         console.error(err);
-        //                                                     });
-        //                                             }).catch((err) => {
-        //                                                 console.error(err);
-        //                                             });
-        //                                     }
-        //                                 }).catch((err) => {
-        //                                     console.error(err);
-        //                                 });
-        //                         }
-        //                     }).catch((err) => {
-        //                         console.error(err);
-        //                     });
-            
-        //             } catch (error) {
-        //                 console.error(error)
-        //             }
-        //         }
         //         return (
         //             moment(params.row.departure_date).format('L') >= moment(new Date()).format('L') && (
-        //                 <Button onClick={joinRoutes}><LogoutIcon /></Button>
+        //                 <LeaveRoute routeId={params.value} remainingSeats={params.row}/>
         //             )
         //         )
         //     },
@@ -359,7 +305,7 @@ export default function Carpool() {
                     <FormTrajets handleCloseForm={handleCloseAdd} />
                 </DialogContent>
             </Dialog>
-            <h1>Liste des covoiturages disponibles</h1>
+            <h1>Historique de mes trajets</h1>
             {!!data &&
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}
