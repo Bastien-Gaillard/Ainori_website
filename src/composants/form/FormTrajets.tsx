@@ -48,13 +48,14 @@ export default function FormTrajets(props) {
     const [inputArrivalCity, setInputArrivalCity] = useState([]);
     // liste cars in input obtion
     const [inputCar, setInputCar] = useState([]);
-
+    
     const [getCarId, setGetCarId] = useState();
     // Alert value
     const [showAlert, setShowAlert] = useState(false);
-    const [valAlert, setvalAlert] = useState("");
     // open input date
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    // Loading
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleClick = () => {
         props.handleCloseForm(); // Call the handleCloseAdd function here
@@ -132,7 +133,9 @@ export default function FormTrajets(props) {
 
     useEffect(() => {
         (async () => {
+            setIsLoading(true);
             await getCar();
+            setIsLoading(false);
         })();
     }, []);
 
@@ -213,7 +216,9 @@ export default function FormTrajets(props) {
     const { ref: inputArrivalCityRef, ...inputArrivalCityProps } = register("inputArrivalCity", {
         required: true,
     });
-    if (inputCar.length <= 0){
+    if (isLoading){
+        return (<Box><h3>Loading...</h3></Box>);
+    } else if (inputCar.length <= 0){
         return (
             <Box sx={{
                 display: "flex",
@@ -265,7 +270,6 @@ export default function FormTrajets(props) {
                                 label="vehicule du Trajet"
                                 inputRef={inputCarRef}
                                 {...inputCarProps}
-                                onChange={(e) => console.log(e.target.value)}
                             />
                             }
                         />
@@ -364,12 +368,14 @@ export default function FormTrajets(props) {
                         {showAlert && (
                         <Alert severity={departureTime && arrivalTime && getDepartureCity && getArrivalCity && getCarId && datesList.length > 0 ? "success" : "error"} >
                             <AlertTitle>{departureTime && arrivalTime && getDepartureCity && getArrivalCity && getCarId && datesList.length > 0 ? "Tous les champs sont remplis" : "Remplir le formulaire"}</AlertTitle>
-                            {!departureTime && "Il faut remplir correctement le champ departureTime."}
-                            {!arrivalTime && "Il faut remplir correctement le champ arrivalTime."}
-                            {!getDepartureCity && "Il y a un problème avec DepartureCity."}
-                            {!getArrivalCity && "Il y a un problème avec ArrivalCity."}
-                            {!getCarId && "Il y a un problème avec la voiture sélectionnée."}
-                            {datesList.length <= 0 && "Il faut sélectionner une date."}
+                            <ul style={{fontSize: "small"}}>
+                            {!departureTime && <li>Il faut remplir correctement le champ departure Time.</li>}
+                            {!arrivalTime && <li>Il faut remplir correctement le champ arrival Time.</li>}
+                            {datesList.length <= 0 && <li>Il faut sélectionner une date.</li>}
+                            {!getDepartureCity && <li>Il y a un problème avec Departure City.</li>}
+                            {!getArrivalCity && <li>Il y a un problème avec Arrival City.</li>}
+                            {!getCarId && <li>Il y a un problème avec la veicule sélectionnée.</li>}
+                            </ul>
                         </Alert>
                         )}
                         <Box sx={{ display: 'flex', marginTop: '16px' }}>
@@ -381,6 +387,5 @@ export default function FormTrajets(props) {
         );
     }
 }
-
 
 
