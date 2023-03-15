@@ -28,13 +28,17 @@ export default function Profil({ obtion }) {
     const [user, setUser] = useState<UserModel>(null);
     const [modify, setModify] = useState<boolean>(false);
     const [disableFirstname, setDisableFirstname] = useState<boolean>(true);
-    const [showBox, setShowBox] = useState(obtion);
+    const [showBox, setShowBox] = useState("");
 
     useEffect(() => {
         (async () => {
             await getUser();
         })();
     }, []);
+    
+    useEffect(() => {
+        setShowBox(obtion);
+    }, [obtion]);
 
     const updateUser = (updatedUser: UserModel) => {
         setUser(updatedUser);

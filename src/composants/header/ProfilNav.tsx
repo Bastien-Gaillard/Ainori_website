@@ -91,7 +91,7 @@ export default function ProfilNav() {
     }
 
     const handleMenuItemClick = (redirectUrl) => {
-        window.location.href = redirectUrl;
+        navigate(redirectUrl);
     };
 
     const handleOpenUserMenu = (event) => {
@@ -132,9 +132,6 @@ export default function ProfilNav() {
         }
     }
 
-    const goMessages = () => {
-        navigate('/messages');
-    }
     return (
         <Box sx={{ flexGrow: 0 }}>
             {cookieUser ? Login : NotLogin}
