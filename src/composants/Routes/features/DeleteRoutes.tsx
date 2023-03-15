@@ -27,16 +27,26 @@ export default function DeleteRoutes({ routeId }) {
     const deleteRoutes = async () => {
         try {
             if (window.confirm('⚠️ Voulez vous supprimer ce trajet ? ⚠️\n Un message sera envoyé aux participants')) {
-                await instance.delete('route/delete/' + routeId)
+                await instance.post('userHasRoute/route/', {route_id: routeId}, { headers: { "content-type": "application/json" } })
                     .then(async (response) => {
-                        setMessage("Trajet supprimé");
-                        setSeverity("success");
-                        setOpen(true);
+                        console.log('response', response.data);
                     }).catch((err) => {
-                        setMessage("Une erreur est survenue");
-                        setSeverity("error");
-                        setOpen(true);
-                        console.error(err);
+                        //         setMessage("Une erreur est survenue");
+                        //         setSeverity("error");
+                        //         setOpen(true);
+                        //         console.error(err);
+                        //     });
+                        // await instance.delete('route/delete/' + routeId)
+                        //     .then(async (response) => {
+                        //         setMessage("Trajet supprimé");
+                        //         setSeverity("success");
+                        //         setOpen(true);
+                        //     }).catch((err) => {
+                        //         setMessage("Une erreur est survenue");
+                        //         setSeverity("error");
+                        //         setOpen(true);
+                        //         console.error(err);
+                        //     });
                     });
             }
         } catch (error) {
