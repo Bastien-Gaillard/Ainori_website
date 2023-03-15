@@ -22,22 +22,28 @@ const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 
-const settings = [{
-    name: "Profile",
-    redirect: "/profil"
-},
-{
-    name: "Messages",
-    redirect: "/messages"
-},
-{
-    name: "Mes voitures",
-    redirect: "/myCars"
-},
-{
-    name: "Deconnexion",
-    redirect: "logout"
-}];
+const settings = [
+    {
+        name: "Profile",
+        redirect: "/Profil"
+    },
+    {
+        name: "Avis",
+        redirect: "/profilAvis"
+    },
+    {
+        name: "Mes voitures",
+        redirect: "/profilVoiturs"
+    },
+    {
+        name: "Messages",
+        redirect: "/messages"
+    },
+    {
+        name: "Deconnexion",
+        redirect: "logout"
+    }
+];
 
 type ImageModel = {
     path: string,
@@ -84,19 +90,12 @@ export default function ProfilNav() {
             });
     }
 
-    const Profil = () => {
-        navigate('/Profil');
-    };
-    const Voiturs = () => {
-        navigate('/profilVoiturs');
+    const handleMenuItemClick = (redirectUrl) => {
+        navigate(redirectUrl);
     };
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
-    };
-
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
     };
 
     const handleCloseUserMenu = () => {
@@ -133,9 +132,6 @@ export default function ProfilNav() {
         }
     }
 
-    const goMessages = () => {
-        navigate('/messages');
-    }
     return (
         <Box sx={{ flexGrow: 0 }}>
             {cookieUser ? Login : NotLogin}
@@ -156,13 +152,13 @@ export default function ProfilNav() {
                 onClose={handleCloseUserMenu}
             >
                 {settings.map((setting) => (
-                    <MenuItem key={setting.name} onClick={handleCloseNavMenu}>
+                    <MenuItem key={setting.name} onClick={() => handleMenuItemClick(setting.redirect)}>
                         {setting.name === 'Messages' ?
                             <Badge badgeContent={4} color="secondary">
-                                <Typography textAlign="center" onClick={goMessages}>{setting.name}</Typography>
+                                <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
                             </Badge>
                             :
-                            <Typography textAlign="center" onClick={setting.name === 'Deconnexion' ? logout : setting.name === 'Profile' ? Profil : setting.name === 'Mes voitures' ? Voiturs : null}>{setting.name}</Typography>
+                            <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
                         }
                     </MenuItem>
                 ))}
