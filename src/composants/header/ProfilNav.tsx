@@ -38,10 +38,6 @@ const settings = [
     {
         name: "Messages",
         redirect: "/messages"
-    },
-    {
-        name: "Deconnexion",
-        redirect: "logout"
     }
 ];
 
@@ -152,16 +148,17 @@ export default function ProfilNav() {
                 onClose={handleCloseUserMenu}
             >
                 {settings.map((setting) => (
-                    <MenuItem key={setting.name} onClick={() => handleMenuItemClick(setting.redirect)}>
-                        {setting.name === 'Messages' ?
-                            <Badge badgeContent={4} color="secondary">
-                                <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
-                            </Badge>
-                            :
-                            <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
-                        }
-                    </MenuItem>
+                <MenuItem key={setting.name} onClick={() => handleMenuItemClick(setting.redirect)}>
+                    {setting.name === 'Messages' ? (
+                    <Badge badgeContent={4} color="secondary">
+                        <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
+                    </Badge>
+                    ) : (
+                    <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
+                    )}
+                </MenuItem>
                 ))}
+                <MenuItem onClick={logout}>Deconnexion</MenuItem>
             </Menu>
         </Box>
     )
