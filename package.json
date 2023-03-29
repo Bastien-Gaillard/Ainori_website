@@ -5,7 +5,7 @@
   "main": "index.tsx",
   "scripts": {
     "start": "node server/index.tsx",
-    "dev": "webpack --mode development && node server/index.tsx",
+    "dev": "webpack --mode development && node server/index.js",
     "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate": "npx prisma generate",

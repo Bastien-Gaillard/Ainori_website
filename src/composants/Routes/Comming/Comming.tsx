@@ -31,6 +31,8 @@ export default function Comming() {
 
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
+    const [result, setResult] = useState();
+    const [showComponent, setShowComponent] = useState("profil")
 
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
@@ -39,8 +41,10 @@ export default function Comming() {
     const handleCloseAdd = () => {
         setOpenAdd(false);
     };
-    const [result, setResult] = useState();
-
+    const buttons = [
+        <Button key="profil" onClick={() => setShowComponent("driver")}>Je conduis</Button>,
+        <Button key="avis" onClick={() => setShowComponent("user")}>Je suis passagé</Button>,
+    ];
 
 
     useEffect(() => {
