@@ -71,7 +71,7 @@ export default function FormCars(props) {
     const handleUpload = async (selectedFile) => {
         const formData = new FormData();
         formData.append("image", selectedFile);
-        await axios.post("upload", formData, { headers: { "Content-Type": "multipart/form-data" } })
+        await axios.post("image/upload", formData, { headers: { "Content-Type": "multipart/form-data" } })
             .then(async (response) => {
                 setValue('image', response.data);
                 setSelectedFile(response.data);

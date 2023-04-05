@@ -29,18 +29,9 @@ const instance = axios.create({
 export default function Historical() {
 
     const [data, setData] = useState<any>();
-    const [openAdd, setOpenAdd] = useState(false);
     const [result, setResult] = useState();
     const [showComponent, setShowComponent] = useState("driver")
-    const handleClickOpenAdd = () => {
-        setOpenAdd(true);
-    };
-
-    const handleCloseAdd = () => {
-        setOpenAdd(false);
-    };
-
-
+ 
     const buttons = [
         <Button key="driver" onClick={() => setShowComponent("driver")}>Je suis conducteur</Button>,
         <Button key="user" onClick={() => setShowComponent("user")}>Je suis passagé</Button>,
@@ -332,19 +323,6 @@ export default function Historical() {
                 fontWeight: '600',
             },
         }}>
-            <Button key="profil" onClick={handleClickOpenAdd}>New Trajet</Button>
-            <Dialog
-                open={openAdd}
-                onClose={handleCloseAdd}
-                sx={{ width: '100%' }}
-            >
-                <DialogTitle>
-                    <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
-                </DialogTitle>
-                <DialogContent>
-                    <FormTrajets handleCloseForm={handleCloseAdd} />
-                </DialogContent>
-            </Dialog>
             <h1>Historique de mes trajets</h1>
             <ButtonGroup
                 sx={{

@@ -16,7 +16,6 @@ import { useState, useEffect } from 'react';
 import theme from '../../cusotmization/palette';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import { Badge } from '@mui/material';
 
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
@@ -97,31 +96,29 @@ export default function ProfilNav() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-    const NotLogin = (
-        <Avatar />
-    );
+
     let Login = null;// set value Login 
     if (cookieUser) {//if user is already connected
         Login = (
             <Tooltip title="Open settings">
-                <Badge badgeContent={4} color="secondary">
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt={user?.lastname} src={user?.image?.path} />
-                    </IconButton>
-                </Badge>
+                {/* <Badge badgeContent={4} color="secondary"> */}
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt={user?.lastname} src={user?.image?.path} />
+                </IconButton>
+                {/* </Badge> */}
 
             </Tooltip>
         )
         if (!!user?.image_id) {//if user as image
             Login = (
                 <Tooltip title="Open settings">
-                    <Badge badgeContent={4} color="secondary">
+                    {/* <Badge badgeContent={4} color="secondary"> */}
 
-                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                            <Avatar alt={user?.lastname} src={user?.image?.path} />
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt={user?.lastname} src={user?.image?.path} />
 
-                        </IconButton>
-                    </Badge>
+                    </IconButton>
+                    {/* </Badge> */}
 
                 </Tooltip>
             )
@@ -130,7 +127,7 @@ export default function ProfilNav() {
 
     return (
         <Box sx={{ flexGrow: 0 }}>
-            {cookieUser ? Login : NotLogin}
+            {cookieUser && Login}
             <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -148,15 +145,15 @@ export default function ProfilNav() {
                 onClose={handleCloseUserMenu}
             >
                 {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={() => handleMenuItemClick(setting.redirect)}>
-                    {setting.name === 'Messages' ? (
-                    <Badge badgeContent={4} color="secondary">
-                        <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
-                    </Badge>
-                    ) : (
-                    <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
-                    )}
-                </MenuItem>
+                    <MenuItem key={setting.name} onClick={() => handleMenuItemClick(setting.redirect)}>
+                        {setting.name === 'Messages' ? (
+                            // <Badge badgeContent={4} color="secondary">
+                            <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
+                            // </Badge>
+                        ) : (
+                            <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
+                        )}
+                    </MenuItem>
                 ))}
                 <MenuItem onClick={logout}>Deconnexion</MenuItem>
             </Menu>

@@ -86,7 +86,9 @@ export default function FormProfil({ user, updateUser }) {
                         alignItems: 'center',
                         width: '42vw',
                         height: '60vh',
-                        boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'
+                        boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+                        minWidth: '360px',
+                        minHeight: '600px'
                     }}
                     noValidate
                     autoComplete="off"
@@ -95,10 +97,14 @@ export default function FormProfil({ user, updateUser }) {
                     <Box sx={{ display: 'flex' }}>
                         <h2>Mes informations</h2>
                         <CreateIcon onClick={changeModify} sx={
-                            { marginLeft: '8px', 
-                            '&:hover': 
-                                { color: '#FFC107',
-                                cursor: 'pointer' } }} />
+                            {
+                                marginLeft: '8px',
+                                '&:hover':
+                                {
+                                    color: '#FFC107',
+                                    cursor: 'pointer'
+                                }
+                            }} />
 
 
                     </Box>

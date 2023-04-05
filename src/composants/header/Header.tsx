@@ -25,7 +25,9 @@ export default function Header() {
 			const link = window.location.pathname;
 			if (link != '/forgot') {
 				if (!link.startsWith('/forgot/')) {
+				
 					const check = await instance.get('user/check');
+					console.log('waw', check.data);
 					if (check.data) {
 						setIsConnected(true);
 						if (link == '/') {
@@ -42,16 +44,16 @@ export default function Header() {
 		})();
 	}, []);
 	return (
-		<AppBar position="static" sx={{ zIndex: 1, height: '7vh' }}>
+		<AppBar position="relative" sx={{ zIndex: 1, height: '60px' }}>
 			<Toolbar>
 				<Link sx={{
 					display: 'flex',
 					justifyContent: 'space-between',
 					alignItems: 'center',
 					color: 'black',
-					textDecoration: 'none'
+					textDecoration: 'none',
 				}} href='/home'>
-					<img width='100%' height='100%' src='logo.png' alt="" />
+					<img style={{width: '34px', height: '34px'}} src='logo.png' alt="" />
 					<h1>Ainori</h1>
 				</Link>
 				<Nav />

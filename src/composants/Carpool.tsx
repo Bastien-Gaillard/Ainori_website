@@ -8,7 +8,7 @@ import Driver from './Routes/Historical/Driver'
 import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
 import * as moment from 'moment';
 import FormTrajets from "./form/FormTrajets";
-import FormjoinRoute from './form/FormjoinRoute';
+import FormjoinRoute from './form/FormJoinRoute';
 import * as React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material//Dialog';
@@ -218,24 +218,6 @@ export default function Carpool() {
             hideSortIcons: true,
             hideable: false,
         },
-        // {
-        //     field: 'status',
-        //     headerName: 'Statut',
-        //     width: 140,
-        //     hideSortIcons: true,
-        //     hideable: false,
-        //     cellClassName: (params: GridCellParams<string>) => {
-        //         if (params.value == null) {
-        //             return '';
-        //         }
-
-        //         return clsx('super-app', {
-        //             end: params.value == "Fini",
-        //             today: params.value == "Aujourd\'hui",
-        //             after: params.value == "À venir",
-        //         });
-        //     },
-        // },
         {
             field: 'vehicles',
             headerName: 'Vehicules',
@@ -243,65 +225,6 @@ export default function Carpool() {
             hideSortIcons: true,
             hideable: false,
         },
-        // {
-        //     field: 'iduser',
-        //     headerName: "S'ajouter au trajet",
-        //     width: 140,
-        //     hideSortIcons: true,
-        //     hideable: false,
-        //     renderCell: (params: GridRenderCellParams<any>) => {
-        //         const joinRoutes = async () => {
-        //             const routeId = 2;
-        //             try {
-        //                 await instance.post('userHasRoute/user/route', { route_id: routeId }, { headers: { "content-type": "application/json" } })
-        //                     .then(async (response) => {
-        //                         if (response.data[0]) {
-        //                             setMessage("Vous êtes déja inscrit au trajet");
-        //                             setSeverity("info");
-        //                             setOpen(true);
-        //                         } else {
-        //                             await instance.post('route', { id: routeId }, { headers: { "content-type": "application/json" } })
-        //                                 .then(async (response) => {
-        //                                     const remainingSeats = response.data.remaining_seats;
-        //                                     if (remainingSeats == 0) {
-        //                                         setMessage("Le trajet n'a plus de place disponible");
-        //                                         setSeverity("error");
-        //                                         setOpen(true);
-        //                                         return;
-        //                                     } else {
-        //                                         await instance.post('userHasRoute/create', { route_id: routeId, status_notice: 0 }, { headers: { "content-type": "application/json" } })
-        //                                             .then(async (response) => {
-        //                                                 await instance.put('route/remainingSeats', { id: routeId, remaining_seats: remainingSeats - 1 }, { headers: { "content-type": "application/json" } })
-        //                                                     .then(async (response) => {
-        //                                                         setMessage("Inscription validée");
-        //                                                         setSeverity("success");
-        //                                                         setOpen(true);
-        //                                                     }).catch((err) => {
-        //                                                         console.error(err);
-        //                                                     });
-        //                                             }).catch((err) => {
-        //                                                 console.error(err);
-        //                                             });
-        //                                     }
-        //                                 }).catch((err) => {
-        //                                     console.error(err);
-        //                                 });
-        //                         }
-        //                     }).catch((err) => {
-        //                         console.error(err);
-        //                     });
-            
-        //             } catch (error) {
-        //                 console.error(error)
-        //             }
-        //         }
-        //         return (
-        //             moment(params.row.departure_date).format('L') >= moment(new Date()).format('L') && (
-        //                 <Button onClick={joinRoutes}><LogoutIcon /></Button>
-        //             )
-        //         )
-        //     },
-        // },
     ];
 
     const CustomToolbar = () => {

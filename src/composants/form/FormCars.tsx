@@ -32,7 +32,7 @@ export default function FormCars(props) {
     }
 
     const onSubmit = async (data) => {
-        const vehicles = await instance.post("model", data, { headers: { "content-type": "application/json" } })
+        const vehicles = await instance.post("model/model", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 data.models = response.data;
             }).catch((err) => {
@@ -65,7 +65,7 @@ export default function FormCars(props) {
     const handleUpload = async (selectedFile) => {
         const formData = new FormData();
         formData.append("image", selectedFile);
-        await axios.post("upload", formData, { headers: { "Content-Type": "multipart/form-data" } })
+        await axios.post("image/upload", formData, { headers: { "Content-Type": "multipart/form-data" } })
             .then(async (response) => {
                 setValue('image', response.data);
                 setSelectedFile(response.data);
@@ -94,7 +94,7 @@ export default function FormCars(props) {
     }, []);
 
     const getDataMarks = async () => {
-        await instance.get('marks')
+        await instance.get('model/marks')
             .then(async (response) => {
                 setMarks(response.data.map(elem => elem.mark));
             }).catch((err) => {
@@ -103,7 +103,7 @@ export default function FormCars(props) {
     }
 
     const getDataModels = async (value) => {
-        await instance.post('models', { mark: value }, { headers: { "content-type": "application/json" } })
+        await instance.post('model/models', { mark: value }, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 setModels(response.data.map(elem => elem.model));
             }).catch((err) => {

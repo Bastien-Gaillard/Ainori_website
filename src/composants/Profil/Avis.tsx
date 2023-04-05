@@ -102,7 +102,7 @@ export default function Avis() {
                                             marginBottom: "20px"
                                         }}>
                                     <Typography variant="h4" >
-                                                Votre note global :
+                                                Moyenne :
                                                 <Rating name="read-only" value={note?.[0].moyenne} readOnly />
                                     </Typography>
                                 </Box>
@@ -111,7 +111,7 @@ export default function Avis() {
                                 </Typography>                 
                                 <List sx={{ overflow: 'auto', maxHeight: '35vh' }}>
                                     {responseData.map((data, index) => (
-                                        <ListItem key={index}>
+                                        <ListItem key={index} sx={{ borderBottom: '1px #ffc107 solid'}}>
                                             <Rating name="read-only" value={data.note} readOnly />
                                             <ListItemText primary={" : "+data.comantaire} />
                                         </ListItem>

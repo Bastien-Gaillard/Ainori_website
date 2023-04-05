@@ -41,9 +41,12 @@ export default function Nav() {
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end' }}>
             {pages.map((page) => (
                 <Button
+                    variant='text'
                     key={page.name}
                     onClick={() => navigate(page.navigation)}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
+                    sx={{ my: 2, color: 'white', display: 'block', '&:hover': {
+                        color: '#ffc107',
+                      } }}
                 >
                     {page.name}
                 </Button>

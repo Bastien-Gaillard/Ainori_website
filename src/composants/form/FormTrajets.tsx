@@ -66,7 +66,7 @@ export default function FormTrajets(props) {
         const car_split = data.inputCar.split(":");
         const idCar = parseInt(car_split[0]);
         const dataCar = { id: idCar }
-        const resultGetCar = await instance.post("vehicules/id", dataCar, { headers: { "content-type": "application/json" } });
+        const resultGetCar = await instance.post("vehicles/id", dataCar, { headers: { "content-type": "application/json" } });
         setGetCarId(resultGetCar.data.id);
 
         const departureCitySplit = data.inputDepartureCity.split(",");
@@ -74,6 +74,7 @@ export default function FormTrajets(props) {
         const nameDepartureCity = departureCitySplit[1];
         const dataInputDepartureCity = { code: codeDepartureCity, name: nameDepartureCity }
         const resultGetDepartureCity = await instance.post("city/zip_code/name", dataInputDepartureCity, { headers: { "content-type": "application/json" } });
+        console.log(resultGetDepartureCity);
         setGetDepartureCity(resultGetDepartureCity.data.id);
 
         const arrivalCitySplit= data.inputArrivalCity.split(",");
@@ -176,7 +177,7 @@ export default function FormTrajets(props) {
       
 
     const getCar = async () => {
-        await instance.get('vehicules/user', { headers: { "content-type": "application/json" } })
+        await instance.get('vehicles/user', { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 setInputCar(response.data.vehicule.map(elem => elem.id + ": " + elem.name + ", " + elem.available_seats + " Places"));
 
@@ -185,11 +186,14 @@ export default function FormTrajets(props) {
             });
     }
     const getDataCityDeparture = async () => {
+        console.log(departureCity)
+
         if (departureCity != "") {
             await axios.get('https://vicopo.selfbuild.fr/cherche/' + departureCity)
                 .then(async (response) => {
+                    console.log('the response', response);
                     setinputDepartureCity(response.data.cities.map(elem => elem.code + "," + elem.city));
-
+                    console.log(response.data.cities);
                 }).catch((err) => {
                     console.error(err);
                 });

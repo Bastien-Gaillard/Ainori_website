@@ -322,20 +322,7 @@ export default function Comming() {
                 backgroundColor: '#ffeebb',
                 color: '#212121',
             },
-        }}>
-            <Button key="profil" onClick={handleClickOpenAdd}>New Trajet</Button>
-            <Dialog
-                open={openAdd}
-                onClose={handleCloseAdd}
-                sx={{ width: '100%' }}
-            >
-                <DialogTitle>
-                    <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
-                </DialogTitle>
-                <DialogContent>
-                    <FormTrajets handleCloseForm={handleCloseAdd} />
-                </DialogContent>
-            </Dialog>
+        }}>         
             <h1>Trajet à venir</h1>
             {!!data &&
                 <DataGrid
