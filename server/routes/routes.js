@@ -217,6 +217,7 @@ router.put('/enable', authenticateToken, async (req, res) => {
 
 router.delete('/delete/:id', authenticateToken, async (req, res) => {
   try {
+    console.log('req.params', req.params)
     const result = await prisma.routes.delete({
       where: {
         id: parseInt(req.params.id)

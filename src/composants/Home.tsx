@@ -6,6 +6,7 @@ import * as React from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import axios from 'axios';
 import * as moment from 'moment';
+import * as io from "socket.io-client";
 
 
 const instance = axios.create({
@@ -13,7 +14,7 @@ const instance = axios.create({
 });
 
 export default function Home() {
-
+  const socket = io.connect('http://localhost:3001');
   const RideCard = ({ title, description }) => {
     return (
       <Box sx={{ p: 2 }}>

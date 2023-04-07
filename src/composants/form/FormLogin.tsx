@@ -23,17 +23,20 @@ export default function FormLogin() {
         const user = await instance.post('login', data, { headers: { "content-type": "application/json" } })
             .then((response) => {
                 console.log(response.data)
-                if (response.data == "ok") {
-                    setCookie('user', true, { path: '/' })
-                    navigate('/home');
-                } else if(response.data == null){
+
+                if (response.data == null) {
                     setInfo(<Alert severity="error">Identifiant ou mot de passe invalide</Alert>);
-                } else if(response.data == "disable"){
+                } else if (response.data == "disable") {
                     setInfo(<Alert severity="error">Le compte est désactivé</Alert>);
+                } else {
+                    setCookie('user', true, { path: '/' });
+                    localStorage.setItem('userName', response.data.firstname);
+                    navigate('/home');
                 }
             }).catch((err) => {
                 console.error(err);
             });
+
     }
     return (
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>

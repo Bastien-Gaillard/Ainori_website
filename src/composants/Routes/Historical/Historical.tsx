@@ -57,7 +57,6 @@ export default function Historical() {
                                 departure_time: moment(element.departure_time).locale("fr").format('LT'),
                                 arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
                                 remaining_seats: element.remaining_seats,
-                                status: "Fini",
                                 vehicles: element.vehicles,
                                 driver_id: element.driver_id,
                                 route_id: element.route_id
@@ -241,22 +240,6 @@ export default function Historical() {
             width: 70,
             hideSortIcons: true,
             hideable: false,
-        },
-        {
-            field: 'status',
-            headerName: 'Statut',
-            width: 140,
-            hideSortIcons: true,
-            hideable: false,
-            cellClassName: (params: GridCellParams<string>) => {
-                if (params.value == null) {
-                    return '';
-                }
-
-                return clsx('super-app', {
-                    end: params.value == "Fini",
-                });
-            },
         },
         {
             field: 'vehicles',

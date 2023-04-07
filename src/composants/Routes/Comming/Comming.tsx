@@ -5,7 +5,7 @@ import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar
 import clsx from 'clsx';
 import { useForm } from "react-hook-form";
 import Driver from './Driver'
-import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
+import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button, ButtonGroup } from '@mui/material';
 import * as moment from 'moment';
 import FormTrajets from "../../form/FormTrajets";
 import * as React from 'react';
@@ -32,8 +32,12 @@ export default function Comming() {
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
     const [result, setResult] = useState();
-    const [showComponent, setShowComponent] = useState("profil")
+    const [showComponent, setShowComponent] = useState("driver")
+    const [deleteRoutes, setDeleteRoutes] = useState(false);
 
+    const handleDeleteRoutesdValue = (value) => {
+        setDeleteRoutes(value);
+    };
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
     };
@@ -49,50 +53,68 @@ export default function Comming() {
 
     useEffect(() => {
         const fetchData = async () => {
-            await instance.get('user/current/id')
-                .then(async (response) => {
-                    const connectUser = response.data.id
-                    await instance.get('views/routesComming')
-                        .then(async (response) => {
-                            let rows = [];
-                            response.data.forEach(element => {
-                                const date = new Date(element.departure_date);
-                                const today = new Date();
-                                let isDriver = false;
-                                if (element.driver == element.participant) {
-                                    isDriver = true;
-                                } else {
-                                    isDriver = false;
-                                }
-                                const route = {
-                                    id: element.user_has_route_id,
-                                    name: element.driver,
-                                    departure_city: element.departure_city_code + ', ' + element.departure_city,
-                                    arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
-                                    departure_date: date,
-                                    departure_time: moment(element.departure_time).locale("fr").format('LT'),
-                                    arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
-                                    remaining_seats: element.remaining_seats,
-                                    status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
-                                    vehicles: element.vehicles,
-                                    driver_id: element.driver_id,
-                                    route_id: element.route_id,
-                                    user_has_route_id: element.user_has_route_id,
-                                    is_driver: element.driver_id == connectUser ? true : false,
-                                }
-                                rows.push(route);
-                                setData(rows);
-                            });
-                        }).catch((err) => {
-                            console.error(err);
-                        });
-                }).catch((err) => {
-                    console.error(err);
-                });
+            if (showComponent == 'driver') {
+                await instance.get('views/routesCommingDriver')
+                    .then(async (response) => {
+                        let rows = [];
+                        response.data.forEach(element => {
+                            const date = new Date(element.departure_date);
+                            const today = new Date();
+                            let isDriver = false;
 
-        };
+                            const route = {
+                                id: element.user_has_route_id,
+                                name: element.driver,
+                                departure_city: element.departure_city_code + ', ' + element.departure_city,
+                                arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
+                                departure_date: date,
+                                departure_time: moment(element.departure_time).locale("fr").format('LT'),
+                                arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
+                                remaining_seats: element.remaining_seats,
+                                status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
+                                vehicles: element.vehicles,
+                                driver_id: element.driver_id,
+                                route_id: element.route_id,
+                                is_driver: true
+                            }
+                            rows.push(route);
+                            setData(rows);
+                        });
+                    }).catch((err) => {
+                        console.error(err);
+                    });
+            } else {
+                await instance.get('views/routesCommingUser')
+                    .then(async (response) => {
+                        let rows = [];
+                        response.data.forEach(element => {
+                            const date = new Date(element.departure_date);
+                            const today = new Date();                           
+                            const route = {
+                                id: element.user_has_route_id,
+                                name: element.driver,
+                                departure_city: element.departure_city_code + ', ' + element.departure_city,
+                                arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
+                                departure_date: date,
+                                departure_time: moment(element.departure_time).locale("fr").format('LT'),
+                                arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
+                                remaining_seats: element.remaining_seats,
+                                status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
+                                vehicles: element.vehicles,
+                                driver_id: element.driver_id,
+                                route_id: element.route_id,
+                                is_driver: false
+                            }
+                            rows.push(route);
+                            setData(rows);
+                        });
+                    }).catch((err) => {
+                        console.error(err);
+                    });
+            }
+        }
         fetchData();
-    }, [result]);
+    }, [result, showComponent, deleteRoutes]);
 
     const columns: GridColDef[] = [
         {
@@ -251,8 +273,7 @@ export default function Comming() {
                 if (params.row.is_driver) {
                     return (
                         <Box>
-                            <DeleteRoutes routeId={params.value} />
-                            {params.value}
+                            <DeleteRoutes onDeleteRoutesValue={handleDeleteRoutesdValue} routeId={params.row.route_id} />
                         </Box>
 
                     )
@@ -298,33 +319,19 @@ export default function Comming() {
             flexDirection: 'column',
             '@media (min-width: 1200px)': {
                 maxWidth: '100%',
-            },
-            '& .super-app.end': {
-                backgroundColor: '#b8f2b2',
-                color: '#212121',
-                fontWeight: '600',
-            },
-            '& .super-app.today': {
-                backgroundColor: '#b2ebf2',
-                color: '#212121',
-                fontWeight: '600',
-            },
-            '& .super-app.after': {
-                backgroundColor: '#f2d2b2',
-                color: '#212121',
-                fontWeight: '600',
-            },
-            '& .super-app-true': {
-                backgroundColor: '#d7eff2',
-                color: '#212121',
-            },
-            '& .super-app-false': {
-                backgroundColor: '#ffeebb',
-                color: '#212121',
-            },
-        }}>         
+            }
+        }}>
             <h1>Trajet à venir</h1>
-            {!!data &&
+            <ButtonGroup
+                sx={{
+                    width: '12vw', marginLeft: '2vw', marginTop: '2vh'
+                }}
+                orientation="vertical"
+                aria-label="vertical outlined button group"
+            >
+                {buttons}
+            </ButtonGroup>
+            {!!data ?
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}
                     rows={data}
@@ -339,9 +346,8 @@ export default function Comming() {
                         },
                     }}
                     localeText={localizedTextsMap}
-                    getRowClassName={(params) => `super-app-${params.row.is_driver}`}
                 />
-            }
+            : <p>Aucun trajet</p>}
         </Container>
     );
 }
