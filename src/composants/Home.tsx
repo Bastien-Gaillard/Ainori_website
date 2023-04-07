@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import * as React from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import axios from 'axios';
+import CoMap from './CoMap';
 import * as moment from 'moment';
+import { makeStyles } from '@mui/styles';
 
 
 const instance = axios.create({
@@ -14,15 +16,16 @@ const instance = axios.create({
 
 export default function Home() {
 
-  const RideCard = ({ title, description }) => {
+  const RideCard = ({ title, description,city ,city2}) => {
     return (
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 2,border: "black 1px solid",borderRadius: "10px",background: "#00bcd41c" }}>
         <Typography variant="h6" gutterBottom sx={{ mt: 1, fontWeight: 'bold', color: '#333' }}>
           {title}
         </Typography>
         <Typography variant="body2" gutterBottom sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
           {description}
         </Typography>
+        <CoMap city={city} city2={city2} />
         <Button variant="contained" sx={{ 
           mt: 2, 
           borderRadius: '50px', 
@@ -37,13 +40,12 @@ export default function Home() {
       </Box>
     );
   };
-  
   const RideCardWrapper = ({ rides }) => {
     return (
       <Grid container spacing={2}>
         {rides.map((ride) => (
-          <Grid item xs={12} sm={6} md={4} key={ride.id}>
-            <RideCard title={ride.departure_city + ' - ' + ride.arrival_city} description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time} />
+          <Grid item xs={12} sm={6} md={4} key={ride.id}  >
+            <RideCard   title={ride.departure_city + ' - ' + ride.arrival_city} description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time } city={ride.departure_city} city2={ride.arrival_city}/>
           </Grid>
         ))}
       </Grid>
