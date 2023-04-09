@@ -12,7 +12,7 @@ const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 
-export default function DeleteRoutes({ routeId }) {
+export default function DeleteRoutes({ routeId, onDeleteRoutesValue }) {
 
     console.log(routeId);
     const [open, setOpen] = useState<boolean>(false);
@@ -26,10 +26,23 @@ export default function DeleteRoutes({ routeId }) {
 
     const deleteRoutes = async () => {
         try {
-            if (window.confirm('⚠️ Voulez vous supprimer ce trajet ? ⚠️\n Un message sera envoyé aux participants')) {
-                await instance.post('userHasRoute/route/', {route_id: routeId}, { headers: { "content-type": "application/json" } })
+            if (window.confirm('⚠️ Voulez vous supprimer ce trajet ? ⚠️\n Un message sera envoyé aux participants' + routeId)) {
+                await instance.post('userHasRoute/route', { route_id: routeId }, { headers: { "content-type": "application/json" } })
                     .then(async (response) => {
-                        console.log('response', response.data);
+                        console.log(response);
+                        await instance.delete('route/delete/' + routeId)
+                            .then(async (response) => {
+                                console.log(response);
+                                setMessage("Trajet supprimé");
+                                setSeverity("success");
+                                setOpen(true);
+                                onDeleteRoutesValue(true);
+                            }).catch((err) => {
+                                setMessage("Une erreur est survenue");
+                                setSeverity("error");
+                                setOpen(true);
+                                console.error(err);
+                            });
                     }).catch((err) => {
                         //         setMessage("Une erreur est survenue");
                         //         setSeverity("error");

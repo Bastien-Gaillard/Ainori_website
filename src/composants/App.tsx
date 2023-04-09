@@ -14,6 +14,11 @@ import Home from './Home';
 import Profil from './Profil/Profil';
 import { RouteSharp } from '@mui/icons-material';
 import RoutesList from './Routes/RoutesList'
+import Messages from './Messages/Index';
+import * as io from "socket.io-client";
+const socket = io.connect('http://localhost:3001');
+// import socketIO from 'socket.io-client';
+// const socket2 = socketIO.connect('http://localhost:4000');
 export default function App() {
 
   //new Route for test page Home.js by thomas
@@ -30,7 +35,7 @@ export default function App() {
           <Route path="mycars" element={<Home />} />
           <Route path="myroutes" element={<RoutesList />} />
           <Route path="carpool" element={<Carpool />} />
-
+          <Route path="messages" element={<Messages socket={socket}/>} />
           {/* // <Route path="logout" element={<Home />} />
           // <Route path="messages" element={<Home />} /> */}
           <Route path="home" element={<Home />} />

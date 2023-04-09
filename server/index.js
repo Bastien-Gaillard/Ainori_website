@@ -17,6 +17,7 @@ var FileStore = require('session-file-store')(sessions);
 const port = process.env.PORT || 3001;
 const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
+const socket = require('./socket');
 const { SHA256 } = require('crypto-js');
 // const cleanSessions = require('./cleanSessions');
 const mockResponse = {
@@ -34,6 +35,7 @@ const routesRouter = require('./routes/routes');
 const createRouter = require('./routes/routes');
 const noticesRouter = require('./routes/notices');
 const userHasRouteRouter = require('./routes/userHasRoute');
+const messagesRouter = require('./routes/messages');
 
 require('dotenv').config();
 
@@ -106,7 +108,7 @@ const storageVehicles = multer.diskStorage({
 });
 const uploadVehicles = multer({ storage: storageVehicles });
 const uploadPut = multer();
-
+const http = require('http').Server(app);
 //Use session
 
 // const specs = swaggerJsdoc(options);
@@ -141,8 +143,11 @@ app.get('/', (req, res) => {
 });
 //Clean sessions
 // cleanSessions();
-
-
+const socketIO = require('socket.io')(http, {
+  cors: {
+    origin: "http://localhost:3001"
+  }
+});
 
 app.use('/city', citiesRouter);
 app.use('/image', imagesRouter);
@@ -154,6 +159,7 @@ app.use('/userHasRoute', userHasRouteRouter);
 app.use('/views', viewsRouter);
 app.use('/create', createRouter);
 app.use('/notices', noticesRouter)
+app.use('/messages', messagesRouter)
 
 
 app.get('/logout', (req, res) => {
@@ -203,7 +209,7 @@ app.post('/login', async (req, res) => {
   req.session.token = accessToken;
   req.session.save();
 
-  res.send('ok');
+  res.send(user);
 
 });
 
@@ -264,9 +270,25 @@ app.put('/forgot/update', async (req, res) => {
   res.send('success');
 });
 
+
+socketIO.on('connection', (socket) => {
+  console.log(`⚡: ${socket.id} user just connected!`);
+
+  socket.on('message', (data) => {
+    console.log(data);
+    socketIO.emit('messageResponse', data);
+  });
+
+
+  socket.on('disconnect', () => {
+    console.log('🔥: A user disconnected');
+  });
+});
+
+
 app.get('*', (req, res) => res.sendFile(path.resolve('dist', 'index.html')));
 
-app.listen(port, function () {
+http.listen(port, function () {
   console.log('App listening on port: ' + port);
 });
 

@@ -41,6 +41,7 @@ router.post('', authenticateToken, async (req, res) => {
 });
 router.post('/route', authenticateToken, async (req, res) => {
   try {
+    console.log(req.body);
     const result = await prisma.users_has_routes.findMany({
       where: {
         route_id: parseInt(req.body.route_id)
@@ -118,10 +119,10 @@ router.put('/update', authenticateToken, async (req, res) => {
 
 router.delete('/userHasRoute/delete/:id', authenticateToken, async (req, res) => {
   try {
-    const isUser = await prisma.users_has_routes.findUnique(
+    const isUser = await prisma.users_has_routes.deleteMany(
       {
         where: {
-          id: parseInt(req.params.id)
+          route_id: parseInt(req.params.id)
         },
         select: {
           user_id: true

@@ -8,6 +8,7 @@ import axios from 'axios';
 import RideCard from './RideCard';
 import * as moment from 'moment';
 import { makeStyles } from '@mui/styles';
+import * as io from "socket.io-client";
 
 
 const instance = axios.create({
@@ -15,7 +16,7 @@ const instance = axios.create({
 });
 
 export default function Home() {
-
+  const socket = io.connect('http://localhost:3001');
   const [rides, setRides] = React.useState([]);
   const RideCardWrapper = ({ rides }) => {
     console.log(rides);
