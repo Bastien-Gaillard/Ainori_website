@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import * as React from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import axios from 'axios';
-import CoMap from './CoMap';
+import RideCard from './RideCard';
 import * as moment from 'moment';
 import { makeStyles } from '@mui/styles';
 
@@ -16,68 +16,58 @@ const instance = axios.create({
 
 export default function Home() {
 
-  const RideCard = ({ title, description,city ,city2}) => {
-    return (
-      <Box sx={{ p: 2,border: "black 1px solid",borderRadius: "10px",background: "#00bcd41c" }}>
-        <Typography variant="h6" gutterBottom sx={{ mt: 1, fontWeight: 'bold', color: '#333' }}>
-          {title}
-        </Typography>
-        <Typography variant="body2" gutterBottom sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
-          {description}
-        </Typography>
-        <CoMap city={city} city2={city2} />
-        <Button variant="contained" sx={{ 
-          mt: 2, 
-          borderRadius: '50px', 
-          transition: 'all 0.3s ease-in-out', 
-          '&:hover': { 
-            backgroundColor: '#FFFFFF', 
-            color: '#FF5722' 
-          }
-        }}>
-          Réserver
-        </Button>
-      </Box>
-    );
-  };
+  const [rides, setRides] = React.useState([]);
   const RideCardWrapper = ({ rides }) => {
+    console.log(rides);
+
     return (
       <Grid container spacing={2}>
         {rides.map((ride) => (
           <Grid item xs={12} sm={6} md={4} key={ride.id}  >
-            <RideCard   title={ride.departure_city + ' - ' + ride.arrival_city} description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time } city={ride.departure_city} city2={ride.arrival_city}/>
+            <RideCard   
+              title={ride.departure_city + ' - ' + ride.arrival_city} 
+              description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time } 
+              city={ride.departure_city} 
+              departure_city_lat={ride.departure_city_lat}
+              departure_city_lng={ride.departure_city_lng}
+              city2={ride.arrival_city} 
+              arrival_city_lat={ride.arrival_city_lat}
+              arrival_city_lng={ride.arrival_city_lng}
+              id={ride.id}
+              onSubmitCallback={fetchData} // Passer la fonction de rappel
+            />
           </Grid>
         ))}
       </Grid>
     );
   };
-  
-  const RideList = () => {
-    const [rides, setRides] = React.useState([]);
-  
-    React.useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get('views/existingRoutes');
-          const rides = response.data.map((ride) => ({
-            id: ride.id,
-            name: ride.driver,
-            departure_city: ride.depature_city,
-            arrival_city: ride.arrival_city,
-            departure_date: moment(ride.departure_date).format('D MMMM'),
-            departure_time: moment(ride.departure_time).locale('fr').format('LT'),
-            arrival_time: moment(ride.arrival_time).locale('fr').format('LT'),
-          }));
-          setRides(rides.slice(0, 6)); // Limiter à 6 trajets
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchData();
-    }, []);
-  
-    return <RideCardWrapper rides={rides} />;
+  const fetchData = async () => {
+    console.log("fetchData called");
+    try {
+      const response = await axios.get('views/propRoutes');
+      console.log(response);
+      const rides = response.data.map((ride) => ({
+        id: ride.route_id,
+        name: ride.driver,
+        departure_city: ride.departure_city,
+        departure_city_lat: ride.departure_city_lat,
+        departure_city_lng: ride.departure_city_lng,
+        arrival_city: ride.arrival_city,
+        arrival_city_lat: ride.arrival_city_lat,
+        arrival_city_lng: ride.arrival_city_lng,
+        departure_date: moment(ride.departure_date).format('D MMMM'),
+        departure_time: moment(ride.departure_time).locale('fr').format('LT'),
+        arrival_time: moment(ride.arrival_time).locale('fr').format('LT'),
+      }));
+      setRides(rides.slice(0, 6)); // Limiter à 6 trajets
+    } catch (error) {
+      console.error(error);
+    }
   };
+  useEffect(() => { 
+    fetchData();
+  }, []);
+  
   return (
       <Box sx={{ p: 2 }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', width: '100%' }}>
@@ -91,7 +81,7 @@ export default function Home() {
             Consultez ci-dessous les dernières offres de covoiturage proposées par nos utilisateurs :
           </Typography>
         </div>
-        <RideList />
+        <RideCardWrapper rides={rides} />
       </Box>
   );
   

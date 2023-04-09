@@ -90,4 +90,28 @@ router.get('/existingRoutes', authenticateToken, async (req, res) => {
     }
 });
 
+router.get('/propRoutes', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+        SELECT *
+        FROM good_routes e
+        WHERE e.user_id != ${req.user.id} 
+            AND e.remaining_seats != 0 
+            AND e.status = 1 
+            AND (CONCAT(e.departure_date, ' ', ADDTIME(e.departure_time, '01:00:00')) > NOW())
+            AND e.route_id NOT IN (
+                SELECT route_id
+                FROM users_has_routes
+                WHERE user_id = ${req.user.id}
+        )
+        ORDER BY e.departure_date DESC, e.departure_time DESC;
+        `
+        console.log(result)
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
 module.exports = router;
