@@ -147,6 +147,37 @@ router.post('/conversation', authenticateToken, async (req, res) => {
     }
 });
 
+router.post('/propRoutesFilter', authenticateToken, async (req, res) => {
+    
+    try {
+        const result = await prisma.$queryRaw`
+
+            SELECT gr.* 
+            FROM good_routes gr 
+            WHERE gr.departure_city_code IN ( 
+                SELECT v2.zip_code 
+                FROM cities AS v1 
+                JOIN cities AS v2 
+                ON v1.zip_code = ${req.body.code}  
+                AND v1.name = ${req.body.city}  
+                AND (6371 * ACOS(COS(RADIANS(v1.gps_lat)) * COS(RADIANS(v2.gps_lat)) * COS(RADIANS(v2.gps_lng) - RADIANS(v1.gps_lng)) + SIN(RADIANS(v1.gps_lat)) * SIN(RADIANS(v2.gps_lat)))) <= 7 
+            ) 
+            AND gr.user_id != ${req.user.id} 
+            AND gr.remaining_seats != 0 
+            AND gr.status = 1 
+            AND CONCAT(gr.departure_date, ' ', ADDTIME(gr.departure_time, '01:00:00')) > NOW() 
+            AND gr.route_id NOT IN ( 
+                SELECT route_id FROM users_has_routes WHERE user_id = ${req.user.id} 
+            ) 
+            ORDER BY gr.departure_date DESC, gr.departure_time DESC;
+        `
+        res.send(result);
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
 
 router.get('/propRoutes', authenticateToken, async (req, res) => {
     try {
@@ -164,7 +195,6 @@ router.get('/propRoutes', authenticateToken, async (req, res) => {
         )
         ORDER BY e.departure_date DESC, e.departure_time DESC;
         `
-        console.log(result)
         res.send(result);
     } catch (error) {
         console.log(error);

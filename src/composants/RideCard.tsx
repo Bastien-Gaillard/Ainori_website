@@ -8,6 +8,7 @@ import axios from 'axios';
 import CoMap from './CoMap';
 import * as moment from 'moment';
 import { makeStyles } from '@mui/styles';
+import { Snackbar, Alert } from '@mui/material';
 
 
 const instance = axios.create({
@@ -23,6 +24,7 @@ export default function RideCard(Props) {
         const route = await instance.post("userHasRoute/create", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 console.log("ok");
+                Props.handleOpen();
                 Props.onSubmitCallback();
             }).catch((err) => {
                 console.error(err);
