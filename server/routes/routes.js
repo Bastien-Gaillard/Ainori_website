@@ -58,13 +58,14 @@ router.get('/routes/id', authenticateToken, async (req, res) => {
         statuts: true
       }
     });
+    console.log('the result is', result);
     res.send(result);
   } catch (error) {
     console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
-router.post('', authenticateToken, async (req, res) => {
+router.post('/route', authenticateToken, async (req, res) => {
   try {
     const result = await prisma.routes.findUnique({
       where: {

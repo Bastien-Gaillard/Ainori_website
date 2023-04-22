@@ -15,12 +15,25 @@ const instance = axios.create({
 	baseURL: 'http://localhost:3001/',
 });
 
-export default function Header() {
+export default function Header({ socket, updateImage }) {
 	const [cookies] = useCookies();
 	const [isConnected, setIsConnected] = useState(false);
 	const [user, setUser] = useState();
+	const [image, setImage] = useState();
+
 	let navigate = useNavigate();
 	const cookieUser = cookies.user;
+
+	const [navValue, setNavValue] = useState('');
+
+	const handleNavChange = (newValue) => {
+	  setNavValue(newValue);
+	};
+
+	useEffect(() => {
+		console.log('image in header', updateImage);
+	}, updateImage)
+
 	useEffect(() => {
 		(async () => {
 			const link = window.location.pathname;
@@ -28,7 +41,6 @@ export default function Header() {
 				if (!link.startsWith('/forgot/')) {
 				
 					const check = await instance.get('user/check');
-					console.log('waw', check.data);
 					if (check.data) {
 						setIsConnected(true);
 						if (link == '/') {
@@ -57,8 +69,8 @@ export default function Header() {
 					<img style={{width: '34px', height: '34px'}} src='logo.png' alt="" />
 					<h1>Ainori</h1>
 				</Link>
-				<Nav />
-				<ProfilNav />
+				<Nav value={navValue}/>
+				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage}/>
 			</Toolbar>
 		</AppBar>
     )
@@ -75,8 +87,8 @@ export default function Header() {
 					<img style={{width: '34px', height: '34px'}} src='logo.png' alt="" />
 					<h1>Ainori</h1>
 				</Link>
-				<Nav />
-				<ProfilNav />
+				<Nav value={navValue}/>
+				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage}/>
 			</Toolbar>
 		</AppBar>
     )

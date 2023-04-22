@@ -22,8 +22,6 @@ export default function FormLogin() {
         // Check if value of email and password exist in database
         const user = await instance.post('login', data, { headers: { "content-type": "application/json" } })
             .then((response) => {
-                console.log(response.data)
-
                 if (response.data == null) {
                     setInfo(<Alert severity="error">Identifiant ou mot de passe invalide</Alert>);
                 } else if (response.data == "disable") {

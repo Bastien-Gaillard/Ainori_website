@@ -20,7 +20,7 @@ export default function Driver(id) {
     const [driverId, setDriverId] = useState<number>(id)
     useEffect(() => {
         const fetchData = async () => {
-            await instance.post('user/id', id, { headers: { "content-type": "application/json" } })
+            await instance.post('user/id', id || 0, { headers: { "content-type": "application/json" } })
                 .then(async (response) => {
                     setDriver(response.data);
                 }).catch((err) => {

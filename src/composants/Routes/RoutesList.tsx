@@ -12,10 +12,14 @@ import CloseIcon from '@mui/icons-material/Close';
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
-const RoutesList = () => {
+const RoutesList = ({ socket }) => {
 
     const [showComponent, setShowComponent] = useState("comming");
     const [openAdd, setOpenAdd] = useState(false);
+    const [colorComming, setColorComming] = useState('#ffc107');
+    const [colorvehiclues, setColorVehiclues] = useState('black');
+    const [colorCreate, setColorCreate] = useState('black');
+
 
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
@@ -27,29 +31,56 @@ const RoutesList = () => {
 
 
     const buttons = [
-        <Button key="avis" onClick={() => setShowComponent("comming")}>Trajets à venir</Button>,
-        <Button key="vehiclues" onClick={() => setShowComponent("historical")}>Historique</Button>,
-        <Button key="vehiclues" onClick={handleClickOpenAdd}>Créer trajet</Button>,
+
 
     ];
     return (
-        <div>
-            <Box sx={{ display: 'flex' }}>
-                <ButtonGroup
-                    sx={{
-                        width: '12vw', marginLeft: '2vw', marginTop: '2vh'
-                    }}
-                    orientation="vertical"
-                    aria-label="vertical outlined button group"
-                >
-                    {buttons}
-                </ButtonGroup>
-                <h1>Les trajets</h1>
+        <Box sx={{ display: 'flex', width: '100%', minHeight: 'calc(100vh - 60px)' }}>
+            <Box sx={{ display: 'flex', width: '10%', flexDirection: 'column', backgroundColor: '#B2EBF2' }}>
+                <Button sx={{
+                    color: colorComming,
+                    margin: '1vh 0 1vh 0',
+                    '&:hover': {
+                        color: '',
+                    },
+                }} key="comming" onClick={() => {
+                    setShowComponent("comming");
+                    setColorComming('#ffc107');
+                    setColorVehiclues('black');
+                    setColorCreate('black')
+                }}>Trajets à venir</Button>
+                <Button sx={{
+                    color: colorvehiclues,
+                    margin: '1vh 0 1vh 0',
+                    '&:hover': {
+                        color: '#ffc107',
+                    },
+                }} key="vehiclues" onClick={() => {
+                    setShowComponent("historical")
+                    setColorComming('black');
+                    setColorVehiclues('#ffc107');
+                    setColorCreate('black')
+                }}
+                >Historique</Button>
+                <Button sx={{
+                    color: 'black',
+                    margin: '1vh 0 1vh 0',
+                    '&:hover': {
+                        color: '#ffc107',
+                    },
+                }} key="vehiclues" onClick={() => {
+                    setColorComming('black');
+                    setColorVehiclues('black');
+                    setColorCreate('#ffc107')
+                    handleClickOpenAdd();
+                }}>Créer trajet</Button>
             </Box>
-            {showComponent == "comming"
-                ? <Comming />
-                : showComponent == "historical"
-                && <Historical />}
+            {
+                showComponent == "comming"
+                    ? <Comming socket={socket} />
+                    : showComponent == "historical"
+                    && <Historical />
+            }
 
             <Dialog
                 open={openAdd}
@@ -63,7 +94,7 @@ const RoutesList = () => {
                     <FormTrajets handleCloseForm={handleCloseAdd} />
                 </DialogContent>
             </Dialog>
-        </div>
+        </ Box >
     )
 };
 

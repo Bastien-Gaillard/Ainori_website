@@ -32,20 +32,26 @@ export default function FormCars(props) {
     }
 
     const onSubmit = async (data) => {
+        console.log('all data', data);
         const vehicles = await instance.post("model/model", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 data.models = response.data;
             }).catch((err) => {
                 console.error(err);
             });
+        if (!!selectedFile) {
+            console.log('in select files');
+            data.path = 'images/vehicles/';
+            const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
+                .then(async (response) => {
+                    data.images = response.data;
+                }).catch((err) => {
+                    console.error(err);
+                });
+        } else {
+            data.images = {id: null};
+        }
 
-        data.path = 'images/vehicles/';
-        const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
-            .then(async (response) => {
-                data.images = response.data;
-            }).catch((err) => {
-                console.error(err);
-            });
         if (!data.name) {
             data.name = data.models.mark + ' ' + data.models.model
         }
@@ -264,7 +270,7 @@ export default function FormCars(props) {
                                 alt={selectedFile} src={'images/vehicles/' + selectedFile} />
                         </>
                     }
-                        <Button variant="contained" sx={{ width: 'auto', marginTop: '2vh' }} type="submit">Enregistrer</Button>
+                    <Button variant="contained" sx={{ width: 'auto', marginTop: '2vh' }} type="submit">Enregistrer</Button>
                 </Box>
             </Box>
         </div >

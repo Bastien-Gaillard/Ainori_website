@@ -16,7 +16,20 @@ const storageVehicles = multer.diskStorage({
         cb(null, newName + '.' + splitFile[1]);
     },
 });
+
+const storageUsers = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/images/avatars");
+    },
+    filename: function (req, file, cb, res) {
+        const splitFile = file.originalname.split('.');
+        const newName = uuidv4();
+        cb(null, newName + '.' + splitFile[1]);
+    },
+});
+
 const uploadVehicles = multer({ storage: storageVehicles });
+const uploadUsers = multer({ storage: storageUsers });
 
 //Function for check if the token in session exist
 function authenticateToken(req, res, next) {
@@ -32,6 +45,10 @@ function authenticateToken(req, res, next) {
 }
 
 router.post("/upload", uploadVehicles.single("image"), (req, res) => {
+    res.send(req.file.path.split('\\')[3])
+});
+
+router.post("/upload/users", uploadUsers.single("image"), (req, res) => {
     res.send(req.file.path.split('\\')[3])
 });
 

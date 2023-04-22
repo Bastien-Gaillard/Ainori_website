@@ -106,6 +106,7 @@ export default function Cars() {
     };
 
     const handleClose = () => {
+        dataCarsSet();
         setOpen(false);
     };
 

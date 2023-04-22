@@ -5,7 +5,7 @@ import theme from '../cusotmization/palette';
 import { makeStyles } from '@mui/styles';
 import { useForm } from "react-hook-form";
 import { Container, Typography, Box, CssBaseline, Grid, Link } from '@mui/material';
-import FormLogin from './Form/FormLogin';
+import FormLogin from './form/FormLogin';
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 

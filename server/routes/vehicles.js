@@ -54,6 +54,7 @@ router.get('/user', authenticateToken, async (req, res) => {
 
 router.post('/create', authenticateToken, async (req, res) => {
     try {
+        console.log(req.body.images);
         const result = await prisma.users_vehicles.create({
             data: {
                 user_id: req.user.id,
@@ -62,9 +63,10 @@ router.post('/create', authenticateToken, async (req, res) => {
                 color: req.body.color,
                 lisence_plate: req.body.lisence_plate,
                 model_id: req.body.models.id,
-                image_id: !!req.body.images.id ? req.body.images.id : null,
+                image_id: req.body.images.id,
             }
         });
+        console.log(result)
         res.send(result);
     } catch (error) {
         console.error(error);

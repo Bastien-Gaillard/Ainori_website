@@ -51,33 +51,48 @@ type UserModel = {
     image_id?: number
     image?: ImageModel
 }
-export default function ProfilNav() {
+export default function ProfilNav({ onNavChange, socket, updateImage }) {
 
     let navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const [cookies, setCookie] = useCookies(['user']);
+    const [cookies, setCookie, removeCookie] = useCookies(['user']);
     const [user, setUser] = useState<UserModel>(null);
-
+    const [image, setImage] = useState(updateImage)
+    const [messages, setMessages] = useState([]);
     const cookieUser = cookies.user;
+
+
+    const handleClick = () => {
+        onNavChange('other');
+    };
+
 
     useEffect(() => {
         (async () => {
             try {
-                const dataUser = await instance.get('user/current/session');
+                const dataUser = await instance.get('user/current/id');
+                console.log('datauser', dataUser.data);
                 setUser(dataUser.data);
+                if(dataUser.data.image?.path){
+                    setImage(dataUser.data.image?.path);
+                }
             } catch (error) {
                 console.error(error);
             }
         })();
-    }, []);
+    }, [updateImage]);
+
+    useEffect(() => {
+        setImage(updateImage);
+    }, [updateImage]);
 
     const logout = async () => {//for déconnexion delete cookie (cookieLoginUser)
         await instance.get('logout')
             .then(response => {
                 setAnchorElNav(null);
                 setAnchorElUser(null)
-                setCookie('user', '', { expires: new Date(0) });
+                removeCookie('user');
                 navigate('/');
             })
             .catch(error => {
@@ -86,6 +101,7 @@ export default function ProfilNav() {
     }
 
     const handleMenuItemClick = (redirectUrl) => {
+        handleClick();
         navigate(redirectUrl);
     };
 
@@ -103,7 +119,7 @@ export default function ProfilNav() {
             <Tooltip title="Open settings">
                 {/* <Badge badgeContent={4} color="secondary"> */}
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={user?.lastname} src={user?.image?.path} />
+                    <Avatar alt={user?.lastname} src={image} />
                 </IconButton>
                 {/* </Badge> */}
 
@@ -115,7 +131,7 @@ export default function ProfilNav() {
                     {/* <Badge badgeContent={4} color="secondary"> */}
 
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt={user?.lastname} src={user?.image?.path} />
+                        <Avatar alt={user?.lastname} src={image} />
 
                     </IconButton>
                     {/* </Badge> */}

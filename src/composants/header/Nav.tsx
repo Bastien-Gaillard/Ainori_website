@@ -21,19 +21,24 @@ const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 
-const pages = [{name: 'Covoiturage', navigation: 'carpool'}, {name: 'Mes trajets', navigation: 'myroutes'}];
+const pages = [{ name: 'Covoiturage', navigation: 'carpool' }, { name: 'Mes trajets', navigation: 'myroutes' }];
 
-export default function Nav() {
+export default function Nav({ value }) {
 
 
     const [anchorElNav, setAnchorElNav] = useState(null);
+    const [actif, setActif] = useState(value);
     const [cookies] = useCookies();
     const navigate = useNavigate()
     const cookieUser = cookies.user;
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-    
+
+    useEffect(() => {
+        console.log('the value is ', value);
+        setActif(value);
+    }, [value])
     const NotLogin = (
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}></Box>
     )
@@ -43,10 +48,12 @@ export default function Nav() {
                 <Button
                     variant='text'
                     key={page.name}
-                    onClick={() => navigate(page.navigation)}
-                    sx={{ my: 2, color: 'white', display: 'block', '&:hover': {
-                        color: '#ffc107',
-                      } }}
+                    onClick={() => { setActif(page.navigation); navigate(page.navigation) }}
+                    sx={{
+                        my: 2, color: actif == page.navigation ? '#f3c72a' : '#ffffff', display: 'block', '&:hover': {
+                            color: '#ffc107',
+                        }
+                    }}
                 >
                     {page.name}
                 </Button>

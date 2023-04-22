@@ -18,7 +18,6 @@ const instance = axios.create({
 
 export default function FormCars(props) {
 
-    console.log(props.cars);
 
     const { handleSubmit, formState: { errors }, register, setValue, getValues } = useForm();
     const [name, setName] = useState(props.cars.name);
@@ -62,7 +61,6 @@ export default function FormCars(props) {
     }
 
     const handleFileSelect = (event) => {
-        props.cars.images.path = null
         setSelectedFile(event.target.files[0]);
         handleUpload(event.target.files[0]);
         setDisplayImage(true);

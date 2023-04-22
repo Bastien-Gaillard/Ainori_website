@@ -117,29 +117,17 @@ router.put('/update', authenticateToken, async (req, res) => {
 });
 
 
-router.delete('/userHasRoute/delete/:id', authenticateToken, async (req, res) => {
+router.delete('/delete/:id', authenticateToken, async (req, res) => {
   try {
     const isUser = await prisma.users_has_routes.deleteMany(
       {
         where: {
-          route_id: parseInt(req.params.id)
+          id: parseInt(req.params.id)
         },
-        select: {
-          user_id: true
-        }
       }
     );
-    if (isUser.user_id === req.user.id) {
-      const result = await prisma.users_has_routes.delete(
-        {
-          where:
-            { id: parseInt(req.params.id) }
-        })
-      res.send(result);
-    } else {
-      res.status(400).send('Une erreur est survenue')
-    }
 
+    res.send(isUser);
   } catch (error) {
     console.log(error);
     res.status(400).send('Une erreur est survenue')

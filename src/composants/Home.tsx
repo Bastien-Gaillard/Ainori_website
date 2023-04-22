@@ -19,33 +19,30 @@ const instance = axios.create({
   baseURL: 'http://localhost:3001/',
 });
 
-export default function Home() {
+export default function Home({ socket }) {
   const [open, setOpen] = useState(false);
   const [inputDepartureCity, setinputDepartureCity] = useState([]);
   const [departureCity, setDepartureCity] = useState("");
   const [departureCityValue, setDepartureCityValue] = useState("");
-  const socket = io.connect('http://localhost:3001');
   const [rides, setRides] = React.useState([]);
   const { handleSubmit, formState: { errors }, register } = useForm();
+
   useEffect(() => {
     (async () => {
-        await getDataCityDeparture();
+      await getDataCityDeparture();
     })();
   }, [departureCity]);
   const getDataCityDeparture = async () => {
-    console.log(departureCity)
 
     if (departureCity != "") {
-        await axios.get('https://vicopo.selfbuild.fr/cherche/' + departureCity)
-            .then(async (response) => {
-                console.log('the response', response);
-                setinputDepartureCity(response.data.cities.map(elem => elem.code + "," + elem.city));
-                console.log(response.data.cities);
-            }).catch((err) => {
-                console.error(err);
-            });
+      await axios.get('https://vicopo.selfbuild.fr/cherche/' + departureCity)
+        .then(async (response) => {
+          setinputDepartureCity(response.data.cities.map(elem => elem.code + "," + elem.city));
+        }).catch((err) => {
+          console.error(err);
+        });
     }
-}
+  }
   const handleOpen = () => {
     setOpen(true);
     setTimeout(() => {
@@ -53,27 +50,33 @@ export default function Home() {
     }, 2500);
   };
   const RideCardWrapper = ({ rides }) => {
-    if (rides.length==0){
+    console.log('all rides', rides)
+    if (rides.length == 0) {
       return (
-        <h1 style={{color: "red",textAlign: "center" ,margin: "10px",padding: "10px"}}>Pas de trajet pour l'instan ...</h1>
+        <h1 style={{ color: "red", textAlign: "center", margin: "10px", padding: "10px" }}>Pas de trajet pour l'instan ...</h1>
       )
-    }else{
+    } else {
       return (
         <Grid container spacing={2}>
           {rides.map((ride) => (
             <Grid item xs={12} sm={6} md={4} key={ride.id}  >
-              <RideCard   
-                title={ride.departure_city + ' - ' + ride.arrival_city} 
-                description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time } 
-                city={ride.departure_city} 
+              <RideCard
+                title={ride.departure_city + ' - ' + ride.arrival_city}
+                description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time}
+                city={ride.departure_city}
+                date={ride.departure_date}
+                departure_city={ride.departure_city}
+                arrival_city={ride.arrival_city}
                 departure_city_lat={ride.departure_city_lat}
                 departure_city_lng={ride.departure_city_lng}
-                city2={ride.arrival_city} 
+                city2={ride.arrival_city}
                 arrival_city_lat={ride.arrival_city_lat}
                 arrival_city_lng={ride.arrival_city_lng}
                 id={ride.id}
+                user_id={ride.user_id}
                 onSubmitCallback={fetchData}
                 handleOpen={handleOpen} // Passer la fonction de rappel
+                socket={socket}
               />
             </Grid>
           ))}
@@ -84,19 +87,14 @@ export default function Home() {
 
   };
   const fetchData = async () => {
-    console.log("fetchData called");
-    console.log("ttttttttttttttttttttttttttta",departureCityValue);
     try {
-      if ( departureCityValue != "") {
-
+      if (departureCityValue != "") {
         var Liste = departureCityValue.split(",");
         const data = {
-            city: Liste[1],
-            code: Liste[0]
+          city: Liste[1],
+          code: Liste[0]
         };
-        console.log("Liste called",Liste);
         const response = await axios.post('views/propRoutesFilter', data, { headers: { "content-type": "application/json" } });
-        console.log(response);
         const rides = response.data.map((ride) => ({
           id: ride.route_id,
           name: ride.driver,
@@ -106,14 +104,14 @@ export default function Home() {
           arrival_city: ride.arrival_city,
           arrival_city_lat: ride.arrival_city_lat,
           arrival_city_lng: ride.arrival_city_lng,
-          departure_date: moment(ride.departure_date).format('D MMMM'),
+          departure_date: moment(ride.departure_date).locale('fr').format('LL'),
           departure_time: moment(ride.departure_time).locale('fr').format('LT'),
           arrival_time: moment(ride.arrival_time).locale('fr').format('LT'),
+          user_id: ride.user_id
         }));
         setRides(rides.slice(0, 6)); // Limiter à 6 trajets
       } else {
         const response = await axios.get('views/propRoutes');
-        console.log(response);
         const rides = response.data.map((ride) => ({
           id: ride.route_id,
           name: ride.driver,
@@ -123,9 +121,10 @@ export default function Home() {
           arrival_city: ride.arrival_city,
           arrival_city_lat: ride.arrival_city_lat,
           arrival_city_lng: ride.arrival_city_lng,
-          departure_date: moment(ride.departure_date).format('D MMMM'),
+          departure_date: moment(ride.departure_date).locale('fr').format('LL'),
           departure_time: moment(ride.departure_time).locale('fr').format('LT'),
           arrival_time: moment(ride.arrival_time).locale('fr').format('LT'),
+          user_id: ride.user_id
         }));
         setRides(rides.slice(0, 6)); // Limiter à 6 trajets
       }
@@ -134,7 +133,7 @@ export default function Home() {
       console.error(error);
     }
   };
-  useEffect(() => { 
+  useEffect(() => {
     fetchData();
   }, [departureCityValue]);
   const { ref: inputDepartureCityRef, ...inputDepartureCityProps } = register("inputDepartureCity", {
@@ -162,27 +161,27 @@ export default function Home() {
             disablePortal
             id="combo-box-demo"
             options={inputDepartureCity}
-            sx={{ width: 300, marginTop: '16px' }}
+            sx={{ width: 300, margin: '16px 0 16px 0' }}
             onChange={(event, newValue) => {
               if (newValue != null && newValue !== undefined) {
                 setDepartureCityValue(newValue.toString());
-              }else{
+              } else {
                 setDepartureCityValue("");
               }
             }}
             renderInput={(params) => <TextField
-                {...params}
-                label="Ville de départ"
-                inputRef={inputDepartureCityRef}
-                {...inputDepartureCityProps}
-                onChange={(e) =>  setDepartureCity(e.target.value)}
+              {...params}
+              label="Ville de départ"
+              inputRef={inputDepartureCityRef}
+              {...inputDepartureCityProps}
+              onChange={(e) => setDepartureCity(e.target.value)}
             />
             }
           />
         </div>
         <RideCardWrapper rides={rides} />
-      </Box>  
+      </Box>
     </>
   );
-  
+
 };

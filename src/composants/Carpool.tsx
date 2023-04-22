@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, frFR,GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import clsx from 'clsx';
 import { useForm } from "react-hook-form";
 import Driver from './Routes/Historical/Driver'
@@ -17,7 +17,7 @@ import { Avatar, DialogContent, InputAdornment } from "@mui/material";
 import MapIcon from '@mui/icons-material/Map';
 import { AlertColor } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
-
+import AddIcon from '@mui/icons-material/Add';
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -27,14 +27,14 @@ const instance = axios.create({
 });
 
 
-export default function Carpool() {
+export default function Carpool({ socket }) {
 
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
     const [open, setOpen] = useState<boolean>(false);
     const [message, setMessage] = useState("Une erreur est survenu");
     const [severity, setSeverity] = useState<AlertColor>("error");
-
+    const [joinTravel, setJoinTravel] = useState(0);
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
     };
@@ -45,12 +45,10 @@ export default function Carpool() {
     const [result, setResult] = useState();
     useEffect(() => {
         const fetchData = async () => {
-            await instance.get('views/existingRoutes')
+            await instance.get('views/propRoutes')
                 .then(async (response) => {
                     let rows = [];
                     response.data.forEach(element => {
-                        console.log("element ",element);
-                        console.log("departure_city ",element.depature_city);
                         const date = new Date(element.departure_date);
                         const today = new Date();
                         const route = {
@@ -71,24 +69,14 @@ export default function Carpool() {
                         rows.push(route);
                         setData(rows);
                     });
-                    console.log("data:",data)
                 }).catch((err) => {
-                    console.log("err "+err);
                     console.error(err);
                 });
         };
         fetchData();
-    }, [result]);
+    }, [result, joinTravel]);
 
     const columns: GridColDef[] = [
-        {
-            field: 'id',
-            headerName: 'Id route',
-            width: 80,
-            hideSortIcons: true,
-            hide: true,
-            filterable: false
-        },
         {
             field: 'user_id',
             headerName: 'Id conducteur',
@@ -225,25 +213,51 @@ export default function Carpool() {
             hideSortIcons: true,
             hideable: false,
         },
+        {
+            field: 'id',
+            headerName: 'Rejoindre',
+            width: 80,
+            hideSortIcons: true,
+            hideable: false,
+            renderCell: (params: GridRenderCellParams<any>) => {
+                return (
+                    <Button onClick={async () => {
+
+                        await instance.post("userHasRoute/create", { route_id: params.value, status_notice: 0 }, { headers: { "content-type": "application/json" } })
+                            .then(async (response) => {
+                                setJoinTravel(response.data.id);
+                                const route = await instance.post('views/routeInfo', { route_id: params.value }, { headers: { "content-type": "application/json" } })
+                                socket.emit('message', {
+                                    text: 'Viens de quitter le trajet du ' + moment(route.data[0].departure_date).locale("fr").format('LL') + ' allant de ' + route.data[0].departure_city + ' à ' + route.data[0].arrival_city,
+                                    name: localStorage.getItem('userName'),
+                                    received: route.data[0].user_id,
+                                    id: `${socket.id}${Math.random()}`,
+                                    socketID: socket.id,
+                                });
+                                await instance.post('messages/create', { content: 'Viens de quitter le trajet du ' + moment(route.data[0].departure_date).locale("fr").format('LL') + ' allant de ' + route.data[0].departure_city + ' à ' + route.data[0].arrival_city, received_by_user_id: route.data[0].user_id }, { headers: { "content-type": "application/json" } });
+                            }).catch((err) => {
+                                console.error(err);
+                            });
+                    }} >
+                        <AddIcon sx={{ color: '#f3c72a' }} />
+                    </Button>
+                )
+            }
+        },
     ];
+
+
 
     const CustomToolbar = () => {
         return (
             <GridToolbarContainer sx={{ display: 'inline-block', width: '100%' }}>
-                <GridToolbarFilterButton sx={{ float: "left" }} />
+                <GridToolbarFilterButton sx={{ float: "left", marginRight: '2vw' }} />
+                <Button variant="outlined" key="profil" onClick={handleClickOpenAdd}>Créer trajets</Button>
                 <GridToolbarQuickFilter sx={{ float: "right" }} />
             </GridToolbarContainer>
         );
     }
-
-    const localizedTextsMap = {
-        columnMenuUnsort: "Annuler le tri",
-        columnMenuSortAsc: "Tri ascendant",
-        columnMenuSortDesc: "Tri descendant",
-        columnMenuFilter: "Filtrer",
-        columnMenuShowColumns: "",
-
-    };
+    
     return (
         <Container sx={{
             height: '93vh',
@@ -269,20 +283,20 @@ export default function Carpool() {
                 fontWeight: '600',
             },
         }}>
-            <Button key="profil" onClick={handleClickOpenAdd}>New Trajet</Button>
+            
             <Dialog
                 open={openAdd}
                 onClose={handleCloseAdd}
-                sx={{ width: '100%'}}
+                sx={{ width: '100%' }}
             >
                 <DialogTitle>
-                    <CloseIcon onClick={handleCloseAdd} sx={{color:'red'}}/>
+                    <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
                 </DialogTitle>
                 <DialogContent>
                     <FormTrajets handleCloseForm={handleCloseAdd} />
                 </DialogContent>
             </Dialog>
-            <h1>Liste des covoiturages disponibles</h1>
+            <h1 style={{margin: '2vh 0 2vh 0', textAlign: 'center'}}>Les trajets</h1>
             {!!data &&
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}
@@ -297,7 +311,8 @@ export default function Carpool() {
                             quickFilterProps: { debounceMs: 500 },
                         },
                     }}
-                    localeText={localizedTextsMap}
+                    localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
+
                 />
             }
         </Container>

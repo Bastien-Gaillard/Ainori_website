@@ -24,24 +24,30 @@ type UserModel = {
 
 
 
-export default function Profil({ obtion }) {
+export default function Profil({ obtion, updateImage }) {
     const [user, setUser] = useState<UserModel>(null);
     const [modify, setModify] = useState<boolean>(false);
     const [disableFirstname, setDisableFirstname] = useState<boolean>(true);
-    const [showBox, setShowBox] = useState("");
+    const [showBox, setShowBox] = useState("profil");
+    const [colorProfil, setColorProfil] = useState('#ffc107');
+    const [colorVehicles, setColorVehicles] = useState('black');
+    const [colorNotices, setColorNotices] = useState('black');
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {
+        console.log('image in profil', image);
+        updateImage(image);
+    }, [image]);
 
     useEffect(() => {
         (async () => {
             await getUser();
         })();
     }, []);
-    
-    useEffect(() => {
-        setShowBox(obtion);
-    }, [obtion]);
 
     const updateUser = (updatedUser: UserModel) => {
         setUser(updatedUser);
+        console.log(updatedUser);
     };
 
     const getUser = async () => {
@@ -70,17 +76,49 @@ export default function Profil({ obtion }) {
                     width: '100vw',
                 }}
                     className='waw'>
-                    <ButtonGroup
-                        sx={{
-                            width: '12vw', marginLeft: '2vw', marginTop: '2vh'
+
+
+                    <Box sx={{ display: 'flex', width: '10%', flexDirection: 'column', backgroundColor: '#B2EBF2' }}>
+                        <Button sx={{
+                            color: colorProfil,
+                            margin: '1vh 0 1vh 0',
+                            '&:hover': {
+                                color: '',
+                            },
+                        }} key="profil" onClick={() => {
+                            setShowBox("profil")
+                            setColorProfil('#ffc107');
+                            setColorVehicles('black');
+                            setColorNotices('black')
+                        }}>Mon profil</Button>
+                        <Button sx={{
+                            color: colorVehicles,
+                            margin: '1vh 0 1vh 0',
+                            '&:hover': {
+                                color: '#ffc107',
+                            },
+                        }} key="vehiclues" onClick={() => {
+                            setShowBox("avis")
+                            setColorProfil('black');
+                            setColorVehicles('#ffc107');
+                            setColorNotices('black')
                         }}
-                        orientation="vertical"
-                        aria-label="vertical outlined button group"
-                    >
-                        {buttons}
-                    </ButtonGroup>
+                        >Mes avis</Button>
+                        <Button sx={{
+                            color: colorNotices,
+                            margin: '1vh 0 1vh 0',
+                            '&:hover': {
+                                color: '#ffc107',
+                            },
+                        }} key="vehiclues" onClick={() => {
+                            setShowBox("vehiclues")
+                            setColorProfil('black');
+                            setColorVehicles('black');
+                            setColorNotices('#ffc107')
+                        }}>Mes vehicules</Button>
+                    </Box>
                     <Box sx={{ width: '68vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} /> : showBox == "vehiclues" ? <Cars /> : <Avis />}
+                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} updateImage={setImage}/> : showBox == "vehiclues" ? <Cars /> : <Avis />}
                     </Box>
                 </Box>
             </>

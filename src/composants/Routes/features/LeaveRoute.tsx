@@ -8,14 +8,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { AlertColor, Box } from "@mui/material";
 import Snackbar from "../../features/Snackbar";
 import LogoutIcon from '@mui/icons-material/Logout';
+import * as moment from 'moment';
 
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 
-export default function LeaveRoute({ routeId, userHasRouteId, remainingSeats }) {
+export default function LeaveRoute({ onDeleteRoutesValue, routeId, userHasRouteId, userId, socket }) {
 
-    console.log(routeId, remainingSeats);
     const [open, setOpen] = useState<boolean>(false);
     const [message, setMessage] = useState("Une erreur est survenu");
     const [severity, setSeverity] = useState<AlertColor>("error");
@@ -26,36 +26,30 @@ export default function LeaveRoute({ routeId, userHasRouteId, remainingSeats }) 
     };
 
     const leaveRoutes = async () => {
-        try {
-            if (window.confirm('⚠️ Voulez vous quitter ce trajet ? ⚠️\n Un message sera envoyé au conducteur')) {
-                await instance.delete('userHasRoute/delete/' + userHasRouteId)
-                    .then(async (response) => {
-                        await instance.put('route/remainingSeats', { id: routeId, remaining_seats: remainingSeats + 1 }, { headers: { "content-type": "application/json" } })
-                            .then(async (response) => {
-                                setMessage("Desinscription validée");
-                                setSeverity("success");
-                                setOpen(true);
-                            }).catch((err) => {
-                                console.error(err);
-                            });
-                    }).catch((err) => {
-                        console.error(err);
-                    });
+        if (window.confirm('⚠️ Voulez vous quitter ce trajet ? ⚠️\n Un message sera envoyé au conducteur')) {
+            console.log('in');
 
-            }
-        } catch (error) {
-            console.error(error)
+            await instance.delete('userHasRoute/delete/' + userHasRouteId, { headers: { "content-type": "application/json" } });
+            const route = await instance.post('views/routeInfo', { route_id: routeId }, { headers: { "content-type": "application/json" } })
+            socket.emit('message', {
+                text: 'Viens de quitter le trajet du ' + moment(route.data[0].departure_date).locale("fr").format('LL') + ' allant de ' + route.data[0].departure_city + ' à ' + route.data[0].arrival_city,
+                name: localStorage.getItem('userName'),
+                received: userId,
+                id: `${socket.id}${Math.random()}`,
+                socketID: socket.id,
+            });
+            await instance.post('messages/create', { content: 'Viens de quitter le trajet du ' + moment(route.data[0].departure_date).locale("fr").format('LL') + ' allant de ' + route.data[0].departure_city + ' à ' + route.data[0].arrival_city, received_by_user_id: route.data[0].user_id }, { headers: { "content-type": "application/json" } });
+            onDeleteRoutesValue(Date.now());
         }
     }
 
     return (
         <Box>
-            <Button><LogoutIcon onClick={leaveRoutes} /></Button>
+            <Button><LogoutIcon onClick={leaveRoutes} sx={{color: '#f3c72a'}}/></Button>
             <Snackbar severity={severity} message={message} open={open} handleClose={handleClose} />
         </Box>
 
     )
-
 }
 
 

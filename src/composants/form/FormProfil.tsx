@@ -7,9 +7,11 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import CreateIcon from '@mui/icons-material/Create';
-import { Avatar, InputAdornment } from "@mui/material";
+import { Avatar, Badge, BadgeProps, Dialog, DialogContent, DialogTitle, IconButton, InputAdornment, styled } from "@mui/material";
 import { isTemplateSpan } from "typescript";
 import { ThemeProvider } from "@emotion/react";
+import AddIcon from '@mui/icons-material/Add';
+import PopUpAvatar from "../Profil/PopUpAvatar";
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
@@ -20,10 +22,25 @@ type UserModel = {
     email: string,
     description?: string
 }
-export default function FormProfil({ user, updateUser }) {
+export default function FormProfil({ user, updateUser, updateImage }) {
     const [modify, setModify] = useState<boolean>(false);
+    const [open, setOpen] = useState(false);
+    const [image, setImage] = useState(user.image?.path);
     const { handleSubmit, formState: { errors }, register, setValue, getValues } = useForm({ defaultValues: user });
 
+    useEffect(() => {
+        console.log('form profil image', image);
+        updateImage(image);
+    }, image)
+
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+  
     const changeModify = () => {
         if (modify) {
             setModify(false)
@@ -73,6 +90,11 @@ export default function FormProfil({ user, updateUser }) {
         justifyContent: 'center',
         alignItems: 'center'
     };
+
+    const changeUserImage = () => {
+        console.log()
+    }
+
     return (
         <div style={divStyle}>
             {Object.keys(user).length > 0 &&
@@ -108,7 +130,15 @@ export default function FormProfil({ user, updateUser }) {
 
 
                     </Box>
-                    <Avatar alt={user.firstname} src={user.image?.path} />
+                    <Badge
+                        overlap="circular"
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        badgeContent={
+                            <IconButton onClick={handleClickOpen}><AddIcon sx={{ backgroundColor: '#00bcd4', borderRadius: '50%' }} /></IconButton >
+                        }
+                    >
+                        <Avatar alt={user.firstname} src={image} />
+                    </Badge>
                     <TextField
                         label="Prénom"
                         name="firstname"
@@ -139,6 +169,12 @@ export default function FormProfil({ user, updateUser }) {
                         inputRef={descriptionRef}
                         {...descriptionProps}
                     />
+                    <Dialog onClose={handleClose} open={open}>
+                        <DialogTitle>Changer de photo</DialogTitle>
+                        <DialogContent>
+                            <PopUpAvatar image={user.image?.path} onChange={setImage} onClick={handleClose}/>
+                        </DialogContent>
+                    </Dialog>
                     <Button variant="contained" sx={{ width: '26%' }} type="submit">Enregistrer</Button>
                 </Box>
             }

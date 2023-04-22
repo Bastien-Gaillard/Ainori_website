@@ -23,7 +23,6 @@ router.get('/routesHistoryDriver', authenticateToken, async (req, res) => {
       SELECT * FROM route_history 
       WHERE driver_id = ${req.user.id} AND status = 0
       ORDER BY departure_date DESC, departure_time DESC`
-        console.log(result)
         res.send(result);
     } catch (error) {
         console.log(error);
@@ -48,7 +47,7 @@ router.get('/routesHistoryUser', authenticateToken, async (req, res) => {
 router.get('/routesCommingDriver', authenticateToken, async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
-      SELECT * FROM route_history WHERE user_id = ${req.user.id} AND status = 1
+      SELECT * FROM good_routes WHERE user_id = ${req.user.id} AND status = 1
       ORDER BY departure_date DESC, departure_time DESC`;
         console.log(result)
         res.send(result);
@@ -100,7 +99,6 @@ router.get('/conversations', authenticateToken, async (req, res) => {
             GROUP BY dm.sended_by_user_id, sender
         ) as subquery
         GROUP BY subquery.user_id;`
-        console.log(result)
         res.send(result);
     } catch (error) {
         console.log(error);
@@ -116,7 +114,6 @@ router.post('/conversation', authenticateToken, async (req, res) => {
        WHERE (sended_by_user_id = ${req.user.id} AND received_by_user_id = ${req.body.user_id}) 
        OR (sended_by_user_id = ${req.body.user_id} AND received_by_user_id = ${req.user.id}) 
        ORDER BY sended_at ASC;`
-        console.log(result);
 
         const receive = await prisma.users.findUnique({
             where: {
@@ -147,6 +144,17 @@ router.post('/conversation', authenticateToken, async (req, res) => {
     }
 });
 
+router.post('/routeInfo', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+      SELECT * FROM good_routes WHERE route_id = ${req.body.route_id}`;
+        console.log(result)
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
 router.post('/propRoutesFilter', authenticateToken, async (req, res) => {
     
     try {

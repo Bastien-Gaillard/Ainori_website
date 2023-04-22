@@ -26,6 +26,7 @@ const mockResponse = {
 };
 
 const usersRouter = require('./routes/users');
+const mobileRouter = require('./routes/mobile');
 const citiesRouter = require('./routes/cities');
 const imagesRouter = require('./routes/images');
 const vehiclesRouter = require('./routes/vehicles');
@@ -132,6 +133,7 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
 app.disable("x-powered-by");
 //Other use
 app.use(express.json());
@@ -150,6 +152,7 @@ const socketIO = require('socket.io')(http, {
 });
 
 app.use('/city', citiesRouter);
+app.use('/mobile', mobileRouter);
 app.use('/image', imagesRouter);
 app.use('/user', usersRouter);
 app.use('/vehicles', vehiclesRouter);
@@ -279,6 +282,11 @@ socketIO.on('connection', (socket) => {
     socketIO.emit('messageResponse', data);
   });
 
+  socket.on('countMessage', (data) => {
+    console.log(data);
+
+    socketIO.emit('notif', data);
+  });
 
   socket.on('disconnect', () => {
     console.log('🔥: A user disconnected');

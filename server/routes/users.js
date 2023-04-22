@@ -65,9 +65,14 @@ router.get('/check', (req, res) => {
     }
 });
 router.post('/id', authenticateToken, async (req, res) => {
+    let id = 0;
+    if (!!req.body?.id) {
+        id = req.body.id;
+    }
+    console.log('req body', req.body);
     const user = await prisma.users.findUnique({
         where: {
-            id: parseInt(req.body.id),
+            id: parseInt(id),
         },
         select: {
             id: true,
@@ -84,6 +89,7 @@ router.post('/id', authenticateToken, async (req, res) => {
             }
         }
     });
+
     res.send(user);
 });
 router.post('/create', authenticateToken, async (req, res) => {
@@ -132,6 +138,34 @@ router.put('/update', authenticateToken, async (req, res) => {
     req.user = result;
     res.send(result);
 });
+
+router.put('/update/avatar', authenticateToken, async (req, res) => {
+    const result = await prisma.users.update({
+        where: {
+            id: req.user.id,
+        },
+        data: {
+            image_id: req.body.image_id
+        },
+        select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+            email: true,
+            password: true,
+            description: true,
+            status: true,
+            image: {
+                select: {
+                    path: true
+                }
+            }
+        }
+    });
+    req.user = result;
+    res.send(result);
+});
+
 router.put('/update/password', authenticateToken, async (req, res) => {
     const result = await prisma.users.update({
         where: {

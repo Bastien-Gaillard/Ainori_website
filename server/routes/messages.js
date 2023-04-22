@@ -27,7 +27,6 @@ router.post('/create', authenticateToken, async (req, res) => {
                 sended_at: new Date()
             }
         });
-        console.log(result)
         res.send(result);
     } catch (error) {
         console.log(error);

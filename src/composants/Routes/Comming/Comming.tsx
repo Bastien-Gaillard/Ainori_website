@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, frFR, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import clsx from 'clsx';
 import { useForm } from "react-hook-form";
 import Driver from './Driver'
-import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button, ButtonGroup } from '@mui/material';
+import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button, ButtonGroup, FormControlLabel, Switch } from '@mui/material';
 import * as moment from 'moment';
 import FormTrajets from "../../form/FormTrajets";
 import * as React from 'react';
@@ -17,7 +17,9 @@ import MapIcon from '@mui/icons-material/Map';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LeaveRoute from '../features/LeaveRoute';
 import DeleteRoutes from '../features/DeleteRoutes';
-
+import Alert from "../../features/Alert"
+import { useSnackbar } from 'notistack';
+import RideCard from '../../RideCard';
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -27,16 +29,42 @@ const instance = axios.create({
 });
 
 
-export default function Comming() {
+export default function Comming({ socket }) {
 
+    const { enqueueSnackbar } = useSnackbar();
+    const [open, setOpen] = useState(false);
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
     const [result, setResult] = useState();
     const [showComponent, setShowComponent] = useState("driver")
     const [deleteRoutes, setDeleteRoutes] = useState(false);
-
+    const [leaveRoutes, setLeaveRoutes] = useState(false);
+    const [ride, setRide] = useState<any>({});
+    const [openRoutes, setOpenRoutes] = useState(false);
+    const handleChange = (event) => {
+        console.log(event.target.checked);
+        if (event.target.checked) {
+            setShowComponent('driver');
+        } else {
+            setShowComponent('user');
+        }
+        console.log(showComponent);
+    };
     const handleDeleteRoutesdValue = (value) => {
         setDeleteRoutes(value);
+    };
+
+    const handleOpen = () => {
+        setOpen(true);
+        setTimeout(() => {
+            setOpen(false);
+        }, 2500);
+    };
+
+    const handleLeaveRoutesdValue = (value) => {
+        setLeaveRoutes(value);
+        enqueueSnackbar("Idée archivée", { variant: "success", autoHideDuration: 2000 });
+
     };
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
@@ -45,11 +73,6 @@ export default function Comming() {
     const handleCloseAdd = () => {
         setOpenAdd(false);
     };
-    const buttons = [
-        <Button key="profil" onClick={() => setShowComponent("driver")}>Je conduis</Button>,
-        <Button key="avis" onClick={() => setShowComponent("user")}>Je suis passagé</Button>,
-    ];
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,10 +86,12 @@ export default function Comming() {
                             let isDriver = false;
 
                             const route = {
-                                id: element.user_has_route_id,
+                                id: element.route_id,
                                 name: element.driver,
-                                departure_city: element.departure_city_code + ', ' + element.departure_city,
-                                arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
+                                departure_code: element.departure_city_code,
+                                arrival_code: element.arrival_city_code,
+                                departure_city: element.departure_city,
+                                arrival_city: element.arrival_city,
                                 departure_date: date,
                                 departure_time: moment(element.departure_time).locale("fr").format('LT'),
                                 arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
@@ -89,12 +114,15 @@ export default function Comming() {
                         let rows = [];
                         response.data.forEach(element => {
                             const date = new Date(element.departure_date);
-                            const today = new Date();                           
+                            const today = new Date();
                             const route = {
                                 id: element.user_has_route_id,
                                 name: element.driver,
-                                departure_city: element.departure_city_code + ', ' + element.departure_city,
-                                arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
+                                user_has_route_id: element.user_has_route_id,
+                                departure_code: element.departure_city_code,
+                                arrival_code: element.arrival_city_code,
+                                departure_city: element.departure_city,
+                                arrival_city: element.arrival_city,
                                 departure_date: date,
                                 departure_time: moment(element.departure_time).locale("fr").format('LT'),
                                 arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
@@ -172,10 +200,10 @@ export default function Comming() {
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
-                const departureZipCode = params.value.split(', ')[0];
-                const departureCity = params.value.split(', ')[1];
-                const arrivalZipCode = params.row.arrival_city.split(', ')[0];
-                const arrivalCity = params.row.arrival_city.split(', ')[1];
+                const departureZipCode = params.row.departure_code;
+                const departureCity = params.value;
+                const arrivalZipCode = params.row.arrival_code;
+                const arrivalCity = params.row.arrival_city;
 
                 return (
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
@@ -269,17 +297,16 @@ export default function Comming() {
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
-                console.log(params.row.is_driver);
                 if (params.row.is_driver) {
                     return (
                         <Box>
-                            <DeleteRoutes onDeleteRoutesValue={handleDeleteRoutesdValue} routeId={params.row.route_id} />
+                            <DeleteRoutes onDeleteRoutesValue={handleDeleteRoutesdValue} routeId={params.row.route_id} socket={socket} />
                         </Box>
 
                     )
                 } else {
                     return (
-                        <LeaveRoute routeId={params.value} userHasRouteId={params.row.user_has_route_id} remainingSeats={params.row.remaining_seats} />
+                        <LeaveRoute onDeleteRoutesValue={handleLeaveRoutesdValue} routeId={params.row.route_id} userHasRouteId={params.row.user_has_route_id} userId={params.row.driver_id} socket={socket} />
                     )
                 }
             }
@@ -289,20 +316,13 @@ export default function Comming() {
     const CustomToolbar = () => {
         return (
             <GridToolbarContainer sx={{ display: 'inline-block', width: '100%' }}>
-                <GridToolbarFilterButton sx={{ float: "left" }} />
+                <GridToolbarFilterButton sx={{ float: "left", marginRight: '1vw' }} />
+
+                <FormControlLabel control={showComponent == 'driver' ? <Switch onClick={handleChange} defaultChecked /> : <Switch onClick={handleChange} />} label="Je conduis" />
                 <GridToolbarQuickFilter sx={{ float: "right" }} />
             </GridToolbarContainer>
         );
     }
-
-    const localizedTextsMap = {
-        columnMenuUnsort: "Annuler le tri",
-        columnMenuSortAsc: "Tri ascendant",
-        columnMenuSortDesc: "Tri descendant",
-        columnMenuFilter: "Filtrer",
-        columnMenuShowColumns: "",
-
-    };
 
     const getRowClassName = (params) => {
         if (params.row.is_driver) {
@@ -311,6 +331,10 @@ export default function Comming() {
 
         }
     };
+
+    const fetchData = () => {
+        console.log('fetchData')
+    }
     return (
         <Container sx={{
             height: '93vh',
@@ -321,16 +345,7 @@ export default function Comming() {
                 maxWidth: '100%',
             }
         }}>
-            <h1>Trajet à venir</h1>
-            <ButtonGroup
-                sx={{
-                    width: '12vw', marginLeft: '2vw', marginTop: '2vh'
-                }}
-                orientation="vertical"
-                aria-label="vertical outlined button group"
-            >
-                {buttons}
-            </ButtonGroup>
+            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir</h1>
             {!!data ?
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}
@@ -345,9 +360,50 @@ export default function Comming() {
                             quickFilterProps: { debounceMs: 500 },
                         },
                     }}
-                    localeText={localizedTextsMap}
+                    localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
+                // onRowDoubleClick={(params) => {
+                //     console.log(params.row)
+                //     setRide({
+                //         title: params.row.departure_city + ' - ' + params.row.arrival_city,
+                //         description: params.row.driver + ' - ' + params.row.departure_date + ' ' + params.row.departure_time + ' à ' + params.row.arrival_time,
+                //         city: params.row.departure_city,
+                //         date: params.row.departure_date,
+                //         departure_city: params.row.departure_city,
+                //         arrival_city: params.row.arrival_city,
+                //         departure_city_lat: '32',
+                //         departure_city_lng: '32',
+                //         city2: params.row.arrival_city,
+                //         arrival_city_lat: '45',
+                //         arrival_city_lng: '45',
+                //         id: params.row.id,
+                //         user_id: params.row.user_id,
+                //         onSubmitCallback: fetchData,
+                //         handleOpen: handleOpen,
+                //         socket: socket
+                //     });
+                //     setOpenRoutes(true);
+                // }}
                 />
-            : <p>Aucun trajet</p>}
+                : <p>Aucun trajet</p>}
+            {/* {openRoutes &&
+                <RideCard
+                    title={ride.departure_city + ' - ' + ride.arrival_city}
+                    description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time}
+                    city={ride.departure_city}
+                    date={ride.departure_date}
+                    departure_city={ride.departure_city}
+                    arrival_city={ride.arrival_city}
+                    departure_city_lat={ride.departure_city_lat}
+                    departure_city_lng={ride.departure_city_lng}
+                    city2={ride.arrival_city}
+                    arrival_city_lat={ride.arrival_city_lat}
+                    arrival_city_lng={ride.arrival_city_lng}
+                    id={ride.id}
+                    user_id={ride.user_id}
+                    onSubmitCallback={fetchData}
+                    handleOpen={handleOpen} // Passer la fonction de rappel
+                    socket={socket}
+                />} */}
         </Container>
     );
 }

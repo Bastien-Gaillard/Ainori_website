@@ -63,10 +63,6 @@ export default function Avis() {
                 return err;
             });
     };
-
-   console.log(responseData);
-   console.log(note);
-
     const divStyle = {
         width: '100%',
         height: '88vh',

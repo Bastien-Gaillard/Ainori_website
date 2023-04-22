@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, frFR, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import clsx from 'clsx';
 import { useForm } from "react-hook-form";
 import Driver from './Driver'
-import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button, ButtonGroup } from '@mui/material';
+import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button, ButtonGroup, FormControlLabel, Switch } from '@mui/material';
 import * as moment from 'moment';
 import FormTrajets from "../../form/FormTrajets";
 import * as React from 'react';
@@ -16,7 +16,6 @@ import { Avatar, DialogContent, InputAdornment } from "@mui/material";
 import MapIcon from '@mui/icons-material/Map';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LeaveRoute from '../features/LeaveRoute';
-import CustomToolBar from '../features/CustomToolbar';
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -31,23 +30,28 @@ export default function Historical() {
     const [data, setData] = useState<any>();
     const [result, setResult] = useState();
     const [showComponent, setShowComponent] = useState("driver")
- 
-    const buttons = [
-        <Button key="driver" onClick={() => setShowComponent("driver")}>Je suis conducteur</Button>,
-        <Button key="user" onClick={() => setShowComponent("user")}>Je suis passagé</Button>,
-    ];
 
+
+    const handleChange = (event) => {
+        console.log(event.target.checked);
+        if (event.target.checked) {
+            setShowComponent('driver');
+        } else {
+            setShowComponent('user');
+        }
+        console.log(showComponent);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             if (showComponent == 'driver') {
                 await instance.get('views/routesHistoryDriver')
                     .then(async (response) => {
-                        console.log(response.data)
                         let rows = [];
                         response.data.forEach(element => {
                             const date = new Date(element.departure_date);
                             const today = new Date();
+                            console.log('driver driver', element.driver_id);
                             const route = {
                                 id: element.user_has_route_id,
                                 name: element.driver,
@@ -63,7 +67,6 @@ export default function Historical() {
                             }
                             rows.push(route);
                             setData(rows);
-                            console.log('the data', data)
                         });
                     }).catch((err) => {
                         console.error(err);
@@ -71,11 +74,11 @@ export default function Historical() {
             } else {
                 await instance.get('views/routesHistoryUser')
                     .then(async (response) => {
-                        console.log(response.data)
                         let rows = [];
                         response.data.forEach(element => {
                             const date = new Date(element.departure_date);
                             const today = new Date();
+                            console.log('driver user', element.driver_id);
                             const route = {
                                 id: element.user_has_route_id,
                                 name: element.driver,
@@ -92,7 +95,6 @@ export default function Historical() {
                             }
                             rows.push(route);
                             setData(rows);
-                            console.log('the data', data)
                         });
                     }).catch((err) => {
                         console.error(err);
@@ -267,20 +269,12 @@ export default function Historical() {
     const CustomToolbar = () => {
         return (
             <GridToolbarContainer sx={{ display: 'inline-block', width: '100%' }}>
-                <GridToolbarFilterButton sx={{ float: "left" }} />
+                <GridToolbarFilterButton sx={{ float: "left", marginRight: '1vw' }} />
+                <FormControlLabel control={showComponent == 'driver' ? <Switch onClick={handleChange} defaultChecked /> : <Switch onClick={handleChange} />} label="Je conduis" />
                 <GridToolbarQuickFilter sx={{ float: "right" }} />
             </GridToolbarContainer>
         );
     }
-
-    const localizedTextsMap = {
-        columnMenuUnsort: "Annuler le tri",
-        columnMenuSortAsc: "Tri ascendant",
-        columnMenuSortDesc: "Tri descendant",
-        columnMenuFilter: "Filtrer",
-        columnMenuShowColumns: "",
-
-    };
     return (
         <Container sx={{
             height: '93vh',
@@ -306,16 +300,7 @@ export default function Historical() {
                 fontWeight: '600',
             },
         }}>
-            <h1>Historique de mes trajets</h1>
-            <ButtonGroup
-                sx={{
-                    width: '12vw', marginLeft: '2vw', marginTop: '2vh'
-                }}
-                orientation="vertical"
-                aria-label="vertical outlined button group"
-            >
-                {buttons}
-            </ButtonGroup>
+            <h1 style={{ margin: '1vh 0 2vh 0' }}>Historique de mes trajets</h1>
             {!!data &&
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}
@@ -323,14 +308,15 @@ export default function Historical() {
                     columns={columns}
                     pageSize={25}
                     rowsPerPageOptions={[25]}
-                    components={{ Toolbar: CustomToolBar }}
+                    components={{ Toolbar: CustomToolbar }}
                     componentsProps={{
                         toolbar: {
                             showQuickFilter: true,
                             quickFilterProps: { debounceMs: 500 },
                         },
                     }}
-                    localeText={localizedTextsMap}
+                    localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
+
                 />
             }
         </Container>
