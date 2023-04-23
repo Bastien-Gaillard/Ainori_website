@@ -40,6 +40,10 @@ export default function Profil({ obtion, updateImage }) {
     }, [image]);
 
     useEffect(() => {
+        setShowBox(obtion);
+    }, [obtion]);
+
+    useEffect(() => {
         (async () => {
             await getUser();
         })();

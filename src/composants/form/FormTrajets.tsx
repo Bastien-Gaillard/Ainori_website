@@ -282,6 +282,7 @@ export default function FormTrajets(props) {
                         <Autocomplete
                             disablePortal
                             id="combo-box-demo"
+                            noOptionsText={'Pas de ville correspondante'}
                             options={inputDepartureCity}
                             sx={{ width: 300, marginTop: '16px' }}
                             renderInput={(params) => <TextField
@@ -296,7 +297,8 @@ export default function FormTrajets(props) {
                         <Autocomplete
                             disablePortal
                             id="combo-box-demo"
-                            options={inputArrivalCity}
+                            noOptionsText={'Pas de ville correspondante'}
+                            options={inputArrivalCity }
                             sx={{ width: 300, marginTop: '16px' }}
                             renderInput={(params) => <TextField
                                 {...params}
@@ -347,14 +349,14 @@ export default function FormTrajets(props) {
                                     <ListeDesDates datesList={datesList} />
                                 </Box>
                             )}
-                            <DemoItem label="Departure time">
+                            <DemoItem label="Heure de départ">
                                 <MobileTimePicker
                                     label="Heure de départ"
                                     value={departureTime}
                                     onChange={(newValue) => setDepartureTime(newValue)}
                                 />
                             </DemoItem>
-                            <DemoItem label="Arrival time">
+                            <DemoItem label="Heure d'arrivée">
                                 <MobileTimePicker
                                     label="Heure d'arrivée"
                                     value={arrivalTime}

@@ -23,7 +23,7 @@ const instance = axios.create({
 
 const settings = [
     {
-        name: "Profile",
+        name: "Profil",
         redirect: "/Profil"
     },
     {
@@ -171,7 +171,7 @@ export default function ProfilNav({ onNavChange, socket, updateImage }) {
                         )}
                     </MenuItem>
                 ))}
-                <MenuItem onClick={logout}>Deconnexion</MenuItem>
+                <MenuItem onClick={logout}>Déconnexion</MenuItem>
             </Menu>
         </Box>
     )

@@ -168,7 +168,7 @@ router.post('/propRoutesFilter', authenticateToken, async (req, res) => {
                 JOIN cities AS v2 
                 ON v1.zip_code = ${req.body.code}  
                 AND v1.name = ${req.body.city}  
-                AND (6371 * ACOS(COS(RADIANS(v1.gps_lat)) * COS(RADIANS(v2.gps_lat)) * COS(RADIANS(v2.gps_lng) - RADIANS(v1.gps_lng)) + SIN(RADIANS(v1.gps_lat)) * SIN(RADIANS(v2.gps_lat)))) <= 7 
+                AND (3959 * ACOS(COS(RADIANS(v1.gps_lat)) * COS(RADIANS(v2.gps_lat)) * COS(RADIANS(v2.gps_lng) - RADIANS(v1.gps_lng)) + SIN(RADIANS(v1.gps_lat)) * SIN(RADIANS(v2.gps_lat)))) <= 10 
             ) 
             AND gr.user_id != ${req.user.id} 
             AND gr.remaining_seats != 0 

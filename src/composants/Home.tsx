@@ -21,6 +21,7 @@ const instance = axios.create({
 
 export default function Home({ socket }) {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const [inputDepartureCity, setinputDepartureCity] = useState([]);
   const [departureCity, setDepartureCity] = useState("");
   const [departureCityValue, setDepartureCityValue] = useState("");
@@ -32,6 +33,7 @@ export default function Home({ socket }) {
       await getDataCityDeparture();
     })();
   }, [departureCity]);
+
   const getDataCityDeparture = async () => {
 
     if (departureCity != "") {
@@ -53,7 +55,7 @@ export default function Home({ socket }) {
     console.log('all rides', rides)
     if (rides.length == 0) {
       return (
-        <h1 style={{ color: "red", textAlign: "center", margin: "10px", padding: "10px" }}>Pas de trajet pour l'instan ...</h1>
+        <h1 style={{ color: "red", textAlign: "center", margin: "10px", padding: "10px" }}>Pas de trajet pour l’instant ...</h1>
       )
     } else {
       return (
@@ -157,9 +159,21 @@ export default function Home({ socket }) {
           <Typography variant="body1" gutterBottom sx={{ fontSize: '1.2rem', lineHeight: 1.5, marginBottom: '1rem' }}>
             Consultez ci-dessous les dernières offres de covoiturage proposées par nos utilisateurs :
           </Typography>
+          <Button
+              variant='text'
+              onClick={() => {  navigate("/carpool") }}
+              sx={{
+                  my: 2, color: '#f3c72a' , display: 'block', '&:hover': {
+                      color: '#ffc107',
+                  }
+              }}
+          >
+              Liste des trajets
+          </Button>
           <Autocomplete
             disablePortal
             id="combo-box-demo"
+            noOptionsText={'Pas de ville correspondante'}
             options={inputDepartureCity}
             sx={{ width: 300, margin: '16px 0 16px 0' }}
             onChange={(event, newValue) => {
