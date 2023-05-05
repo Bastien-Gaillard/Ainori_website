@@ -129,7 +129,6 @@ export default function FormCars(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                     minHeight: '60vh',
-                    boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'
                 }}
                 noValidate
                 autoComplete="off"
@@ -197,7 +196,7 @@ export default function FormCars(props) {
                         <PhotoCamera />
                     </IconButton>
                     {displayImage &&
-                        <img width={'128px'} height={'auto'}
+                        <img width={'128px'} height={'auto'} style={{textAlign: 'center'}}
                             alt={"L'image n'a pas chargée"} src={!!props?.cars?.images?.path && props?.cars?.images?.path != null ? selectedFile : 'images/vehicles/' + selectedFile} />
                     }
                     <Button variant="contained" sx={{ width: 'auto', marginTop: '2vh' }} type="submit">Enregistrer</Button>

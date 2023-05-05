@@ -160,11 +160,11 @@ export default function Home({ socket }) {
             Consultez ci-dessous les dernières offres de covoiturage proposées par nos utilisateurs :
           </Typography>
           <Button
-              variant='text'
+              variant='contained'
               onClick={() => {  navigate("/carpool") }}
               sx={{
-                  my: 2, color: '#f3c72a' , display: 'block', '&:hover': {
-                      color: '#ffc107',
+                  my: 2, color: '#ffffff' , display: 'block', '&:hover': {
+                      color: '#ffffff',
                   }
               }}
           >

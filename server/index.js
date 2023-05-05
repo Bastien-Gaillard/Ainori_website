@@ -5,7 +5,6 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   swaggerJsdoc = require("swagger-jsdoc"),
   swaggerUi = require("swagger-ui-express");
-
 const swaggerFile = require('../swagger_output.json');
 const path = require('path');
 const app = express();
@@ -97,6 +96,7 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
 const storageVehicles = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/images/vehicles");
@@ -207,7 +207,6 @@ app.post('/login', async (req, res) => {
   //Create token and add user_id and token in the session
   delete user.password;
   const accessToken = generateAccessToken(user);
-
   req.session.user_id = user.id;
   req.session.token = accessToken;
   req.session.save();
@@ -278,7 +277,8 @@ socketIO.on('connection', (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
   socket.on('message', (data) => {
-    console.log(data);
+    // data.sender = req.se.id;
+    // console.log(data);
     socketIO.emit('messageResponse', data);
   });
 

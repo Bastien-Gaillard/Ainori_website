@@ -47,6 +47,7 @@ export default function Carpool({ socket }) {
         const fetchData = async () => {
             await instance.get('views/propRoutes')
                 .then(async (response) => {
+                    console.log(response.data)
                     let rows = [];
                     response.data.forEach(element => {
                         const date = new Date(element.departure_date);
@@ -54,7 +55,7 @@ export default function Carpool({ socket }) {
                         const route = {
                             // id: element.route_id,
                             name: element.driver,
-                            departure_city: element.departure_city_code + ', ' + element.depature_city,
+                            departure_city: element.departure_city_code + ', ' + element.departure_city,
                             arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
                             departure_date: date,
                             departure_time: moment(element.departure_time).locale("fr").format('LT'),
@@ -66,6 +67,7 @@ export default function Carpool({ socket }) {
                             id: element.route_id,
                             // iduser: element.user_id
                         }
+                        console.log('route', route);
                         rows.push(route);
                         setData(rows);
                     });
@@ -108,6 +110,7 @@ export default function Carpool({ socket }) {
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
+                console.log('waw', params.value )
                 const departureZipCode = params.value.split(', ')[0];
                 const departureCity = params.value.split(', ')[1];
                 const arrivalZipCode = params.row.arrival_city.split(', ')[0];
@@ -194,7 +197,7 @@ export default function Carpool({ socket }) {
         },
         {
             field: 'arrival_time',
-            headerName: 'Heure d\'arrivé',
+            headerName: 'Heure d\'arrivée',
             width: 110,
             hideSortIcons: true,
             hideable: false,
@@ -208,7 +211,7 @@ export default function Carpool({ socket }) {
         },
         {
             field: 'vehicles',
-            headerName: 'Vehicules',
+            headerName: 'Vehicule',
             width: 140,
             hideSortIcons: true,
             hideable: false,
@@ -217,6 +220,7 @@ export default function Carpool({ socket }) {
             field: 'id',
             headerName: 'Rejoindre',
             width: 80,
+            filterable: false,
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
@@ -252,7 +256,7 @@ export default function Carpool({ socket }) {
         return (
             <GridToolbarContainer sx={{ display: 'inline-block', width: '100%' }}>
                 <GridToolbarFilterButton sx={{ float: "left", marginRight: '2vw' }} />
-                <Button variant="outlined" key="profil" onClick={handleClickOpenAdd}>Créer trajets</Button>
+                <Button variant="outlined" key="profil" onClick={handleClickOpenAdd}>Créer un trajet</Button>
                 <GridToolbarQuickFilter sx={{ float: "right" }} />
             </GridToolbarContainer>
         );

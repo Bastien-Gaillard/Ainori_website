@@ -256,7 +256,6 @@ export default function FormTrajets(props) {
                         justifyContent: 'center',
                         alignItems: 'center',
                         minHeight: '60vh',
-                        boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'
                     }}
                     noValidate
                     autoComplete="off"
@@ -264,7 +263,7 @@ export default function FormTrajets(props) {
                 >
                     <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'baseline' }}>
                         <Box sx={{ display: 'flex' }}>
-                            <h2>Créer un Trajet</h2>
+                            <h2>Créer un trajet</h2>
                         </Box>
                         <Autocomplete
                             disablePortal
@@ -273,7 +272,7 @@ export default function FormTrajets(props) {
                             sx={{ width: 300, marginTop: '16px' }}
                             renderInput={(params) => <TextField
                                 {...params}
-                                label="Vehicules utilisé"
+                                label="Vehicule utilisé"
                                 inputRef={inputCarRef}
                                 {...inputCarProps}
                             />
@@ -390,7 +389,7 @@ export default function FormTrajets(props) {
                                 </ul>
                             </Alert>
                         )}
-                        <Box sx={{ display: 'flex', marginTop: '16px' }}>
+                        <Box sx={{ display: 'flex', marginTop: '16px', width: '100%', justifyContent: 'center' }}>
                             <Button variant="contained" sx={{ width: 'auto' }} type="submit">Créer</Button>
                         </Box>
                     </Box>

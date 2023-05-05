@@ -231,7 +231,7 @@ export default function Historical() {
         },
         {
             field: 'arrival_time',
-            headerName: 'Heure d\'arrivé',
+            headerName: 'Heure d\'arrivée',
             width: 110,
             hideSortIcons: true,
             hideable: false,
@@ -245,25 +245,11 @@ export default function Historical() {
         },
         {
             field: 'vehicles',
-            headerName: 'Vehicules',
+            headerName: 'Vehicule',
             width: 140,
             hideSortIcons: true,
             hideable: false,
         },
-        // {
-        //     field: 'id',
-        //     headerName: 'Annuler',
-        //     width: 140,
-        //     hideSortIcons: true,
-        //     hideable: false,
-        //     renderCell: (params: GridRenderCellParams<any>) => {
-        //         return (
-        //             moment(params.row.departure_date).format('L') >= moment(new Date()).format('L') && (
-        //                 <LeaveRoute routeId={params.value} remainingSeats={params.row}/>
-        //             )
-        //         )
-        //     },
-        // },
     ];
 
     const CustomToolbar = () => {

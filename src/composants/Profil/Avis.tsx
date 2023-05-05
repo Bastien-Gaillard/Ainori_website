@@ -15,7 +15,7 @@ const cryptoJs = require('crypto-js');
 import 'dayjs/locale/fr';
 import { format } from 'date-fns';
 import fr from 'date-fns/locale/fr';
-import { DemoContainer , DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -73,43 +73,41 @@ export default function Avis() {
     return (
         <div style={divStyle}>
             <Box sx={{
-                        width: '42vw',
-                        height: '60vh',
-                        boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+                width: '42vw',
+                height: '60vh',
+                boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
 
-                    }}
+            }}
             >
-                <Typography variant="h2" sx={{textAlign: "center",marginBottom: "20px"}} >
-                        Vos avis
+                <Typography variant="h2" sx={{ textAlign: "center", marginBottom: "20px" }} >
+                    Avis me concernant
                 </Typography>
-               
-                    {!!responseData && !!note && (
-                     <Box sx={{                        
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center', 
+
+                {!!responseData && !!note && (
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         margin: '10px'
-                        }}
-                     >
+                    }}
+                    >
                         {responseData.length > 0 && (
                             <Box>
-                                <Box sx={{  height: "50px",
-                                            borderBottom: "1px solid black",
-                                            marginBottom: "20px"
-                                        }}>
+                                <Box sx={{
+                                    height: "50px",
+                                    borderBottom: "1px solid black",
+                                    marginBottom: "20px"
+                                }}>
                                     <Typography variant="h4" >
-                                                Moyenne :
-                                                <Rating name="read-only" value={note?.[0].moyenne} readOnly />
+                                        Moyenne :
+                                        <Rating name="read-only" value={note?.[0].moyenne} readOnly />
                                     </Typography>
                                 </Box>
-                                <Typography variant="h3" >
-                                            Vos avis :
-                                </Typography>                 
                                 <List sx={{ overflow: 'auto', maxHeight: '35vh' }}>
                                     {responseData.map((data, index) => (
-                                        <ListItem key={index} sx={{ borderBottom: '1px #ffc107 solid'}}>
+                                        <ListItem key={index} sx={{ borderBottom: '1px #ffc107 solid' }}>
                                             <Rating name="read-only" value={data.note} readOnly />
-                                            <ListItemText primary={" : "+data.comantaire} />
+                                            <ListItemText primary={" : " + data.comantaire} />
                                         </ListItem>
                                     ))}
                                 </List>
@@ -119,7 +117,7 @@ export default function Avis() {
                             <Box><Typography variant="h4" >Pas encor d'avis</Typography></Box>
                         )}
                     </Box>
-                    )}
+                )}
             </Box>
         </div >
     );

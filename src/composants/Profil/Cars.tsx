@@ -157,7 +157,7 @@ export default function Cars() {
                             {responseData.vehicule.map(({ id, name, images, lisence_plate, color, models, available_seats }) => (
                                 <ListItem alignItems="flex-start" sx={{ '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' } }} key={id} onDoubleClick={() => handleClickOpen({ id, name, images, lisence_plate, color, models, available_seats })} >
                                     <ListItemAvatar>
-                                        <Tooltip title={<img alt={name} src={images && images.path}  />} placement='top'>
+                                        <Tooltip title={<img alt={name} src={images && images.path} />} placement='top'>
                                             <Avatar alt={name} src={images && images.path} />
                                         </Tooltip>
                                     </ListItemAvatar>
@@ -199,11 +199,18 @@ export default function Cars() {
                         sx={{ width: '100%' }}
                     >
                         <DialogTitle>
-                            <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
+                            <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red', cursor: 'pointer' }} />
                         </DialogTitle>
                         <DialogContent>
                             <FormCars handleCloseForm={handleCloseAdd} />
+
                         </DialogContent>
+                        <DialogActions>
+                            <Button variant="outlined" onClick={handleCloseAdd} color="primary">
+                                Retour
+                            </Button>
+                        </DialogActions>
+
                     </Dialog>
                 }
                 {openDelete &&
@@ -237,11 +244,11 @@ export default function Cars() {
                         sx={{ width: '100%' }}
                     >
                         <DialogTitle>
-                            <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
+                            <CloseIcon onClick={handleClose} sx={{ color: 'red', cursor: 'pointer' }} />
                         </DialogTitle>
                         {<FormUpdateVehicule cars={Car} handleCloseForm={handleClose} />}
                         <DialogActions>
-                            <Button onClick={handleClose} color="primary">
+                            <Button variant="outlined" onClick={handleClose} color="primary">
                                 Retour
                             </Button>
                         </DialogActions>

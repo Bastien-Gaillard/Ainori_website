@@ -47,8 +47,6 @@ const Messages = ({ socket }) => {
 
     const handleButtonClick = () => {
         autocompleteInputRef.current?.focus();
-
-
     };
 
 
@@ -125,14 +123,16 @@ const Messages = ({ socket }) => {
             data.sended_at = new Date();
             data.position = 'left';
             setMessages([...messages, data]);
-
         });
+        console.log('new message', messages);
+        // getConversation(sender);
     }, [socket, messages]);
     const lastMessageRef = useRef(null);
+
     useEffect(() => {
         // 👇️ scroll to bottom every time messages change
         lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, [messages]);
+    }, [messages]);
 
     const handleSendMessage = (e) => {
         e.preventDefault();
@@ -147,7 +147,7 @@ const Messages = ({ socket }) => {
         }
         instance.post('messages/create', { content: message, received_by_user_id: receivedUserId }, { headers: { "content-type": "application/json" } });
         setMessage('');
-        if(newConversation == true){
+        if (newConversation == true) {
             setUpdateConversations(true);
             setNewConversation(false);
 
@@ -157,7 +157,7 @@ const Messages = ({ socket }) => {
 
     return (
         <div>
-            <Grid container component={Paper} className={classes.chatSection}>
+            <Grid container component={Paper} className={classes.chatSection} sx={{ boxShadow: 'none' }}>
                 <Grid item xs={3} className={classes.borderRight500}>
                     <Divider />
                     <Grid item xs={12} style={{ padding: '10px' }}>
@@ -263,10 +263,10 @@ const Messages = ({ socket }) => {
                         <Divider />
                         <Grid container style={{ padding: '20px' }}>
                             <Grid item xs={11}>
-                                <Box component="form" onSubmit={handleSendMessage}>
+                                <Box component="form" onSubmit={handleSendMessage} sx={{ display: 'flex' }}>
                                     <TextField
                                         id="outlined-basic-email"
-                                        label="Type Something"
+                                        label="Votre message..."
                                         fullWidth
                                         variant="outlined"
                                         value={message}

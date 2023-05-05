@@ -54,6 +54,10 @@ export default function Comming({ socket }) {
         setDeleteRoutes(value);
     };
 
+    const handleLeaveRoutesdValue = (value) => {
+        setLeaveRoutes(value);
+    };
+
     const handleOpen = () => {
         setOpen(true);
         setTimeout(() => {
@@ -61,11 +65,7 @@ export default function Comming({ socket }) {
         }, 2500);
     };
 
-    const handleLeaveRoutesdValue = (value) => {
-        setLeaveRoutes(value);
-        enqueueSnackbar("Idée archivée", { variant: "success", autoHideDuration: 2000 });
 
-    };
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
     };
@@ -75,6 +75,7 @@ export default function Comming({ socket }) {
     };
 
     useEffect(() => {
+        console.log('reload', showComponent);
         const fetchData = async () => {
             if (showComponent == 'driver') {
                 await instance.get('views/routesCommingDriver')
@@ -109,8 +110,10 @@ export default function Comming({ socket }) {
                         console.error(err);
                     });
             } else {
+                console.log('rows')
                 await instance.get('views/routesCommingUser')
                     .then(async (response) => {
+                        console.log('the response user', response.data)
                         let rows = [];
                         response.data.forEach(element => {
                             const date = new Date(element.departure_date);
@@ -134,6 +137,7 @@ export default function Comming({ socket }) {
                                 is_driver: false
                             }
                             rows.push(route);
+                            console.log('rows', rows)
                             setData(rows);
                         });
                     }).catch((err) => {
@@ -142,7 +146,7 @@ export default function Comming({ socket }) {
             }
         }
         fetchData();
-    }, [result, showComponent, deleteRoutes]);
+    }, [result, showComponent, deleteRoutes, leaveRoutes]);
 
     const columns: GridColDef[] = [
         {
@@ -271,7 +275,7 @@ export default function Comming({ socket }) {
         },
         {
             field: 'arrival_time',
-            headerName: 'Heure d\'arrivé',
+            headerName: 'Heure d\'arrivée',
             width: 110,
             hideSortIcons: true,
             hideable: false,
@@ -285,7 +289,7 @@ export default function Comming({ socket }) {
         },
         {
             field: 'vehicles',
-            headerName: 'Vehicules',
+            headerName: 'Vehicule',
             width: 140,
             hideSortIcons: true,
             hideable: false,
@@ -295,6 +299,7 @@ export default function Comming({ socket }) {
             headerName: 'Annuler',
             width: 80,
             hideSortIcons: true,
+            filterable: false,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
                 if (params.row.is_driver) {
@@ -361,49 +366,8 @@ export default function Comming({ socket }) {
                         },
                     }}
                     localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
-                // onRowDoubleClick={(params) => {
-                //     console.log(params.row)
-                //     setRide({
-                //         title: params.row.departure_city + ' - ' + params.row.arrival_city,
-                //         description: params.row.driver + ' - ' + params.row.departure_date + ' ' + params.row.departure_time + ' à ' + params.row.arrival_time,
-                //         city: params.row.departure_city,
-                //         date: params.row.departure_date,
-                //         departure_city: params.row.departure_city,
-                //         arrival_city: params.row.arrival_city,
-                //         departure_city_lat: '32',
-                //         departure_city_lng: '32',
-                //         city2: params.row.arrival_city,
-                //         arrival_city_lat: '45',
-                //         arrival_city_lng: '45',
-                //         id: params.row.id,
-                //         user_id: params.row.user_id,
-                //         onSubmitCallback: fetchData,
-                //         handleOpen: handleOpen,
-                //         socket: socket
-                //     });
-                //     setOpenRoutes(true);
-                // }}
                 />
                 : <p>Aucun trajet</p>}
-            {/* {openRoutes &&
-                <RideCard
-                    title={ride.departure_city + ' - ' + ride.arrival_city}
-                    description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time}
-                    city={ride.departure_city}
-                    date={ride.departure_date}
-                    departure_city={ride.departure_city}
-                    arrival_city={ride.arrival_city}
-                    departure_city_lat={ride.departure_city_lat}
-                    departure_city_lng={ride.departure_city_lng}
-                    city2={ride.arrival_city}
-                    arrival_city_lat={ride.arrival_city_lat}
-                    arrival_city_lng={ride.arrival_city_lng}
-                    id={ride.id}
-                    user_id={ride.user_id}
-                    onSubmitCallback={fetchData}
-                    handleOpen={handleOpen} // Passer la fonction de rappel
-                    socket={socket}
-                />} */}
         </Container>
     );
 }

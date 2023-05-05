@@ -73,7 +73,7 @@ const RoutesList = ({ socket }) => {
                     setColorVehiclues('black');
                     setColorCreate('#ffc107')
                     handleClickOpenAdd();
-                }}>Créer trajet</Button>
+                }}>Créer un trajet</Button>
             </Box>
             {
                 showComponent == "comming"

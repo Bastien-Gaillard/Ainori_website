@@ -62,7 +62,7 @@ router.get('/routesCommingUser', authenticateToken, async (req, res) => {
         const result = await prisma.$queryRaw`
       SELECT * FROM route_history WHERE user_has_route_user_id = ${req.user.id} AND status = 1
       ORDER BY departure_date DESC, departure_time DESC`;
-        console.log(result)
+        console.log('waw', result);
         res.send(result);
     } catch (error) {
         console.log(error);
