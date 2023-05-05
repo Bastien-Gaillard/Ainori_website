@@ -118,7 +118,7 @@ export default function ProfilNav({ onNavChange, socket, updateImage }) {
         Login = (
             <Tooltip title="Open settings">
                 {/* <Badge badgeContent={4} color="secondary"> */}
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, border: '1.4px solid black' }}>
                     <Avatar alt={user?.lastname} src={image} />
                 </IconButton>
                 {/* </Badge> */}

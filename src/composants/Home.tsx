@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import theme from '../cusotmization/palette';
 import { useNavigate } from 'react-router-dom';
 import * as React from 'react';
-import { Box, Button, Grid, Typography, colors } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, Typography, colors } from '@mui/material';
 import axios from 'axios';
 import RideCard from './RideCard';
 import { Autocomplete } from "@mui/material";
@@ -13,6 +13,8 @@ import * as io from "socket.io-client";
 import { Snackbar, Alert } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
+import FormTrajets from './form/FormTrajets';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const instance = axios.create({
@@ -27,6 +29,7 @@ export default function Home({ socket }) {
   const [departureCityValue, setDepartureCityValue] = useState("");
   const [rides, setRides] = React.useState([]);
   const { handleSubmit, formState: { errors }, register } = useForm();
+  const [openAdd, setOpenAdd] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -141,6 +144,14 @@ export default function Home({ socket }) {
   const { ref: inputDepartureCityRef, ...inputDepartureCityProps } = register("inputDepartureCity", {
     required: true,
   });
+
+  const handleClickOpenAdd = () => {
+    setOpenAdd(true);
+  };
+
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+};
   return (
     <>
       <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)}>
@@ -160,15 +171,15 @@ export default function Home({ socket }) {
             Consultez ci-dessous les dernières offres de covoiturage proposées par nos utilisateurs :
           </Typography>
           <Button
-              variant='contained'
-              onClick={() => {  navigate("/carpool") }}
-              sx={{
-                  my: 2, color: '#ffffff' , display: 'block', '&:hover': {
-                      color: '#ffffff',
-                  }
-              }}
+            variant='contained'
+            onClick={handleClickOpenAdd}
+            sx={{
+              my: 2, color: '#ffffff', display: 'block', '&:hover': {
+                color: '#ffffff',
+              }
+            }}
           >
-              Liste des trajets
+            Créer un trajet
           </Button>
           <Autocomplete
             disablePortal
@@ -194,7 +205,20 @@ export default function Home({ socket }) {
           />
         </div>
         <RideCardWrapper rides={rides} />
+        <Dialog
+          open={openAdd}
+          onClose={handleCloseAdd}
+          sx={{ width: '100%' }}
+        >
+          <DialogTitle>
+            <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red' }} />
+          </DialogTitle>
+          <DialogContent>
+            <FormTrajets handleCloseForm={handleCloseAdd} />
+          </DialogContent>
+        </Dialog>
       </Box>
+
     </>
   );
 

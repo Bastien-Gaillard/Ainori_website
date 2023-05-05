@@ -88,17 +88,17 @@ router.get('/conversations', authenticateToken, async (req, res) => {
         const result = await prisma.$queryRaw`
         SELECT subquery.user_id, subquery.name
         FROM (
-            SELECT received_by_user_id as user_id, receiver as name
+            SELECT received_by_user_id as user_id, receiver as name, sended_at
             FROM display_messages AS dm
             WHERE dm.sended_by_user_id = ${req.user.id}
             GROUP BY dm.received_by_user_id, receiver
             UNION
-            SELECT sended_by_user_id as user_id, sender as name
+            SELECT sended_by_user_id as user_id, sender as name, sended_at
             FROM display_messages AS dm
             WHERE dm.received_by_user_id = ${req.user.id}
             GROUP BY dm.sended_by_user_id, sender
         ) as subquery
-        GROUP BY subquery.user_id;`
+        GROUP BY subquery.sended_at;`
         res.send(result);
     } catch (error) {
         console.log(error);

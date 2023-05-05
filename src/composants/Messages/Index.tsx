@@ -150,10 +150,12 @@ const Messages = ({ socket }) => {
         if (newConversation == true) {
             setUpdateConversations(true);
             setNewConversation(false);
-
         }
     };
 
+    useEffect(() => {
+        console.log(receivedName);
+    })
 
     return (
         <div>
@@ -172,6 +174,7 @@ const Messages = ({ socket }) => {
                                     // The selected option will be available as the `value` argument.
                                     const result = users.filter(element => {
                                         const name: any = element.firstname + ' ' + element.lastname;
+                                        console.log(element, element.id, name)
                                         if (name == value) {
                                             setReceivedName({ name: name, id: element.id });
                                             getConversation(element.id);
