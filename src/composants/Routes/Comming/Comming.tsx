@@ -42,6 +42,7 @@ export default function Comming({ socket }) {
     const [ride, setRide] = useState<any>({});
     const [openRoutes, setOpenRoutes] = useState(false);
     const handleChange = (event) => {
+        setData({});
         console.log(event.target.checked);
         if (event.target.checked) {
             setShowComponent('driver');
@@ -85,26 +86,27 @@ export default function Comming({ socket }) {
                             const date = new Date(element.departure_date);
                             const today = new Date();
                             let isDriver = false;
-
-                            const route = {
-                                id: element.route_id,
-                                name: element.driver,
-                                departure_code: element.departure_city_code,
-                                arrival_code: element.arrival_city_code,
-                                departure_city: element.departure_city,
-                                arrival_city: element.arrival_city,
-                                departure_date: date,
-                                departure_time: moment(element.departure_time).locale("fr").format('LT'),
-                                arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
-                                remaining_seats: element.remaining_seats,
-                                status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
-                                vehicles: element.vehicles,
-                                driver_id: element.driver_id,
-                                route_id: element.route_id,
-                                is_driver: true
+                            if (response.data[0]) {
+                                const route = {
+                                    id: element.route_id,
+                                    name: element.driver,
+                                    departure_code: element.departure_city_code,
+                                    arrival_code: element.arrival_city_code,
+                                    departure_city: element.departure_city,
+                                    arrival_city: element.arrival_city,
+                                    departure_date: date,
+                                    departure_time: moment(element.departure_time).locale("fr").format('LT'),
+                                    arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
+                                    remaining_seats: element.remaining_seats,
+                                    status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
+                                    vehicles: element.vehicles,
+                                    driver_id: element.driver_id,
+                                    route_id: element.route_id,
+                                    is_driver: true
+                                }
+                                rows.push(route);
+                                setData(rows);
                             }
-                            rows.push(route);
-                            setData(rows);
                         });
                     }).catch((err) => {
                         console.error(err);
@@ -115,31 +117,34 @@ export default function Comming({ socket }) {
                     .then(async (response) => {
                         console.log('the response user', response.data)
                         let rows = [];
-                        response.data.forEach(element => {
-                            const date = new Date(element.departure_date);
-                            const today = new Date();
-                            const route = {
-                                id: element.user_has_route_id,
-                                name: element.driver,
-                                user_has_route_id: element.user_has_route_id,
-                                departure_code: element.departure_city_code,
-                                arrival_code: element.arrival_city_code,
-                                departure_city: element.departure_city,
-                                arrival_city: element.arrival_city,
-                                departure_date: date,
-                                departure_time: moment(element.departure_time).locale("fr").format('LT'),
-                                arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
-                                remaining_seats: element.remaining_seats,
-                                status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
-                                vehicles: element.vehicles,
-                                driver_id: element.driver_id,
-                                route_id: element.route_id,
-                                is_driver: false
-                            }
-                            rows.push(route);
-                            console.log('rows', rows)
-                            setData(rows);
-                        });
+                        if (response.data[0]) {
+                            response.data.forEach(element => {
+                                const date = new Date(element.departure_date);
+                                const today = new Date();
+                                const route = {
+                                    id: element.user_has_route_id,
+                                    name: element.driver,
+                                    user_has_route_id: element.user_has_route_id,
+                                    departure_code: element.departure_city_code,
+                                    arrival_code: element.arrival_city_code,
+                                    departure_city: element.departure_city,
+                                    arrival_city: element.arrival_city,
+                                    departure_date: date,
+                                    departure_time: moment(element.departure_time).locale("fr").format('LT'),
+                                    arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
+                                    remaining_seats: element.remaining_seats,
+                                    status: moment(date).format('L') == moment(today).format('L') ? "Aujourd\'hui" : moment(date).format('L') > moment(today).format('L') ? "À venir" : "Fini",
+                                    vehicles: element.vehicles,
+                                    driver_id: element.driver_id,
+                                    route_id: element.route_id,
+                                    is_driver: false
+                                }
+                                rows.push(route);
+
+                                console.log('rows', rows)
+                                setData(rows);
+                            });
+                        }
                     }).catch((err) => {
                         console.error(err);
                     });
@@ -351,23 +356,27 @@ export default function Comming({ socket }) {
             }
         }}>
             <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir</h1>
-            {!!data ?
-                <DataGrid
-                    sx={{ width: '100%', height: '80vh' }}
-                    rows={data}
-                    columns={columns}
-                    pageSize={25}
-                    rowsPerPageOptions={[25]}
-                    components={{ Toolbar: CustomToolbar }}
-                    componentsProps={{
-                        toolbar: {
-                            showQuickFilter: true,
-                            quickFilterProps: { debounceMs: 500 },
-                        },
-                    }}
-                    localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
-                />
-                : <p>Aucun trajet</p>}
+            <DataGrid
+                sx={{ width: '100%', height: '80vh' }}
+                rows={data || { id: 1 }}
+                columns={columns || [{
+                    field: 'remaining_seats',
+                    headerName: 'Places',
+                    width: 70,
+                    hideSortIcons: true,
+                    hideable: false,
+                }]}
+                pageSize={25}
+                rowsPerPageOptions={[25]}
+                components={{ Toolbar: CustomToolbar }}
+                componentsProps={{
+                    toolbar: {
+                        showQuickFilter: true,
+                        quickFilterProps: { debounceMs: 500 },
+                    },
+                }}
+                localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
+            />
         </Container>
     );
 }

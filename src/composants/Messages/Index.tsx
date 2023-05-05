@@ -231,8 +231,8 @@ const Messages = ({ socket }) => {
                                 ))
                             }
                             {messages.map((message) =>
-                                // message.received === receivedUserId &&
-                                message.name === localStorage.getItem('userName') ? (
+                                message.received === receivedUserId &&
+                                    message.name === localStorage.getItem('userName') ? (
                                     <ListItem key={'zdsqqdssqd'} sx={{ backgroundColor: 'rgb(0, 188, 212, 0.05)' }}>
                                         <Grid container>
                                             <p style={{ textAlign: 'right', fontStyle: 'italic', fontSize: 'small' }} >Vous</p>
@@ -245,7 +245,7 @@ const Messages = ({ socket }) => {
                                         </Grid>
                                     </ListItem>
                                 ) : (
-                                    // message.received === receivedUserId &&
+                                    message.received === receivedUserId &&
                                     <ListItem key={'zdsqqdssqd'} sx={{ backgroundColor: 'rgb(255, 193, 7, 0.05)' }}>
                                         <Grid container>
                                             <p style={{ textAlign: 'left', fontStyle: 'italic', fontSize: 'small' }} >{message.name}</p>
