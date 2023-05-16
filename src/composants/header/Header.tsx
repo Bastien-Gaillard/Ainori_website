@@ -65,7 +65,9 @@ export default function Header({ socket, updateImage }) {
 	const NotLogin = (
 		<AppBar position="relative" sx={{ zIndex: 1, height: '60px' }}>
 			<Toolbar>
-				<Link sx={{
+				<Link 
+				id='ainori'
+				sx={{
 					display: 'flex',
 					justifyContent: 'space-between',
 					alignItems: 'center',
