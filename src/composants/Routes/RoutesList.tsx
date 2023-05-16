@@ -9,7 +9,7 @@ import Comming from './Comming/Comming';
 import FormTrajets from '../form/FormTrajets';
 import CloseIcon from '@mui/icons-material/Close';
 import CommingDriver from './Comming/CommingDriver';
-
+import { Helmet } from 'react-helmet'
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
@@ -39,6 +39,9 @@ const RoutesList = ({ socket }) => {
     ];
     return (
         <Box sx={{ display: 'flex', width: '100%', minHeight: 'calc(100vh - 60px)' }}>
+            <Helmet>
+                <title>Mes trajets</title>
+            </Helmet>
             <Box sx={{ display: 'flex', width: '10%', flexDirection: 'column', backgroundColor: '#B2EBF2' }}>
                 <Button sx={{
                     color: colorCommingDriver,

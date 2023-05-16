@@ -15,7 +15,7 @@ import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import FormTrajets from './form/FormTrajets';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { Helmet } from 'react-helmet'
 
 const instance = axios.create({
   baseURL: 'http://localhost:3001/',
@@ -154,6 +154,9 @@ export default function Home({ socket }) {
   };
   return (
     <>
+    <Helmet>
+      <title>Home</title>
+    </Helmet>
       <Snackbar open={open} autoHideDuration={16000} onClose={() => setOpen(false)} sx={{ borderRadius: '8px', marginBottom: '50vh', marginLeft: '40%'}}>
         <Alert onClose={() => setOpen(false)} severity="success" sx={{ width: '100%', borderRadius: '8px' }}>
           Vous avez rejoint le trajet, le conducteur va être informé.

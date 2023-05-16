@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { DataGrid, frFR,GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, frFR, GridCellParams, GridColDef, GridRenderCellParams, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import clsx from 'clsx';
 import { useForm } from "react-hook-form";
 import Driver from './Routes/Historical/Driver'
@@ -18,6 +18,7 @@ import MapIcon from '@mui/icons-material/Map';
 import { AlertColor } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
+import { Helmet } from 'react-helmet'
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -110,7 +111,7 @@ export default function Carpool({ socket }) {
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
-                console.log('waw', params.value )
+                console.log('waw', params.value)
                 const departureZipCode = params.value.split(', ')[0];
                 const departureCity = params.value.split(', ')[1];
                 const arrivalZipCode = params.row.arrival_city.split(', ')[0];
@@ -261,7 +262,7 @@ export default function Carpool({ socket }) {
             </GridToolbarContainer>
         );
     }
-    
+
     return (
         <Container sx={{
             height: '93vh',
@@ -287,7 +288,10 @@ export default function Carpool({ socket }) {
                 fontWeight: '600',
             },
         }}>
-            
+            <Helmet>
+                <title>Covoiturage</title>
+            </Helmet>
+
             <Dialog
                 open={openAdd}
                 onClose={handleCloseAdd}
@@ -300,7 +304,7 @@ export default function Carpool({ socket }) {
                     <FormTrajets handleCloseForm={handleCloseAdd} />
                 </DialogContent>
             </Dialog>
-            <h1 style={{margin: '2vh 0 2vh 0', textAlign: 'center'}}>Les trajets</h1>
+            <h1 style={{ margin: '2vh 0 2vh 0', textAlign: 'center' }}>Les trajets</h1>
             {!!data &&
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}

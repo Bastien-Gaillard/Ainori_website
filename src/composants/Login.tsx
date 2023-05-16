@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { Container, Typography, Box, CssBaseline, Grid, Link } from '@mui/material';
 import FormLogin from './form/FormLogin';
 import { Title } from '@mui/icons-material';
+import { Helmet } from 'react-helmet';
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -41,6 +42,9 @@ export default function Login() {
       },
     }} >
       <CssBaseline />
+      <Helmet>
+        <title>Connexion</title>
+      </Helmet>
       <h1 className={classes.title}>
         Connexion
       </h1>

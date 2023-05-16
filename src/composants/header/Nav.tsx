@@ -24,10 +24,14 @@ const instance = axios.create({
 
 export default function Nav({ value, role }) {
     const [pages, setPages] = useState([{ name: 'Covoiturage', navigation: 'carpool' }, { name: 'Mes trajets', navigation: 'myroutes' }])
-    if (role != 1) {
-        const pages = [{ name: 'Covoiturage', navigation: 'carpool' }, { name: 'Mes trajets', navigation: 'myroutes' }];
-    } else {
-    }
+
+    useEffect(() => {
+        if (role != 1) {
+            setPages([{ name: 'Covoiturage', navigation: 'carpool' }, { name: 'Mes trajets', navigation: 'myroutes' }]);
+        } else {
+        }
+    }, []);
+
 
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [actif, setActif] = useState(value);

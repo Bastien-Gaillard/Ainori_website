@@ -11,6 +11,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import { ButtonGroup, InputAdornment } from "@mui/material";
 import FormProfil from "../form/FormProfil";
 import Cars from "./Cars";
+import { Helmet } from 'react-helmet'
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
@@ -81,7 +82,9 @@ export default function Profil({ obtion, updateImage }) {
                 }}
                     className='waw'>
 
-
+                    <Helmet>
+                        <title>Profil</title>
+                    </Helmet>
                     <Box sx={{ display: 'flex', width: '10%', flexDirection: 'column', backgroundColor: '#B2EBF2' }}>
                         <Button sx={{
                             color: colorProfil,
@@ -122,7 +125,7 @@ export default function Profil({ obtion, updateImage }) {
                         }}>Mes vehicules</Button>
                     </Box>
                     <Box sx={{ width: '68vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} updateImage={setImage}/> : showBox == "vehiclues" ? <Cars /> : <Avis />}
+                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} updateImage={setImage} /> : showBox == "vehiclues" ? <Cars /> : <Avis />}
                     </Box>
                 </Box>
             </>

@@ -4,7 +4,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import * as moment from 'moment';
-
+import { Helmet } from 'react-helmet'
 import * as io from "socket.io-client";
 const useStyles = makeStyles({
     table: {
@@ -159,6 +159,9 @@ const Messages = ({ socket }) => {
 
     return (
         <div>
+            <Helmet>
+                <title>Message</title>
+            </Helmet>
             <Grid container component={Paper} className={classes.chatSection} sx={{ boxShadow: 'none' }}>
                 <Grid item xs={3} className={classes.borderRight500}>
                     <Divider />
