@@ -73,7 +73,7 @@ export default function Profil() {
     return (
         <Box>
             <Button><AddIcon onClick={joinRoutes} /></Button>
-            <Snackbar severity={severity} message={message} open={open} handleClose={handleClose} />
+            <Snackbar severity={severity} message={message}  open={open} handleClose={handleClose} />
         </Box>
 
     )

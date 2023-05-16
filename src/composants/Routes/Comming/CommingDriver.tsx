@@ -36,12 +36,14 @@ export default function Comming({ socket }) {
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
     const [result, setResult] = useState();
+    const [showComponent, setShowComponent] = useState("driver")
     const [deleteRoutes, setDeleteRoutes] = useState(false);
     const [leaveRoutes, setLeaveRoutes] = useState(false);
     const [ride, setRide] = useState<any>({});
     const [openRoutes, setOpenRoutes] = useState(false);
     const handleChange = (event) => {
         setData({});
+        console.log(event.target.checked);
     };
     const handleDeleteRoutesdValue = (value) => {
         setDeleteRoutes(value);
@@ -69,19 +71,17 @@ export default function Comming({ socket }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log('rows')
-            await instance.get('views/routesCommingUser')
+            await instance.get('views/routesCommingDriver')
                 .then(async (response) => {
-                    console.log('the response user', response.data)
                     let rows = [];
-                    if (response.data[0]) {
-                        response.data.forEach(element => {
-                            const date = new Date(element.departure_date);
-                            const today = new Date();
+                    response.data.forEach(element => {
+                        const date = new Date(element.departure_date);
+                        const today = new Date();
+                        let isDriver = false;
+                        if (response.data[0]) {
                             const route = {
-                                id: element.user_has_route_id,
+                                id: element.route_id,
                                 name: element.driver,
-                                user_has_route_id: element.user_has_route_id,
                                 departure_code: element.departure_city_code,
                                 arrival_code: element.arrival_city_code,
                                 departure_city: element.departure_city,
@@ -94,14 +94,12 @@ export default function Comming({ socket }) {
                                 vehicles: element.vehicles,
                                 driver_id: element.driver_id,
                                 route_id: element.route_id,
-                                is_driver: false
+                                is_driver: true
                             }
                             rows.push(route);
-
-                            console.log('rows', rows)
                             setData(rows);
-                        });
-                    }
+                        }
+                    });
                 }).catch((err) => {
                     console.error(err);
                 });
@@ -283,7 +281,6 @@ export default function Comming({ socket }) {
         return (
             <GridToolbarContainer sx={{ display: 'inline-block', width: '100%' }}>
                 <GridToolbarFilterButton sx={{ float: "left", marginRight: '1vw' }} />
-
                 <GridToolbarQuickFilter sx={{ float: "right" }} />
             </GridToolbarContainer>
         );
@@ -310,7 +307,7 @@ export default function Comming({ socket }) {
                 maxWidth: '100%',
             }
         }}>
-            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir (je conduis)</h1>
+            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir (je suis passagé)</h1>
             <DataGrid
                 sx={{ width: '100%', height: '80vh' }}
                 rows={data || { id: 1 }}

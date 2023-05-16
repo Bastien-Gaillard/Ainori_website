@@ -21,10 +21,13 @@ const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 
-const pages = [{ name: 'Covoiturage', navigation: 'carpool' }, { name: 'Mes trajets', navigation: 'myroutes' }];
 
-export default function Nav({ value }) {
-
+export default function Nav({ value, role }) {
+    const [pages, setPages] = useState([{ name: 'Covoiturage', navigation: 'carpool' }, { name: 'Mes trajets', navigation: 'myroutes' }])
+    if (role != 1) {
+        const pages = [{ name: 'Covoiturage', navigation: 'carpool' }, { name: 'Mes trajets', navigation: 'myroutes' }];
+    } else {
+    }
 
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [actif, setActif] = useState(value);

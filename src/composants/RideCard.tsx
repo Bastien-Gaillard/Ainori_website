@@ -60,7 +60,8 @@ export default function RideCard(Props) {
           backgroundColor: '#FFFFFF',
           color: '#FF5722'
         }
-      }}>
+      }}
+      id='reserve'>
         Réserver
       </Button>
     </Box>

@@ -8,16 +8,19 @@ import Historical from './Historical/Historical';
 import Comming from './Comming/Comming';
 import FormTrajets from '../form/FormTrajets';
 import CloseIcon from '@mui/icons-material/Close';
+import CommingDriver from './Comming/CommingDriver';
 
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
 const RoutesList = ({ socket }) => {
 
-    const [showComponent, setShowComponent] = useState("comming");
+    const [showComponent, setShowComponent] = useState("commingDriver");
     const [openAdd, setOpenAdd] = useState(false);
-    const [colorComming, setColorComming] = useState('#ffc107');
+    const [colorComming, setColorComming] = useState('black');
+    const [colorCommingDriver, setColorCommingDriver] = useState('#ffc107');
     const [colorvehiclues, setColorVehiclues] = useState('black');
+
     const [colorCreate, setColorCreate] = useState('black');
 
 
@@ -38,17 +41,32 @@ const RoutesList = ({ socket }) => {
         <Box sx={{ display: 'flex', width: '100%', minHeight: 'calc(100vh - 60px)' }}>
             <Box sx={{ display: 'flex', width: '10%', flexDirection: 'column', backgroundColor: '#B2EBF2' }}>
                 <Button sx={{
-                    color: colorComming,
+                    color: colorCommingDriver,
                     margin: '1vh 0 1vh 0',
                     '&:hover': {
                         color: '',
                     },
                 }} key="comming" onClick={() => {
-                    setShowComponent("comming");
-                    setColorComming('#ffc107');
+                    setShowComponent("commingDriver");
+                    setColorComming('black');
+                    setColorCommingDriver('#ffc107')
                     setColorVehiclues('black');
                     setColorCreate('black')
-                }}>Trajets à venir</Button>
+                }}>Je conduis</Button>
+                <Button sx={{
+                    color: colorComming,
+                    margin: '1vh 0 1vh 0',
+                    '&:hover': {
+                        color: '#ffc107',
+                    },
+                }} key="vehiclues" onClick={() => {
+                    setShowComponent("comming")
+                    setColorComming('#ffc107');
+                    setColorCommingDriver('black');
+                    setColorVehiclues('black');
+                    setColorCreate('black')
+                }}
+                >Je suis passagé</Button>
                 <Button sx={{
                     color: colorvehiclues,
                     margin: '1vh 0 1vh 0',
@@ -59,6 +77,7 @@ const RoutesList = ({ socket }) => {
                     setShowComponent("historical")
                     setColorComming('black');
                     setColorVehiclues('#ffc107');
+                    setColorCommingDriver('black')
                     setColorCreate('black')
                 }}
                 >Historique</Button>
@@ -76,10 +95,12 @@ const RoutesList = ({ socket }) => {
                 }}>Créer un trajet</Button>
             </Box>
             {
-                showComponent == "comming"
-                    ? <Comming socket={socket} />
-                    : showComponent == "historical"
-                    && <Historical />
+                showComponent == "commingDriver"
+                    ? <CommingDriver socket={socket} />
+                    : showComponent == "comming"
+                    ? <Comming socket={socket}/>
+                    : showComponent == "historical" && <Historical />
+
             }
 
             <Dialog

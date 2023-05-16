@@ -51,7 +51,7 @@ type UserModel = {
     image_id?: number
     image?: ImageModel
 }
-export default function ProfilNav({ onNavChange, socket, updateImage }) {
+export default function ProfilNav({ onNavChange, socket, updateImage, role }) {
 
     let navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
@@ -171,7 +171,7 @@ export default function ProfilNav({ onNavChange, socket, updateImage }) {
                         )}
                     </MenuItem>
                 ))}
-                <MenuItem onClick={logout}>Déconnexion</MenuItem>
+                <MenuItem onClick={logout} id='logout'>Déconnexion</MenuItem>
             </Menu>
         </Box>
     )

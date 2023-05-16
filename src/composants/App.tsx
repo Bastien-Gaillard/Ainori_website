@@ -25,7 +25,8 @@ export default function App() {
 
   React.useEffect(() => {
     console.log('image in app ', image);
-  }, [image])
+  }, [image]);
+
   //new Route for test page Home.js by thomas
   return (
     <ThemeProvider theme={theme} >
@@ -34,7 +35,7 @@ export default function App() {
         <Header socket={socket} updateImage={image}/>
 
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Login />}/>
           <Route path="forgot" element={<Forgot />} />
           <Route path="forgot/:token" element={<ForgotPassword />} />
           <Route path="mycars" element={<Home socket={socket}/>} />

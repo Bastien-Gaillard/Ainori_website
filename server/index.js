@@ -210,7 +210,7 @@ app.post('/login', async (req, res) => {
   req.session.user_id = user.id;
   req.session.token = accessToken;
   req.session.save();
-
+  user.token = accessToken;
   res.send(user);
 
 });

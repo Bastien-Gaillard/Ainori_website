@@ -20,14 +20,14 @@ export default function Header({ socket, updateImage }) {
 	const [isConnected, setIsConnected] = useState(false);
 	const [user, setUser] = useState();
 	const [image, setImage] = useState();
-
+	const [role, setRole] = useState();
 	let navigate = useNavigate();
 	const cookieUser = cookies.user;
 
 	const [navValue, setNavValue] = useState('');
 
 	const handleNavChange = (newValue) => {
-	  setNavValue(newValue);
+		setNavValue(newValue);
 	};
 
 	useEffect(() => {
@@ -36,10 +36,16 @@ export default function Header({ socket, updateImage }) {
 
 	useEffect(() => {
 		(async () => {
+			const check = await instance.get('user/role');
+			setRole(check.data)
+		})();
+	})
+	useEffect(() => {
+		(async () => {
 			const link = window.location.pathname;
 			if (link != '/forgot') {
 				if (!link.startsWith('/forgot/')) {
-				
+
 					const check = await instance.get('user/check');
 					if (check.data) {
 						setIsConnected(true);
@@ -66,15 +72,15 @@ export default function Header({ socket, updateImage }) {
 					color: 'black',
 					textDecoration: 'none',
 				}} >
-					<img style={{width: '34px', height: '34px'}} src='logo.png' alt="" />
+					<img style={{ width: '34px', height: '34px' }} src='logo.png' alt="" />
 					<h1>Ainori</h1>
 				</Link>
-				<Nav value={navValue}/>
-				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage}/>
+				<Nav value={navValue} role={role}/>
+				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role}/>
 			</Toolbar>
 		</AppBar>
-    )
-    const Login = (
+	)
+	const Login = (
 		<AppBar position="relative" sx={{ zIndex: 1, height: '60px' }}>
 			<Toolbar>
 				<Link sx={{
@@ -84,15 +90,15 @@ export default function Header({ socket, updateImage }) {
 					color: 'black',
 					textDecoration: 'none',
 				}} href='/home'>
-					<img style={{width: '34px', height: '34px'}} src='logo.png' alt="" />
+					<img style={{ width: '34px', height: '34px' }} src='logo.png' alt="" />
 					<h1>Ainori</h1>
 				</Link>
-				<Nav value={navValue}/>
-				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage}/>
+				<Nav value={navValue} role={role}/>
+				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role}/>
 			</Toolbar>
 		</AppBar>
-    )
-    return (
-        cookieUser ? Login : NotLogin
-    );
+	)
+	return (
+		cookieUser ? Login : NotLogin
+	);
 }

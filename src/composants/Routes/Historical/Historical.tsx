@@ -48,26 +48,29 @@ export default function Historical() {
                 await instance.get('views/routesHistoryDriver')
                     .then(async (response) => {
                         let rows = [];
-                        response.data.forEach(element => {
-                            const date = new Date(element.departure_date);
-                            const today = new Date();
-                            console.log('driver driver', element.driver_id);
-                            const route = {
-                                id: element.user_has_route_id,
-                                name: element.driver,
-                                departure_city: element.departure_city_code + ', ' + element.departure_city,
-                                arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
-                                departure_date: date,
-                                departure_time: moment(element.departure_time).locale("fr").format('LT'),
-                                arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
-                                remaining_seats: element.remaining_seats,
-                                vehicles: element.vehicles,
-                                driver_id: element.driver_id,
-                                route_id: element.route_id
-                            }
-                            rows.push(route);
-                            setData(rows);
-                        });
+                        if (response.data[0]) {
+
+                            response.data.forEach(element => {
+                                const date = new Date(element.departure_date);
+                                const today = new Date();
+                                console.log('driver driver', element.driver_id);
+                                const route = {
+                                    id: element.user_has_route_id,
+                                    name: element.driver,
+                                    departure_city: element.departure_city_code + ', ' + element.departure_city,
+                                    arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
+                                    departure_date: date,
+                                    departure_time: moment(element.departure_time).locale("fr").format('LT'),
+                                    arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
+                                    remaining_seats: element.remaining_seats,
+                                    vehicles: element.vehicles,
+                                    driver_id: element.driver_id,
+                                    route_id: element.route_id
+                                }
+                                rows.push(route);
+                                setData(rows);
+                            });
+                        }
                     }).catch((err) => {
                         console.error(err);
                     });
@@ -75,27 +78,29 @@ export default function Historical() {
                 await instance.get('views/routesHistoryUser')
                     .then(async (response) => {
                         let rows = [];
-                        response.data.forEach(element => {
-                            const date = new Date(element.departure_date);
-                            const today = new Date();
-                            console.log('driver user', element.driver_id);
-                            const route = {
-                                id: element.user_has_route_id,
-                                name: element.driver,
-                                departure_city: element.departure_city_code + ', ' + element.departure_city,
-                                arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
-                                departure_date: date,
-                                departure_time: moment(element.departure_time).locale("fr").format('LT'),
-                                arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
-                                remaining_seats: element.remaining_seats,
-                                status: "Fini",
-                                vehicles: element.vehicles,
-                                driver_id: element.driver_id,
-                                route_id: element.route_id
-                            }
-                            rows.push(route);
-                            setData(rows);
-                        });
+                        if (response.data[0]) {
+                            response.data.forEach(element => {
+                                const date = new Date(element.departure_date);
+                                const today = new Date();
+                                console.log('driver user', element.driver_id);
+                                const route = {
+                                    id: element.user_has_route_id,
+                                    name: element.driver,
+                                    departure_city: element.departure_city_code + ', ' + element.departure_city,
+                                    arrival_city: element.arrival_city_code + ', ' + element.arrival_city,
+                                    departure_date: date,
+                                    departure_time: moment(element.departure_time).locale("fr").format('LT'),
+                                    arrival_time: moment(element.arrival_time).locale("fr").format('LT'),
+                                    remaining_seats: element.remaining_seats,
+                                    status: "Fini",
+                                    vehicles: element.vehicles,
+                                    driver_id: element.driver_id,
+                                    route_id: element.route_id
+                                }
+                                rows.push(route);
+                                setData(rows);
+                            });
+                        }
                     }).catch((err) => {
                         console.error(err);
                     });
@@ -287,24 +292,28 @@ export default function Historical() {
             },
         }}>
             <h1 style={{ margin: '1vh 0 2vh 0' }}>Historique de mes trajets</h1>
-            {!!data &&
-                <DataGrid
-                    sx={{ width: '100%', height: '80vh' }}
-                    rows={data}
-                    columns={columns}
-                    pageSize={25}
-                    rowsPerPageOptions={[25]}
-                    components={{ Toolbar: CustomToolbar }}
-                    componentsProps={{
-                        toolbar: {
-                            showQuickFilter: true,
-                            quickFilterProps: { debounceMs: 500 },
-                        },
-                    }}
-                    localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
+            <DataGrid
+                sx={{ width: '100%', height: '80vh' }}
+                rows={data || { id: 1 }}
+                columns={columns || [{
+                    field: 'remaining_seats',
+                    headerName: 'Places',
+                    width: 70,
+                    hideSortIcons: true,
+                    hideable: false,
+                }]}
+                pageSize={25}
+                rowsPerPageOptions={[25]}
+                components={{ Toolbar: CustomToolbar }}
+                componentsProps={{
+                    toolbar: {
+                        showQuickFilter: true,
+                        quickFilterProps: { debounceMs: 500 },
+                    },
+                }}
+                localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
 
-                />
-            }
+            />
         </Container>
     );
 }

@@ -64,6 +64,17 @@ router.get('/check', (req, res) => {
         res.send(false);
     }
 });
+
+router.get('role', async (req, res) => {
+    await prisma.users.findUnique({
+        where: {
+            id: req.user.id
+        },
+        select: {
+            role_id: true
+        }
+    })
+})
 router.post('/id', authenticateToken, async (req, res) => {
     let id = 0;
     if (!!req.body?.id) {

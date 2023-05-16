@@ -58,7 +58,7 @@ export default function Home({ socket }) {
     console.log('all rides', rides)
     if (rides.length == 0) {
       return (
-        <h1 style={{ color: "red", textAlign: "center", margin: "10px", padding: "10px" }}>Pas de trajet pour l’instant ...</h1>
+        <h2 style={{ color: "red", textAlign: "center", margin: "10px", padding: "10px" }}>Pas de trajet pour l’instant ...</h2>
       )
     } else {
       return (
@@ -66,8 +66,8 @@ export default function Home({ socket }) {
           {rides.map((ride) => (
             <Grid item xs={12} sm={6} md={4} key={ride.id}  >
               <RideCard
-                title={ride.departure_city + ' - ' + ride.arrival_city}
-                description={ride.name + ' - ' + ride.departure_date + ' ' + ride.departure_time + ' à ' + ride.arrival_time}
+                title={ride.departure_city + ' - ' + ride.arrival_city + ', le ' + ride.departure_date}
+                description={ride.name + ' - de ' + ride.departure_time + ' à ' + ride.arrival_time}
                 city={ride.departure_city}
                 date={ride.departure_date}
                 departure_city={ride.departure_city}
@@ -151,11 +151,11 @@ export default function Home({ socket }) {
 
   const handleCloseAdd = () => {
     setOpenAdd(false);
-};
+  };
   return (
     <>
-      <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)}>
-        <Alert onClose={() => setOpen(false)} severity="success" sx={{ width: '100%' }}>
+      <Snackbar open={open} autoHideDuration={16000} onClose={() => setOpen(false)} sx={{ borderRadius: '8px', marginBottom: '50vh', marginLeft: '40%'}}>
+        <Alert onClose={() => setOpen(false)} severity="success" sx={{ width: '100%', borderRadius: '8px' }}>
           Vous avez rejoint le trajet, le conducteur va être informé.
         </Alert>
       </Snackbar>
