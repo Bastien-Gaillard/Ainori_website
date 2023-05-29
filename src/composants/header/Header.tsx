@@ -6,21 +6,22 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import { useState, useEffect } from 'react';
 import theme from '../../cusotmization/palette';
-import Nav from './Nav';
-import ProfilNav from './ProfilNav';
 import axios from 'axios';
 import { Box, Link } from '@mui/material';
 import { useCookies } from 'react-cookie';
+import Nav from './Nav';
+import ProfilNav from './ProfilNav';
+// import Nav from './Nav';
+// import ProfilNav from './ProfilNav';
 const instance = axios.create({
 	baseURL: 'http://localhost:3001/',
 });
 
-export default function Header({ socket, updateImage }) {
+export default function Header({ socket, updateImage, role }) {
 	const [cookies] = useCookies();
 	const [isConnected, setIsConnected] = useState(false);
 	const [user, setUser] = useState();
 	const [image, setImage] = useState();
-	const [role, setRole] = useState();
 	let navigate = useNavigate();
 	const cookieUser = cookies.user;
 
@@ -34,12 +35,6 @@ export default function Header({ socket, updateImage }) {
 		console.log('image in header', updateImage);
 	}, updateImage)
 
-	useEffect(() => {
-		(async () => {
-			const check = await instance.get('user/role');
-			setRole(check.data)
-		})();
-	})
 	useEffect(() => {
 		(async () => {
 			const link = window.location.pathname;
@@ -65,20 +60,20 @@ export default function Header({ socket, updateImage }) {
 	const NotLogin = (
 		<AppBar position="relative" sx={{ zIndex: 1, height: '60px' }}>
 			<Toolbar>
-				<Link 
-				id='ainori'
-				sx={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-					color: 'black',
-					textDecoration: 'none',
-				}} >
+				<Link
+					id='ainori'
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						color: 'black',
+						textDecoration: 'none',
+					}} >
 					<img style={{ width: '34px', height: '34px' }} src='logo.png' alt="" />
 					<h1>Ainori</h1>
 				</Link>
-				<Nav value={navValue} role={role}/>
-				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role}/>
+				<Nav value={navValue} role={role} />
+				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role} />
 			</Toolbar>
 		</AppBar>
 	)
@@ -95,8 +90,8 @@ export default function Header({ socket, updateImage }) {
 					<img style={{ width: '34px', height: '34px' }} src='logo.png' alt="" />
 					<h1>Ainori</h1>
 				</Link>
-				<Nav value={navValue} role={role}/>
-				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role}/>
+				<Nav value={navValue} role={role} />
+				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role} />
 			</Toolbar>
 		</AppBar>
 	)

@@ -8,7 +8,6 @@ import Driver from './Routes/Historical/Driver'
 import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
 import * as moment from 'moment';
 import FormTrajets from "./form/FormTrajets";
-import FormjoinRoute from './form/FormjoinRoute';
 import * as React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material//Dialog';
@@ -18,7 +17,10 @@ import MapIcon from '@mui/icons-material/Map';
 import { AlertColor } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteRoutes from './Routes/features/DeleteRoutes';
+
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -28,7 +30,7 @@ const instance = axios.create({
 });
 
 
-export default function Carpool({ socket }) {
+export default function AllRoutes({ socket }) {
 
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
@@ -36,6 +38,8 @@ export default function Carpool({ socket }) {
     const [message, setMessage] = useState("Une erreur est survenu");
     const [severity, setSeverity] = useState<AlertColor>("error");
     const [joinTravel, setJoinTravel] = useState(0);
+    const [deleteRoutes, setDeleteRoutes] = useState(false);
+
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
     };
@@ -46,7 +50,7 @@ export default function Carpool({ socket }) {
     const [result, setResult] = useState();
     useEffect(() => {
         const fetchData = async () => {
-            await instance.get('views/propRoutes')
+            await instance.get('views/allRoutes')
                 .then(async (response) => {
                     console.log(response.data)
                     let rows = [];
@@ -77,7 +81,12 @@ export default function Carpool({ socket }) {
                 });
         };
         fetchData();
-    }, [result, joinTravel]);
+    }, [result, joinTravel, deleteRoutes]);
+
+    const handleDeleteRoutesdValue = (value) => {
+        setDeleteRoutes(value);
+    };
+
 
     const columns: GridColDef[] = [
         {
@@ -219,32 +228,15 @@ export default function Carpool({ socket }) {
         },
         {
             field: 'id',
-            headerName: 'Rejoindre',
+            headerName: 'Supprimer',
             width: 80,
             filterable: false,
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
-                    <Button onClick={async () => {
-
-                        await instance.post("userHasRoute/create", { route_id: params.value, status_notice: 0 }, { headers: { "content-type": "application/json" } })
-                            .then(async (response) => {
-                                setJoinTravel(response.data.id);
-                                const route = await instance.post('views/routeInfo', { route_id: params.value }, { headers: { "content-type": "application/json" } })
-                                socket.emit('message', {
-                                    text: 'Viens de quitter le trajet du ' + moment(route.data[0].departure_date).locale("fr").format('LL') + ' allant de ' + route.data[0].departure_city + ' à ' + route.data[0].arrival_city,
-                                    name: localStorage.getItem('userName'),
-                                    received: route.data[0].user_id,
-                                    id: `${socket.id}${Math.random()}`,
-                                    socketID: socket.id,
-                                });
-                                await instance.post('messages/create', { content: 'Viens de quitter le trajet du ' + moment(route.data[0].departure_date).locale("fr").format('LL') + ' allant de ' + route.data[0].departure_city + ' à ' + route.data[0].arrival_city, received_by_user_id: route.data[0].user_id }, { headers: { "content-type": "application/json" } });
-                            }).catch((err) => {
-                                console.error(err);
-                            });
-                    }} >
-                        <AddIcon sx={{ color: '#f3c72a' }} />
+                    <Button >
+                        <DeleteRoutes onDeleteRoutesValue={handleDeleteRoutesdValue} routeId={params.value} socket={socket} />
                     </Button>
                 )
             }

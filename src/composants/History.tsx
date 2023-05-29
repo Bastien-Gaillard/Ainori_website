@@ -8,7 +8,6 @@ import Driver from './Routes/Historical/Driver'
 import { Container, Typography, Box, CssBaseline, Grid, Link, Tooltip, Button } from '@mui/material';
 import * as moment from 'moment';
 import FormTrajets from "./form/FormTrajets";
-import FormjoinRoute from './form/FormjoinRoute';
 import * as React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material//Dialog';
@@ -28,7 +27,7 @@ const instance = axios.create({
 });
 
 
-export default function Carpool({ socket }) {
+export default function History({ socket }) {
 
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
@@ -46,7 +45,7 @@ export default function Carpool({ socket }) {
     const [result, setResult] = useState();
     useEffect(() => {
         const fetchData = async () => {
-            await instance.get('views/propRoutes')
+            await instance.get('views/routesHistory')
                 .then(async (response) => {
                     console.log(response.data)
                     let rows = [];
@@ -216,39 +215,7 @@ export default function Carpool({ socket }) {
             width: 140,
             hideSortIcons: true,
             hideable: false,
-        },
-        {
-            field: 'id',
-            headerName: 'Rejoindre',
-            width: 80,
-            filterable: false,
-            hideSortIcons: true,
-            hideable: false,
-            renderCell: (params: GridRenderCellParams<any>) => {
-                return (
-                    <Button onClick={async () => {
-
-                        await instance.post("userHasRoute/create", { route_id: params.value, status_notice: 0 }, { headers: { "content-type": "application/json" } })
-                            .then(async (response) => {
-                                setJoinTravel(response.data.id);
-                                const route = await instance.post('views/routeInfo', { route_id: params.value }, { headers: { "content-type": "application/json" } })
-                                socket.emit('message', {
-                                    text: 'Viens de quitter le trajet du ' + moment(route.data[0].departure_date).locale("fr").format('LL') + ' allant de ' + route.data[0].departure_city + ' à ' + route.data[0].arrival_city,
-                                    name: localStorage.getItem('userName'),
-                                    received: route.data[0].user_id,
-                                    id: `${socket.id}${Math.random()}`,
-                                    socketID: socket.id,
-                                });
-                                await instance.post('messages/create', { content: 'Viens de quitter le trajet du ' + moment(route.data[0].departure_date).locale("fr").format('LL') + ' allant de ' + route.data[0].departure_city + ' à ' + route.data[0].arrival_city, received_by_user_id: route.data[0].user_id }, { headers: { "content-type": "application/json" } });
-                            }).catch((err) => {
-                                console.error(err);
-                            });
-                    }} >
-                        <AddIcon sx={{ color: '#f3c72a' }} />
-                    </Button>
-                )
-            }
-        },
+        },       
     ];
 
 
@@ -304,7 +271,7 @@ export default function Carpool({ socket }) {
                     <FormTrajets handleCloseForm={handleCloseAdd} />
                 </DialogContent>
             </Dialog>
-            <h1 style={{ margin: '2vh 0 2vh 0', textAlign: 'center' }}>Les trajets</h1>
+            <h1 style={{ margin: '2vh 0 2vh 0', textAlign: 'center' }}>Historique</h1>
             {!!data &&
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}

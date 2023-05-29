@@ -30,6 +30,19 @@ router.get('/routesHistoryDriver', authenticateToken, async (req, res) => {
     }
 });
 
+router.get('/routesHistory', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+      SELECT * FROM route_history 
+      WHERE status = 0
+      ORDER BY departure_date DESC, departure_time DESC`
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
 router.get('/routesHistoryUser', authenticateToken, async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
@@ -124,7 +137,7 @@ router.post('/conversation', authenticateToken, async (req, res) => {
             }
         })
         result.forEach(element => {
-            if(element.sended_by_user_id == req.user.id){
+            if (element.sended_by_user_id == req.user.id) {
                 element.position = 'right';
                 element.background_color = '#00bcd4';
                 element.name = 'Vous';
@@ -156,7 +169,7 @@ router.post('/routeInfo', authenticateToken, async (req, res) => {
     }
 });
 router.post('/propRoutesFilter', authenticateToken, async (req, res) => {
-    
+
     try {
         const result = await prisma.$queryRaw`
 
@@ -201,6 +214,23 @@ router.get('/propRoutes', authenticateToken, async (req, res) => {
                 FROM users_has_routes
                 WHERE user_id = ${req.user.id}
         )
+        ORDER BY e.departure_date DESC, e.departure_time DESC;
+        `
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
+router.get('/allRoutes', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+        SELECT *
+        FROM good_routes e
+        WHERE e.remaining_seats != 0 
+            AND e.status = 1 
+            AND (CONCAT(e.departure_date, ' ', ADDTIME(e.departure_time, '01:00:00')) > NOW())
         ORDER BY e.departure_date DESC, e.departure_time DESC;
         `
         res.send(result);

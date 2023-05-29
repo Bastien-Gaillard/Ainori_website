@@ -184,6 +184,7 @@ app.post('/login', async (req, res) => {
       password: true,
       description: true,
       status: true,
+      role_id: true,
       image: {
         select: {
           path: true

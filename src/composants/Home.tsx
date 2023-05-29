@@ -23,6 +23,7 @@ const instance = axios.create({
 
 export default function Home({ socket }) {
   const [open, setOpen] = useState(false);
+  const [reload, setReload] = useState(localStorage.getItem('reload'));
   const navigate = useNavigate();
   const [inputDepartureCity, setinputDepartureCity] = useState([]);
   const [departureCity, setDepartureCity] = useState("");
@@ -30,6 +31,14 @@ export default function Home({ socket }) {
   const [rides, setRides] = React.useState([]);
   const { handleSubmit, formState: { errors }, register } = useForm();
   const [openAdd, setOpenAdd] = useState(false);
+
+  useEffect(() => {
+    if(reload == 'true'){
+      localStorage.setItem('reload', 'false');
+      window.location.reload();
+
+    }
+  }, [reload]);
 
   useEffect(() => {
     (async () => {
