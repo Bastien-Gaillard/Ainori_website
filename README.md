@@ -3,7 +3,7 @@
 
 ## Avant de lancer le projet 
 
-```npm install```
+```npm install --f```
 
 Créer un .env et ajouter la ligne suivante : 
 
