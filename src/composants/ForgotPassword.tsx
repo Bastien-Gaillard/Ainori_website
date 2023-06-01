@@ -5,7 +5,7 @@ import axios from 'axios';
 import theme from '../cusotmization/palette'
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FormForgotPassword from './Form/FormForgotPassword';
+import FormForgotPassword from './form/FormForgotPassword';
 import { AlertColor } from '@mui/material';
 import Index from './404/Index';
 const instance = axios.create({
