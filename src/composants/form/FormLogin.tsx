@@ -22,21 +22,27 @@ export default function FormLogin() {
         // Check if value of email and password exist in database
         const user = await instance.post('login', data, { headers: { "content-type": "application/json" } })
             .then((response) => {
-                if (response.data == "ok") {
-                    setCookie('user', true, { path: '/' })
+                if (response.data == null) {
+                    setInfo(<Alert severity="error" id="error">Identifiant ou mot de passe invalide</Alert>);
+                } else if (response.data == "disable") {
+                    setInfo(<Alert severity="error" id="error">Le compte est désactivé</Alert>);
+                } else {
+                    setCookie('user', true, { path: '/' });
+                    localStorage.setItem('userName', response.data.firstname);
+                    localStorage.setItem('role', response.data.role_id);
+                    localStorage.setItem('reload', 'true');
+
                     navigate('/home');
-                } else if(response.data == "null"){
-                    setInfo(<Alert severity="error">Identifiant ou mot de passe invalide</Alert>);
-                } else if(response.data == "disable"){
-                    setInfo(<Alert severity="error">Le compte est désactivé</Alert>);
                 }
             }).catch((err) => {
                 console.error(err);
             });
+
     }
     return (
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
             <TextField
+                id='email'
                 type="text"
                 name="email"
                 margin="normal"
@@ -53,6 +59,7 @@ export default function FormLogin() {
                 }}
             />
             <TextField
+                id='password'
                 type={showPassword ? "text" : "password"}
                 name="password"
                 margin="normal"

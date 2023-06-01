@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/material/Menu';
 import Container from '@mui/material/Container';
@@ -16,28 +16,10 @@ import { useState, useEffect } from 'react';
 import theme from '../../cusotmization/palette';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import { Badge } from '@mui/material';
 
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
-
-const settings = [{
-    name: "Profile",
-    redirect: "/profil"
-},
-{
-    name: "Messages",
-    redirect: "/messages"
-},
-{
-    name: "Mes voitures",
-    redirect: "/myCars"
-},
-{
-    name: "Deconnexion",
-    redirect: "logout"
-}];
 
 type ImageModel = {
     path: string,
@@ -50,34 +32,66 @@ type UserModel = {
     image_id?: number
     image?: ImageModel
 }
-export default function ProfilNav() {
+export default function ProfilNav({ onNavChange, socket, updateImage, role }) {
 
     let navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const [cookies, setCookie] = useCookies(['user']);
+    const [cookies, setCookie, removeCookie] = useCookies(['user']);
     const [user, setUser] = useState<UserModel>(null);
-
+    const [image, setImage] = useState(updateImage)
+    const [messages, setMessages] = useState([]);
+    const [settings, setSettings] = useState([
+        {
+            name: "Profil",
+            redirect: "/Profil"
+        },
+        {
+            name: "Avis",
+            redirect: "/profilAvis"
+        },
+        {
+            name: "Mes voitures",
+            redirect: "/profilVoiturs"
+        },
+        {
+            name: "Messages",
+            redirect: "/messages"
+        }
+    ])
     const cookieUser = cookies.user;
+
+
+    const handleClick = () => {
+        onNavChange('other');
+    };
+
 
     useEffect(() => {
         (async () => {
             try {
-                const dataUser = await instance.get('user/current/session');
+                const dataUser = await instance.get('user/current/id');
+                console.log('datauser', dataUser.data);
                 setUser(dataUser.data);
+                if (dataUser.data.image?.path) {
+                    setImage(dataUser.data.image?.path);
+                }
             } catch (error) {
                 console.error(error);
             }
         })();
-    }, []);
+    }, [updateImage]);
 
-    console.log('user', user);
+    useEffect(() => {
+        setImage(updateImage);
+    }, [updateImage]);
+
     const logout = async () => {//for déconnexion delete cookie (cookieLoginUser)
         await instance.get('logout')
             .then(response => {
                 setAnchorElNav(null);
                 setAnchorElUser(null)
-                setCookie('user', '', { expires: new Date(0) });
+                removeCookie('user');
                 navigate('/');
             })
             .catch(error => {
@@ -85,54 +99,50 @@ export default function ProfilNav() {
             });
     }
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
+    const handleMenuItemClick = (redirectUrl) => {
+        handleClick();
+        navigate(redirectUrl);
     };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
     };
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-    const NotLogin = (
-        <Avatar />
-    );
+
     let Login = null;// set value Login 
     if (cookieUser) {//if user is already connected
         Login = (
             <Tooltip title="Open settings">
-                <Badge badgeContent={4} color="secondary">
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt={user?.lastname} src={user?.image?.path} />
-                    </IconButton>
-                </Badge>
+                {/* <Badge badgeContent={4} color="secondary"> */}
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, border: '1.4px solid black' }}>
+                    <Avatar alt={user?.lastname} src={image} />
+                </IconButton>
+                {/* </Badge> */}
 
             </Tooltip>
         )
         if (!!user?.image_id) {//if user as image
             Login = (
                 <Tooltip title="Open settings">
-                    <Badge badgeContent={4} color="secondary">
+                    {/* <Badge badgeContent={4} color="secondary"> */}
 
-                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                            <Avatar alt={user?.lastname} src={user?.image?.path} />
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt={user?.lastname} src={image} />
 
-                        </IconButton>
-                    </Badge>
+                    </IconButton>
+                    {/* </Badge> */}
 
                 </Tooltip>
             )
         }
     }
 
-    const goMessages = () => {
-        navigate('/messages');
-    }
     return (
         <Box sx={{ flexGrow: 0 }}>
-            {cookieUser ? Login : NotLogin}
+            {cookieUser && Login}
             <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -150,16 +160,17 @@ export default function ProfilNav() {
                 onClose={handleCloseUserMenu}
             >
                 {settings.map((setting) => (
-                    <MenuItem key={setting.name} onClick={handleCloseNavMenu}>
-                        {setting.name === 'Messages' ?
-                            <Badge badgeContent={4} color="secondary">
-                                <Typography textAlign="center" onClick={goMessages}>{setting.name}</Typography>
-                            </Badge>
-                            :
-                            <Typography textAlign="center" onClick={setting.name === 'Deconnexion' ? logout : null}>{setting.name}</Typography>
-                        }
+                    <MenuItem key={setting.name} onClick={() => handleMenuItemClick(setting.redirect)}>
+                        {setting.name === 'Messages' ? (
+                            // <Badge badgeContent={4} color="secondary">
+                            <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
+                            // </Badge>
+                        ) : (
+                            <Typography textAlign="center" onClick={() => handleMenuItemClick(setting.redirect)}>{setting.name}</Typography>
+                        )}
                     </MenuItem>
                 ))}
+                <MenuItem onClick={logout} id='logout'>Déconnexion</MenuItem>
             </Menu>
         </Box>
     )

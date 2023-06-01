@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import CreateIcon from '@mui/icons-material/Create';
-import { Avatar, DialogContent, InputAdornment } from "@mui/material";
+import { Avatar, DialogContent, InputAdornment, Tooltip } from "@mui/material";
 import { isTemplateSpan } from "typescript";
 import { ThemeProvider } from "@emotion/react";
 
@@ -60,9 +60,8 @@ export default function Cars() {
     const [openAdd, setOpenAdd] = useState(false);
 
     const dataCarsSet = async () => {
-        return await instance.get('vehicules/user', { headers: { "content-type": "application/json" } })
+        return await instance.get('vehicles/user', { headers: { "content-type": "application/json" } })
             .then(response => {
-                console.log('response.data', response.data);
                 setResponseData(response.data)
             })
             .catch((err) => {
@@ -85,7 +84,6 @@ export default function Cars() {
     function luminance(hex) {
         const color = hexToRgb(hex);
         const luminance = (0.2126 * color.r) + (0.7152 * color.g) + (0.0722 * color.b);
-        console.log(luminance);
         const backgroundColor = luminance > 128 ? '#2f2f2f' : '#E8E7E7';
         return backgroundColor;
     }
@@ -108,6 +106,7 @@ export default function Cars() {
     };
 
     const handleClose = () => {
+        dataCarsSet();
         setOpen(false);
     };
 
@@ -116,7 +115,6 @@ export default function Cars() {
     };
 
     const handleCloseAdd = () => {
-        console.log('fiqnoqdfioqsfdjisqfjiqsfjFJOPFQSPJOSFQJÖPQSFJQFDSOPJQDSF¨JQSDFQOJSIDFOPJDFS¨JDFSPÖJQDSFJQOPSFDJPODFQJPO¨DQFSJPOQDFS')
         dataCarsSet();
         setOpenAdd(false);
     };
@@ -148,17 +146,20 @@ export default function Cars() {
                         width: '42vw',
                         height: '60vh',
                         boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
-                        alignItems: "baseline"
+                        alignItems: "baseline",
+                        minWidth: '400px'
                     }}
                     >
                         <Typography variant="h3" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px' }}>
                             Vos véhicules
                         </Typography>
-                        <List >
+                        <List sx={{ overflow: 'auto', maxHeight: '50vh' }} >
                             {responseData.vehicule.map(({ id, name, images, lisence_plate, color, models, available_seats }) => (
                                 <ListItem alignItems="flex-start" sx={{ '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' } }} key={id} onDoubleClick={() => handleClickOpen({ id, name, images, lisence_plate, color, models, available_seats })} >
                                     <ListItemAvatar>
-                                        <Avatar alt={name} src={images && images.path} />
+                                        <Tooltip title={<img alt={name} src={images && images.path} />} placement='top'>
+                                            <Avatar alt={name} src={images && images.path} />
+                                        </Tooltip>
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={name}
@@ -195,14 +196,21 @@ export default function Cars() {
                     <Dialog
                         open={openAdd}
                         onClose={handleCloseAdd}
-                        sx={{ width: '100%'}}
+                        sx={{ width: '100%' }}
                     >
                         <DialogTitle>
-                            <CloseIcon onClick={handleCloseAdd} sx={{color:'red'}}/>
+                            <CloseIcon onClick={handleCloseAdd} sx={{ color: 'red', cursor: 'pointer' }} />
                         </DialogTitle>
                         <DialogContent>
                             <FormCars handleCloseForm={handleCloseAdd} />
+
                         </DialogContent>
+                        <DialogActions>
+                            <Button variant="outlined" onClick={handleCloseAdd} color="primary">
+                                Retour
+                            </Button>
+                        </DialogActions>
+
                     </Dialog>
                 }
                 {openDelete &&
@@ -233,11 +241,14 @@ export default function Cars() {
                         onClose={handleClose}
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
+                        sx={{ width: '100%' }}
                     >
-                        <DialogTitle id="alert-dialog-title">{"Modifier véhicules"}</DialogTitle>
-                        {<FormUpdateVehicule cars={Car} />}
+                        <DialogTitle>
+                            <CloseIcon onClick={handleClose} sx={{ color: 'red', cursor: 'pointer' }} />
+                        </DialogTitle>
+                        {<FormUpdateVehicule cars={Car} handleCloseForm={handleClose} />}
                         <DialogActions>
-                            <Button onClick={handleClose} color="primary">
+                            <Button variant="outlined" onClick={handleClose} color="primary">
                                 Retour
                             </Button>
                         </DialogActions>

@@ -42,7 +42,7 @@
   ],
 
   "paths": {
-    "/cities": {
+    "/city/cities": {
       "post": {
         "tags": ["cities"],
         "summary": "Obtenir les villes",
@@ -104,7 +104,7 @@
         ]
       }
     },
-    "/cities/create": {
+    "/city/create": {
       "post": {
         "tags": ["cities"],
         "summary": "Créer une ville",
@@ -152,7 +152,7 @@
         }
       }
     },
-    "/cities/update": {
+    "/city/update": {
       "put": {
         "tags": ["cities"],
         "summary": "Modifier une ville",
@@ -206,7 +206,7 @@
         }
       }
     },
-    "/cities/delete": {
+    "/city/delete": {
       "delete": {
         "tags": ["cities"],
         "summary": "Supprimer une ville",
@@ -229,19 +229,7 @@
     },
 
 
-
-    "/images": {
-      "get": {
-        "tags": ["images"],
-        "description": "Obtenir toutes les images",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/upload": {
+    "/image/upload": {
       "post": {
         "tags": ["images"],
         "description": "",
@@ -305,7 +293,7 @@
         }
       }
     },
-    "/users": {
+    "/user/users": {
       "get": {
         "tags": ["users"],
         "summary": "Obtenir tous les utilisateurs",
@@ -698,6 +686,13 @@
             "type": "string",
             "required": true,
             "default": "2022-11-11"
+          },
+          {
+            "name": "vehicules_id",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "default": "2"
           },
           {
             "name": "available_seats",
@@ -1407,6 +1402,25 @@
           }
         }
       }
+    },
+    "/vehicules/id": {
+      "post": {
+        "tags": ["create"],
+        "description": "Obtenir vehicules par id",
+        "parameters": [{
+          "name": "id",
+          "in": "formData",
+          "type": "integer",
+          "required": true,
+          "default": 1
+        }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
+
   }
 }

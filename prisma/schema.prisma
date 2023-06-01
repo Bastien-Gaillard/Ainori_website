@@ -121,6 +121,7 @@ model routes {
   departure_time     DateTime           @db.Time(0)
   arrival_time       DateTime           @db.Time(0)
   departure_date     DateTime           @db.Date
+  vehicules_id       Int
   available_seats    Int?
   remaining_seats    Int
   statuts            Boolean
@@ -133,6 +134,7 @@ model routes {
   departure_city     cities             @relation("citiesToroutes_departure_city_id", fields: [departure_city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departure_city_id")
   updated_by_routes  users?             @relation("routes_updated_by_user_idTousers", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_routes")
   route              users              @relation("routes_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_routes")
+  users_vehicles     users_vehicles     @relation(fields: [vehicules_id], references: [id], onUpdate: Restrict, map: "fk_vehicules_id")
   users_has_routes   users_has_routes[]
 
   @@index([arrival_city_id], map: "fk_arrival_city_id")
@@ -140,6 +142,7 @@ model routes {
   @@index([departure_city_id], map: "fk_departure_city_id")
   @@index([updated_by_user_id], map: "fk_updated_by_user_id_routes")
   @@index([user_id], map: "fk_user_id_routes")
+  @@index([vehicules_id], map: "fk_vehicules_id")
 }
 
 model users {
@@ -156,10 +159,6 @@ model users {
   updated_at                                  DateTime?          @db.Timestamp(0)
   created_by_user_id                          Int?
   updated_by_user_id                          Int?
-  created_by_users                            users?             @relation("usersTousers_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users")
-  image                                       images?            @relation("imagesTousers_image_id", fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_id_users")
-  role                                        roles              @relation("rolesTousers_role_id", fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_id")
-  updated_by_users                            users?             @relation("usersTousers_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users")
   create_city                                 cities[]           @relation("cities_created_by_user_idTousers")
   update_city                                 cities[]           @relation("cities_updated_by_user_idTousers")
   create_image                                images[]           @relation("images_created_by_user_idTousers")
@@ -178,7 +177,11 @@ model users {
   create_route                                routes[]           @relation("routes_created_by_user_idTousers")
   update_route                                routes[]           @relation("routes_updated_by_user_idTousers")
   route                                       routes[]           @relation("routes_user_idTousers")
+  created_by_users                            users?             @relation("usersTousers_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users")
   create_user                                 users[]            @relation("usersTousers_created_by_user_id")
+  image                                       images?            @relation("imagesTousers_image_id", fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_id_users")
+  role                                        roles              @relation("rolesTousers_role_id", fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_id")
+  updated_by_users                            users?             @relation("usersTousers_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users")
   update_user                                 users[]            @relation("usersTousers_updated_by_user_id")
   create_user_has_route                       users_has_routes[] @relation("usersTousers_has_routes_updated_by_user_id")
   update_user_has_route                       users_has_routes[] @relation("usersTousers_has_routes_created_by_user_id")
@@ -203,7 +206,7 @@ model users_has_routes {
   created_by_user_id  Int?
   updated_by_user_id  Int?
   updated_by_vehicles users?    @relation("usersTousers_has_routes_updated_by_user_id", fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users_has_routes")
-  routes              routes    @relation(fields: [route_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_route_id")
+  routes              routes    @relation(fields: [route_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_route_id")
   created_by_routes   users?    @relation("usersTousers_has_routes_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_by_user_id_users_has_routes_users_users_has_routes")
   user_id_routes      users     @relation("usersTousers_has_routes_user_id", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_users_has_routes")
 
@@ -228,6 +231,7 @@ model users_vehicles {
   updated_at          DateTime? @db.Timestamp(0)
   created_by_user_id  Int?
   updated_by_user_id  Int?
+  routes              routes[]
   created_by_vehicles users?    @relation("usersTousers_vehicles_created_by_user_id", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_by_user_id_users_vehicles")
   images              images?   @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_id_users_vehicles")
   models              models    @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_model_id")

@@ -32,26 +32,31 @@ export default function FormCars(props) {
     }
 
     const onSubmit = async (data) => {
-        const vehicles = await instance.post("model", data, { headers: { "content-type": "application/json" } })
+        console.log('all data', data);
+        const vehicles = await instance.post("model/model", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                console.log('response vehicules', response.data)
                 data.models = response.data;
             }).catch((err) => {
                 console.error(err);
             });
+        if (!!selectedFile) {
+            console.log('in select files');
+            data.path = 'images/vehicles/';
+            const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
+                .then(async (response) => {
+                    data.images = response.data;
+                }).catch((err) => {
+                    console.error(err);
+                });
+        } else {
+            data.images = {id: null};
+        }
 
-        data.path = 'images/vehicles/';
-        const image = await instance.post("image/create", data, { headers: { "content-type": "application/json" } })
-            .then(async (response) => {
-                console.log('response', response.data);
-                data.images = response.data;
-            }).catch((err) => {
-                console.error(err);
-            });
-        console.log('data after images', data)
+        if (!data.name) {
+            data.name = data.models.mark + ' ' + data.models.model
+        }
         const result = await instance.post("vehicles/create", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                console.log('the response', response);
             }).catch((err) => {
                 console.error(err);
             });
@@ -64,15 +69,13 @@ export default function FormCars(props) {
     };
 
     const handleUpload = async (selectedFile) => {
-        console.log('select', selectedFile);
         const formData = new FormData();
         formData.append("image", selectedFile);
-        await axios.post("upload", formData, { headers: { "Content-Type": "multipart/form-data" } })
+        await axios.post("image/upload", formData, { headers: { "Content-Type": "multipart/form-data" } })
             .then(async (response) => {
                 setValue('image', response.data);
                 setSelectedFile(response.data);
                 setDisplayImage(true);
-                console.log(getValues())
             }).catch((err) => {
                 console.error(err);
                 return false;
@@ -97,7 +100,7 @@ export default function FormCars(props) {
     }, []);
 
     const getDataMarks = async () => {
-        await instance.get('marks')
+        await instance.get('model/marks')
             .then(async (response) => {
                 setMarks(response.data.map(elem => elem.mark));
             }).catch((err) => {
@@ -106,7 +109,7 @@ export default function FormCars(props) {
     }
 
     const getDataModels = async (value) => {
-        await instance.post('models', { mark: value }, { headers: { "content-type": "application/json" } })
+        await instance.post('model/models', { mark: value }, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
                 setModels(response.data.map(elem => elem.model));
             }).catch((err) => {
@@ -130,7 +133,6 @@ export default function FormCars(props) {
 
     function handleInputChange(event, value) {
         setModels(null);
-        console.log('value', value);
         getDataModels(value);
     }
 
@@ -167,7 +169,6 @@ export default function FormCars(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                     minHeight: '60vh',
-                    boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'
                 }}
                 noValidate
                 autoComplete="off"
@@ -176,7 +177,7 @@ export default function FormCars(props) {
                 <Box sx={{ display: 'flex' }}>
                     <h2>Ajouter un véhicule</h2>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'baseline' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '16px', marginBottom: '16px', marginLeft: '256px', marginRight: '256px', alignItems: 'center' }}>
                     <TextField
                         label="Nom"
                         name="name"
@@ -196,7 +197,6 @@ export default function FormCars(props) {
                                 label="Marque"
                                 inputRef={markRef}
                                 {...markProps}
-                                onChange={(e) => console.log(e.target)}
                             />
                             }
                         />
@@ -209,7 +209,7 @@ export default function FormCars(props) {
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField
                                 {...params}
-                                label="Marque"
+                                label="Modèle"
                                 inputRef={modelRef}
                                 {...modelProps}
                             />}
@@ -235,7 +235,6 @@ export default function FormCars(props) {
                             color={color}
                             onChangeComplete={(color) => {
                                 setColor(color);
-                                console.log(color);
                                 setValue('color', color.hex);
                             }} />
                     </ Box>
@@ -270,9 +269,7 @@ export default function FormCars(props) {
                                 alt={selectedFile} src={'images/vehicles/' + selectedFile} />
                         </>
                     }
-                    <Box sx={{ display: 'flex', marginTop: '16px' }}>
-                        <Button variant="contained" sx={{ width: 'auto' }} type="submit">Enregistrer</Button>
-                    </Box>
+                    <Button variant="contained" sx={{ width: 'auto', marginTop: '2vh' }} type="submit">Enregistrer</Button>
                 </Box>
             </Box>
         </div >

@@ -29,9 +29,7 @@ export default function Profil() {
         try {
             await instance.post('userHasRoute/user/route', { route_id: routeId }, { headers: { "content-type": "application/json" } })
                 .then(async (response) => {
-                    console.log(response.data[0])
                     if (response.data[0]) {
-                        console.log('Vous faites deja partis du trajets');
                         setMessage("Vous êtes déja inscrit au trajet");
                         setSeverity("info");
                         setOpen(true);
@@ -72,61 +70,10 @@ export default function Profil() {
         }
     }
 
-
-    const deleteRoutes = async () => {
-        const routeId = 2;
-        try {
-            await instance.post('userHasRoute/user/route', { route_id: routeId }, { headers: { "content-type": "application/json" } })
-                .then(async (response) => {
-                    console.log(response.data[0])
-                    if (response.data[0] == undefined) {
-                        console.log('Vous ne faite pas partis du trajets');
-                        setMessage("Vous ne faite pas partis du trajets");
-                        setSeverity("error");
-                        setOpen(true);
-                    } else {
-                        console.log('qdfjiopjqsojopsqdfjpqsf', response.data[0].id);
-                        setUserRouteId(response.data[0].id);
-                        await instance.post('route', { id: routeId }, { headers: { "content-type": "application/json" } })
-                            .then(async (dataRoute) => {
-                                const remainingSeats = dataRoute.data.remaining_seats;
-                                if (remainingSeats == 0) {
-                                    return;
-                                } else {
-                                    await instance.delete('userHasRoute/delete/' + response.data[0].id)
-                                        .then(async (response) => {
-                                            await instance.put('route/remainingSeats', { id: routeId, remaining_seats: remainingSeats + 1 }, { headers: { "content-type": "application/json" } })
-                                                .then(async (response) => {
-                                                    setMessage("Desinscription validée");
-                                                    setSeverity("success");
-                                                    setOpen(true);
-                                                }).catch((err) => {
-                                                    console.error(err);
-                                                });
-                                        }).catch((err) => {
-                                            console.error(err);
-                                        });
-                                }
-                            }).catch((err) => {
-                                console.error(err);
-                            });
-                    }
-                }).catch((err) => {
-                    console.error(err);
-                });
-
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-
-
     return (
         <Box>
             <Button><AddIcon onClick={joinRoutes} /></Button>
-            <Button><DeleteIcon onClick={deleteRoutes} /></Button>
-            <Snackbar severity={severity} message={message} open={open} handleClose={handleClose} />
+            <Snackbar severity={severity} message={message}  open={open} handleClose={handleClose} />
         </Box>
 
     )
