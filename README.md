@@ -44,7 +44,7 @@ Permet de créer l'api utilisé par l'application (coté back).
 <br/>La documentation : https://nodejs.org/en
                    https://expressjs.com/fr/
 ### Socket.io
-Permet une communication bidirectionelle utilisé pour créer la messagerie instantanée
+Permet une communication bidirectionelle utilisée pour créer la messagerie instantanée
 <br/>La documentation : https://socket.io/
 ### Mui
 Permet d'importer des composants préconçus afin de simplifier l'intégration et la gestion du style.
@@ -69,7 +69,7 @@ Cela vous permettra d'avoir le projet sur votre ordinateur
 ### Installer les dépendances
 
 Il faut maintenant installer les dépendances tel que express, mui, etc.
-<br/>Pour cela aller dans votre dossier : ```cd ./Ainori_web```
+<br/>Pour cela, allez dans votre dossier : ```cd ./Ainori_web```
 <br/> Puis cela executez la commande suivante : ```npm install --f```
 
 ### Connecter la base de donnée 
@@ -100,7 +100,7 @@ password: Azerty_1234
 
 ## Structure
 
-La structure du projet (les fichiers important) : 
+La structure du projet (les fichiers importants) : 
 
 ├── prisma                       <br/>
 │   ├── schema.prisma            <br/>
