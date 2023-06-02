@@ -69,7 +69,7 @@ const RoutesList = ({ socket }) => {
                     setColorVehiclues('black');
                     setColorCreate('black')
                 }}
-                >Je suis passagé</Button>
+                >Je suis passager</Button>
                 <Button sx={{
                     color: colorvehiclues,
                     margin: '1vh 0 1vh 0',

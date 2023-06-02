@@ -310,7 +310,7 @@ export default function Comming({ socket }) {
                 maxWidth: '100%',
             }
         }}>
-            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir (je conduis)</h1>
+            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir (je suis passager)</h1>
             <DataGrid
                 sx={{ width: '100%', height: '80vh' }}
                 rows={data || { id: 1 }}

@@ -32,6 +32,7 @@ const instance = axios.create({
 
 export default function AllRoutes({ socket }) {
 
+    const [reload, setReload] = useState(localStorage.getItem('reload'));
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
     const [open, setOpen] = useState<boolean>(false);
@@ -40,6 +41,15 @@ export default function AllRoutes({ socket }) {
     const [joinTravel, setJoinTravel] = useState(0);
     const [deleteRoutes, setDeleteRoutes] = useState(false);
     const roleadm = parseInt(localStorage.getItem('role'), 10);
+
+    {roleadm!=1?(useEffect(() => {
+        if(reload == 'true'){
+          localStorage.setItem('reload', 'false');
+          window.location.reload();
+    
+        }
+      }, [reload])):("")};
+    
 
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
