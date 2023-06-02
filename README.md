@@ -67,6 +67,12 @@ REFRESH_TOKEN_SECRET=424200000X1
 ### Executer le projet 
 
 Pour lancer le projet en mode développeur executer la commande suivante : ```npm run dev```
+<br/>Pour y acceder aller sur le lien suivant : http://localhost:3001/
+
+<br/><br/>
+Compte administrateur: bastien.gaillard@formation-technologique.fr
+<br/><br/>
+Compte administrateur: bastien.gaillard@formation-technologique.fr
 
 ## Structure
 
