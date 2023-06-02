@@ -21,31 +21,36 @@ Ainori est une application de covoiturage pour les élèves du centre de formati
 ## Technologies
  
 ### React
-
 Permet de créer la page et les composant de l'application en utilisant du Javascript (coté front).
-La documentation : https://fr.legacy.reactjs.org/
-
+<br/>La documentation : https://fr.legacy.reactjs.org/
 ### Node.js / Express
-
 Permet de créer l'api utilisé par l'application (coté back).
-La documentation : https://nodejs.org/en
+<br/>La documentation : https://nodejs.org/en
                    https://expressjs.com/fr/
-
 ### Socket.io
-
 Permet une communication bidirectionelle utilisé pour créer la messagerie instantanée
-
+<br/>La documentation : https://socket.io/
 ### Mui
-
 Permet d'importer des composants préconçus afin de simplifier l'intégration et la gestion du style.
+<br/>La documentation : https://mui.com/material-ui/getting-started/overview/
 ### Email.js
-
 Permet de gérer l'envoi des mails pour les mot de passe oublié 
-
+<br/> La documentation : https://www.emailjs.com/docs/
 ## Prerequis
 
-Pour commencer il faudra installer Node.js 
+### Node.js 
+Pour commencer il faudra installer Node.js version 18.16.0 
+<br/> Le lien de téléchargement : https://nodejs.org/en/download
+
 ## Installation
+
+### Cloner le projet : 
+
+Ouvrez l'inviter de commande puis executer la commande suivante 
+```git clone https://github.com/Bastien-Gaillard/Ainori_web.git```
+
+<br/>
+
 
 ## Structure
 
