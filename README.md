@@ -75,14 +75,14 @@ Pour lancer le projet en mode développeur executer la commande suivante : ```np
 
 La structure du projet (les fichiers important) : 
 
-├── prisma
-│   ├── schema.prisma
-├── public 
-├── server
-│   ├── index.js
-│   ├── routes 
-├── src
-│   ├── composants
+├── prisma                       <br/>
+│   ├── schema.prisma            <br/>
+├── public                       <br/>
+├── server                       <br/>
+│   ├── index.js                 <br/>
+│   ├── routes                   <br/>
+├── src                          <br/>
+│   ├── composants               <br/>
 
 schema.prisma : Schema de la base de données orienté objet
 public : Dossier pour stocker les images, fichier, etc
