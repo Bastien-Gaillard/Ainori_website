@@ -55,8 +55,25 @@ Cela vous permettra d'avoir le projet sur votre ordinateur
 Il faut maintenant installer les dépendances tel que express, mui, etc.
 <br/> Pour cela executez la commande suivante : ```npm install --f```
 
+### Connecter la base de donnée 
+
+A la racine du projet, créez un fichier ```.env```
+
+Ajouter à l'interieur le code suivant : 
+<br/>
+```
+DATABASE_URL="mysql://Windev:NBSjMAaNYWUp@51.91.249.126:3306/ainori"
+ACCESS_TOKEN_SECRET=4242XX424208
+REFRESH_TOKEN_SECRET=424200000X1
+```
+
+### Executer le projet 
+
+Pour lancer le projet en mode développeur executer la commande suivante : ```npm run dev```
 
 ## Structure
+
+
 
 ## Contributeurs 
   
