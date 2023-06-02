@@ -13,130 +13,87 @@ import FormProfil from "../form/FormProfil";
 import Cars from "./Cars";
 import { Helmet } from 'react-helmet'
 const instance = axios.create({
-    baseURL: 'http://localhost:3001/',
+  baseURL: 'http://localhost:3001/',
 });
 
 type UserModel = {
-    firstname: string,
-    lastname: string,
-    email: string,
-    description?: string
+  firstname: string,
+  lastname: string,
+  email: string,
+  description?: string
 }
-
-
 
 export default function Profil({ obtion, updateImage }) {
-    const [user, setUser] = useState<UserModel>(null);
-    const [modify, setModify] = useState<boolean>(false);
-    const [disableFirstname, setDisableFirstname] = useState<boolean>(true);
-    const [showBox, setShowBox] = useState("profil");
-    const [colorProfil, setColorProfil] = useState('#ffc107');
-    const [colorVehicles, setColorVehicles] = useState('black');
-    const [colorNotices, setColorNotices] = useState('black');
-    const [image, setImage] = useState(null);
+  const [user, setUser] = useState<UserModel>(null);
+  const [modify, setModify] = useState<boolean>(false);
+  const [disableFirstname, setDisableFirstname] = useState<boolean>(true);
+  const [showBox, setShowBox] = useState("profil");
+  const [colorProfil, setColorProfil] = useState('#ffc107');
+  const [colorVehicles, setColorVehicles] = useState('black');
+  const [colorNotices, setColorNotices] = useState('black');
+  const [image, setImage] = useState(null);
 
-    useEffect(() => {
-        updateImage(image);
-    }, [image]);
+  useEffect(() => {
+    updateImage(image);
+  }, [image]);
 
-    useEffect(() => {
-        setShowBox(obtion);
-    }, [obtion]);
+  useEffect(() => {
+    setShowBox(obtion);
+  }, [obtion]);
 
-    useEffect(() => {
-        (async () => {
-            await getUser();
-        })();
-    }, []);
+  useEffect(() => {
+    (async () => {
+      await getUser();
+    })();
+  }, []);
 
-    const updateUser = (updatedUser: UserModel) => {
-        setUser(updatedUser);
-    };
+  const updateUser = (updatedUser: UserModel) => {
+    setUser(updatedUser);
+  };
 
-    const getUser = async () => {
-        await instance.get('user/current/id')
-            .then((response) => {
-                if (response.data) {
-                    setUser(response.data);
-                }
-            }).catch((err) => {
-                console.error(err);
-            });
-    }
+  const getUser = async () => {
+    await instance.get('user/current/id')
+      .then((response) => {
+        if (response.data) {
+          setUser(response.data);
+        }
+      }).catch((err) => {
+        console.error(err);
+      });
+  }
 
-    const buttons = [
-        <Button key="profil" onClick={() => setShowBox("profil")}>Mon profil</Button>,
-        <Button key="avis" onClick={() => setShowBox("avis")}>Mes avis</Button>,
-        <Button key="vehiclues" onClick={() => setShowBox("vehiclues")}>Mes vehicules</Button>,
-    ];
+  const roleadm = parseInt(localStorage.getItem('role'), 10);
 
-    if (user !== null) {
-        return (
-            <>
-                <Box sx={{
-                    minHeight: '93vh',
-                    display: 'flex',
-                    width: '100vw',
-                }}
-                    className='waw'>
+  const buttons = [
+    <Button key="profil" onClick={() => setShowBox("profil")} sx={{ color: colorProfil, margin: '1vh 0 1vh 0', '&:hover': { color: '' } }}>Mon profil</Button>,
+  ];
 
-                    <Helmet>
-                        <title>Profil</title>
-                    </Helmet>
-                    <Box sx={{ display: 'flex', width: '10%', flexDirection: 'column', backgroundColor: '#B2EBF2' }}>
-                        <Button sx={{
-                            color: colorProfil,
-                            margin: '1vh 0 1vh 0',
-                            '&:hover': {
-                                color: '',
-                            },
-                        }} key="profil" onClick={() => {
-                            setShowBox("profil")
-                            setColorProfil('#ffc107');
-                            setColorVehicles('black');
-                            setColorNotices('black')
-                        }}>Mon profil</Button>
-                        <Button sx={{
-                            color: colorVehicles,
-                            margin: '1vh 0 1vh 0',
-                            '&:hover': {
-                                color: '#ffc107',
-                            },
-                        }} key="vehiclues" onClick={() => {
-                            setShowBox("avis")
-                            setColorProfil('black');
-                            setColorVehicles('#ffc107');
-                            setColorNotices('black')
-                        }}
-                        >Mes avis</Button>
-                        <Button sx={{
-                            color: colorNotices,
-                            margin: '1vh 0 1vh 0',
-                            '&:hover': {
-                                color: '#ffc107',
-                            },
-                        }} key="vehiclues" onClick={() => {
-                            setShowBox("vehiclues")
-                            setColorProfil('black');
-                            setColorVehicles('black');
-                            setColorNotices('#ffc107')
-                        }}>Mes vehicules</Button>
-                    </Box>
-                    <Box sx={{ width: '68vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        {showBox == "profil" ? <FormProfil user={user} updateUser={updateUser} updateImage={setImage} /> : showBox == "vehiclues" ? <Cars /> : <Avis />}
-                    </Box>
-                </Box>
-            </>
+  if (roleadm === 1) {
+    buttons.push(
+      <Button key="avis" onClick={() => setShowBox("avis")} sx={{ color: colorNotices, margin: '1vh 0 1vh 0', '&:hover': { color: '#ffc107' } }}>Mes avis</Button>,
+      <Button key="vehiclues" onClick={() => setShowBox("vehiclues")} sx={{ color: colorVehicles, margin: '1vh 0 1vh 0', '&:hover': { color: '#ffc107' } }}>Mes véhicules</Button>
+    );
+  }
 
-        );
-    } else {
-
-        return (
-            <h2>Aucne information</h2>
-        )
-    }
-
+  if (user !== null) {
+    return (
+      <>
+        <Box sx={{ minHeight: '93vh', display: 'flex', width: '100vw' }} className='waw'>
+          <Helmet>
+            <title>Profil</title>
+          </Helmet>
+          <Box sx={{ display: 'flex', width: '10%', flexDirection: 'column', backgroundColor: '#B2EBF2' }}>
+            {buttons}
+          </Box>
+          <Box sx={{ width: '68vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            {showBox === "profil" ? <FormProfil user={user} updateUser={updateUser} updateImage={setImage} /> : showBox === "vehiclues" ? <Cars /> : <Avis />}
+          </Box>
+        </Box>
+      </>
+    );
+  } else {
+    return (
+      <h2>Aucune information</h2>
+    )
+  }
 }
-
-
-

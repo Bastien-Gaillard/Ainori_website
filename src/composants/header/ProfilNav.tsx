@@ -41,6 +41,7 @@ export default function ProfilNav({ onNavChange, socket, updateImage, role }) {
     const [user, setUser] = useState<UserModel>(null);
     const [image, setImage] = useState(updateImage)
     const [messages, setMessages] = useState([]);
+    const roleadm = parseInt(localStorage.getItem('role'), 10);
     const [settings, setSettings] = useState([
         {
             name: "Profil",
@@ -59,6 +60,22 @@ export default function ProfilNav({ onNavChange, socket, updateImage, role }) {
             redirect: "/messages"
         }
     ])
+  
+    useEffect(() => {
+      if(roleadm !=1){
+        setSettings([
+            {
+                name: "Profil",
+                redirect: "/Profil"
+            },
+            {
+                name: "Messages",
+                redirect: "/messages"
+            }
+        ]);
+      }
+    }, []);
+    
     const cookieUser = cookies.user;
 
 

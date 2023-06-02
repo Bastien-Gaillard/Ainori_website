@@ -29,13 +29,21 @@ const instance = axios.create({
 
 
 export default function Carpool({ socket }) {
-
+    const navigate = useNavigate();
     const [data, setData] = useState<any>();
     const [openAdd, setOpenAdd] = useState(false);
     const [open, setOpen] = useState<boolean>(false);
     const [message, setMessage] = useState("Une erreur est survenu");
     const [severity, setSeverity] = useState<AlertColor>("error");
     const [joinTravel, setJoinTravel] = useState(0);
+    const roleadm = parseInt(localStorage.getItem('role'), 10);
+  
+    useEffect(() => {
+      if(roleadm !=1){
+        navigate('/allRoutes');
+      }
+    }, []);
+    
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
     };

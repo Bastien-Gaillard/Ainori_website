@@ -31,6 +31,13 @@ export default function Home({ socket }) {
   const [rides, setRides] = React.useState([]);
   const { handleSubmit, formState: { errors }, register } = useForm();
   const [openAdd, setOpenAdd] = useState(false);
+  const roleadm = parseInt(localStorage.getItem('role'), 10);
+  
+  useEffect(() => {
+    if(roleadm !=1){
+      navigate('/allRoutes');
+    }
+  }, []);
 
   useEffect(() => {
     if(reload == 'true'){
