@@ -91,6 +91,6 @@ La structure du projet (les fichiers important) :
 
 ## Contributeurs 
   
-  GAILLARD Bastien
-  LALLEMENT Lilian
-  BARRON Thomas
+  GAILLARD Bastien   <br/>
+  LALLEMENT Lilian   <br/>
+  BARRON Thomas      <br/>
