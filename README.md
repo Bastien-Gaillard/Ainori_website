@@ -49,7 +49,8 @@ Cela vous permettra d'avoir le projet sur votre ordinateur
 ### Installer les dépendances
 
 Il faut maintenant installer les dépendances tel que express, mui, etc.
-<br/> Pour cela executez la commande suivante : ```npm install --f```
+<br/>Pour cela aller dans votre dossier : ```cd ./Ainori_web```
+<br/> Puis cela executez la commande suivante : ```npm install --f```
 
 ### Connecter la base de donnée 
 
