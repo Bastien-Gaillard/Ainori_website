@@ -35,7 +35,6 @@ export default function Nav({ value, role }) {
     };
 
     useEffect(() => {
-        console.log('the value is ', value);
         setActif(value);
     }, [value])
     const NotLogin = (

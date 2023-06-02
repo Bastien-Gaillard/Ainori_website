@@ -33,13 +33,11 @@ export default function Historical() {
 
 
     const handleChange = (event) => {
-        console.log(event.target.checked);
         if (event.target.checked) {
             setShowComponent('driver');
         } else {
             setShowComponent('user');
         }
-        console.log(showComponent);
     };
 
     useEffect(() => {
@@ -53,7 +51,6 @@ export default function Historical() {
                             response.data.forEach(element => {
                                 const date = new Date(element.departure_date);
                                 const today = new Date();
-                                console.log('driver driver', element.driver_id);
                                 const route = {
                                     id: element.user_has_route_id,
                                     name: element.driver,
@@ -82,7 +79,6 @@ export default function Historical() {
                             response.data.forEach(element => {
                                 const date = new Date(element.departure_date);
                                 const today = new Date();
-                                console.log('driver user', element.driver_id);
                                 const route = {
                                     id: element.user_has_route_id,
                                     name: element.driver,

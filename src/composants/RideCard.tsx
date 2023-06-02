@@ -24,7 +24,6 @@ export default function RideCard(Props) {
       .then(async (response) => {
         Props.handleOpen();
         Props.onSubmitCallback();
-        console.log('the date is', Props.date);
         Props.socket.emit('message', {
           text: 'Viens de rejoindre le trajet du ' + Props.date + ' allant de ' + Props.departure_city + ' à ' + Props.arrival_city,
           name: localStorage.getItem('userName'),

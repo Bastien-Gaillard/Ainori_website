@@ -43,7 +43,6 @@ export default function Comming({ socket }) {
     const [openRoutes, setOpenRoutes] = useState(false);
     const handleChange = (event) => {
         setData({});
-        console.log(event.target.checked);
     };
     const handleDeleteRoutesdValue = (value) => {
         setDeleteRoutes(value);
@@ -294,9 +293,6 @@ export default function Comming({ socket }) {
         }
     };
 
-    const fetchData = () => {
-        console.log('fetchData')
-    }
     return (
         <Container sx={{
             height: '93vh',
@@ -307,7 +303,7 @@ export default function Comming({ socket }) {
                 maxWidth: '100%',
             }
         }}>
-            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir (je suis passagé)</h1>
+            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir (je conduis)</h1>
             <DataGrid
                 sx={{ width: '100%', height: '80vh' }}
                 rows={data || { id: 1 }}

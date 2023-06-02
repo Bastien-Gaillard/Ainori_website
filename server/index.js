@@ -275,7 +275,7 @@ app.put('/forgot/update', async (req, res) => {
 
 
 socketIO.on('connection', (socket) => {
-  console.log(`⚡: ${socket.id} user just connected!`);
+  // console.log(`⚡: ${socket.id} user just connected!`);
 
   socket.on('message', (data) => {
     // data.sender = req.se.id;
@@ -284,13 +284,11 @@ socketIO.on('connection', (socket) => {
   });
 
   socket.on('countMessage', (data) => {
-    console.log(data);
-
     socketIO.emit('notif', data);
   });
 
   socket.on('disconnect', () => {
-    console.log('🔥: A user disconnected');
+    // console.log('🔥: A user disconnected');
   });
 });
 

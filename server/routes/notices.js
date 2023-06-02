@@ -25,7 +25,6 @@ router.get('/user', authenticateToken, async (req, res) => {
       `;
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -37,7 +36,6 @@ router.get('/user/moyen', authenticateToken, async (req, res) => {
       `;
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });

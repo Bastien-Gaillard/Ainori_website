@@ -69,10 +69,8 @@ export default function Comming({ socket }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log('rows')
             await instance.get('views/routesCommingUser')
                 .then(async (response) => {
-                    console.log('the response user', response.data)
                     let rows = [];
                     if (response.data[0]) {
                         response.data.forEach(element => {
@@ -97,8 +95,6 @@ export default function Comming({ socket }) {
                                 is_driver: false
                             }
                             rows.push(route);
-
-                            console.log('rows', rows)
                             setData(rows);
                         });
                     }
@@ -297,9 +293,6 @@ export default function Comming({ socket }) {
         }
     };
 
-    const fetchData = () => {
-        console.log('fetchData')
-    }
     return (
         <Container sx={{
             height: '93vh',
@@ -310,7 +303,7 @@ export default function Comming({ socket }) {
                 maxWidth: '100%',
             }
         }}>
-            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir (je conduis)</h1>
+            <h1 style={{ margin: '1vh 0 2vh 0' }}>Trajet à venir (je suis passager)</h1>
             <DataGrid
                 sx={{ width: '100%', height: '80vh' }}
                 rows={data || { id: 1 }}

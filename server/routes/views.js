@@ -25,7 +25,6 @@ router.get('/routesHistoryDriver', authenticateToken, async (req, res) => {
       ORDER BY departure_date DESC, departure_time DESC`
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -38,7 +37,6 @@ router.get('/routesHistory', authenticateToken, async (req, res) => {
       ORDER BY departure_date DESC, departure_time DESC`
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -48,10 +46,8 @@ router.get('/routesComming', authenticateToken, async (req, res) => {
         const result = await prisma.$queryRaw`
       SELECT * FROM good_routes WHERE status = 1
       ORDER BY departure_date DESC, departure_time DESC`;
-        console.log(result)
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -61,10 +57,8 @@ router.get('/existingRoutes', authenticateToken, async (req, res) => {
         const result = await prisma.$queryRaw`
         SELECT * FROM existing_routes WHERE user_id != ${req.user.id} AND remaining_seats!=0 AND status=1 AND (CONCAT(departure_date, ' ', ADDTIME(departure_time, '01:00:00')) > NOW())
       ORDER BY departure_date DESC , departure_time DESC`
-        console.log(result)
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -102,7 +96,6 @@ router.post('/conversation', authenticateToken, async (req, res) => {
 
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -111,10 +104,8 @@ router.post('/routeInfo', authenticateToken, async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
       SELECT * FROM good_routes WHERE route_id = ${req.body.route_id}`;
-        console.log(result)
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -145,7 +136,6 @@ router.post('/propRoutesFilter', authenticateToken, async (req, res) => {
         res.send(result);
 
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -168,7 +158,6 @@ router.get('/propRoutes', authenticateToken, async (req, res) => {
         `
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -185,7 +174,6 @@ router.get('/allRoutes', authenticateToken, async (req, res) => {
         `
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -214,7 +202,28 @@ router.get('/allHistory', authenticateToken, async (req, res) => {
         `
         res.send(result);
     } catch (error) {
-        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
+router.get('/routesCommingDriver', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+      SELECT * FROM good_routes WHERE user_id = ${req.user.id} AND status = 1
+      ORDER BY departure_date DESC, departure_time DESC`;
+        res.send(result);
+    } catch (error) {
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
+router.get('/routesCommingUser', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+      SELECT * FROM route_history WHERE user_has_route_user_id = ${req.user.id} AND status = 1
+      ORDER BY departure_date DESC, departure_time DESC`;
+        res.send(result);
+    } catch (error) {
         res.status(400).send('Une erreur est survenue')
     }
 });

@@ -53,7 +53,7 @@ export default function FormCars(props) {
         data.id = props.cars.id;
         const result = await instance.put("vehicles/update", data, { headers: { "content-type": "application/json" } })
             .then(async (response) => {
-                console.log(response)
+                console.log("")
             }).catch((err) => {
                 console.error(err);
             });

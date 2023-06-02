@@ -50,7 +50,6 @@ router.get('/users', authenticateToken, async (req, res) => {
         delete result.password;
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue');
     }
 });
@@ -80,7 +79,6 @@ router.post('/id', authenticateToken, async (req, res) => {
     if (!!req.body?.id) {
         id = req.body.id;
     }
-    console.log('req body', req.body);
     const user = await prisma.users.findUnique({
         where: {
             id: parseInt(id),
@@ -117,7 +115,6 @@ router.post('/create', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error)
     }
 });
 router.put('/update', authenticateToken, async (req, res) => {
@@ -190,7 +187,6 @@ router.put('/update/password', authenticateToken, async (req, res) => {
 });
 
 router.put('/disable', authenticateToken, async (req, res) => {
-    console.log(req);
 
     try {
         const result = await prisma.users.update({
@@ -203,7 +199,6 @@ router.put('/disable', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -219,7 +214,6 @@ router.put('/enable', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -233,7 +227,6 @@ router.delete('/delete', authenticateToken, async (req, res) => {
         });
         res.send(result)
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue');
     }
 });

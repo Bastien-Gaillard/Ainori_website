@@ -71,7 +71,6 @@ export default function ProfilNav({ onNavChange, socket, updateImage, role }) {
         (async () => {
             try {
                 const dataUser = await instance.get('user/current/id');
-                console.log('datauser', dataUser.data);
                 setUser(dataUser.data);
                 if (dataUser.data.image?.path) {
                     setImage(dataUser.data.image?.path);

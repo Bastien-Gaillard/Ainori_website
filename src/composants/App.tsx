@@ -27,14 +27,6 @@ export default function App() {
   const [image, setImage] = React.useState();
 	const [role, setRole] = React.useState(localStorage.getItem('role'));
 
-  React.useEffect(() => {
-    console.log('image in app ', image);
-  }, [image]);
-
-	React.useEffect(() => {
-		console.log('Le role est : ', role);
-	}, [role]);
-
   //new Route for test page Home.js by thomas
   return (
     <ThemeProvider theme={theme} >
