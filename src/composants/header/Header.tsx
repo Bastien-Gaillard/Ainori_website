@@ -32,9 +32,6 @@ export default function Header({ socket, updateImage, role }) {
 		setNavValue(newValue);
 	};
 
-	useEffect(() => {
-		console.log('image in header', updateImage);
-	}, updateImage)
 
 	useEffect(() => {
 		(async () => {

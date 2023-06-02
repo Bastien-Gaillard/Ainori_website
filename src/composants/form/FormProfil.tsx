@@ -29,7 +29,6 @@ export default function FormProfil({ user, updateUser, updateImage }) {
     const { handleSubmit, formState: { errors }, register, setValue, getValues } = useForm({ defaultValues: user });
 
     useEffect(() => {
-        console.log('form profil image', image);
         updateImage(image);
     }, image)
 
@@ -90,10 +89,6 @@ export default function FormProfil({ user, updateUser, updateImage }) {
         justifyContent: 'center',
         alignItems: 'center'
     };
-
-    const changeUserImage = () => {
-        console.log()
-    }
 
     return (
         <div style={divStyle}>

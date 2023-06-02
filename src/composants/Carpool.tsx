@@ -48,7 +48,6 @@ export default function Carpool({ socket }) {
         const fetchData = async () => {
             await instance.get('views/propRoutes')
                 .then(async (response) => {
-                    console.log(response.data)
                     let rows = [];
                     response.data.forEach(element => {
                         const date = new Date(element.departure_date);
@@ -68,7 +67,6 @@ export default function Carpool({ socket }) {
                             id: element.route_id,
                             // iduser: element.user_id
                         }
-                        console.log('route', route);
                         rows.push(route);
                         setData(rows);
                     });
@@ -111,7 +109,6 @@ export default function Carpool({ socket }) {
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
-                console.log('waw', params.value)
                 const departureZipCode = params.value.split(', ')[0];
                 const departureCity = params.value.split(', ')[1];
                 const arrivalZipCode = params.row.arrival_city.split(', ')[0];

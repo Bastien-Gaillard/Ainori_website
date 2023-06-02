@@ -36,7 +36,6 @@ export default function Profil({ obtion, updateImage }) {
     const [image, setImage] = useState(null);
 
     useEffect(() => {
-        console.log('image in profil', image);
         updateImage(image);
     }, [image]);
 
@@ -52,7 +51,6 @@ export default function Profil({ obtion, updateImage }) {
 
     const updateUser = (updatedUser: UserModel) => {
         setUser(updatedUser);
-        console.log(updatedUser);
     };
 
     const getUser = async () => {

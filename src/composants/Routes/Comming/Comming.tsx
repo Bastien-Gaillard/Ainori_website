@@ -69,10 +69,8 @@ export default function Comming({ socket }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log('rows')
             await instance.get('views/routesCommingUser')
                 .then(async (response) => {
-                    console.log('the response user', response.data)
                     let rows = [];
                     if (response.data[0]) {
                         response.data.forEach(element => {
@@ -97,8 +95,6 @@ export default function Comming({ socket }) {
                                 is_driver: false
                             }
                             rows.push(route);
-
-                            console.log('rows', rows)
                             setData(rows);
                         });
                     }
@@ -297,9 +293,6 @@ export default function Comming({ socket }) {
         }
     };
 
-    const fetchData = () => {
-        console.log('fetchData')
-    }
     return (
         <Container sx={{
             height: '93vh',

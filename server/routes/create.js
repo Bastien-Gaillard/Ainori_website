@@ -30,7 +30,6 @@ app.post('/images', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -57,7 +56,6 @@ app.post('/messages', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -83,7 +81,6 @@ app.post('/notices', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -124,7 +121,6 @@ app.post('/routes', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -149,7 +145,6 @@ app.post('/users', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -175,7 +170,6 @@ app.post('/usersHasRoutes', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });

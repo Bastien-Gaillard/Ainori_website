@@ -33,7 +33,6 @@ export default async function seed() {
         status: true
       }
     });
-    console.log('the result is', result)
     prisma.$disconnect();
   } catch (error) {
     console.error(error)

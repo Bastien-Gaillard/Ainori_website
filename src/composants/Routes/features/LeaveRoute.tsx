@@ -27,8 +27,6 @@ export default function LeaveRoute({ onDeleteRoutesValue, routeId, userHasRouteI
 
     const leaveRoutes = async () => {
         if (window.confirm('⚠️ Voulez vous quitter ce trajet ? ⚠️\n Un message sera envoyé au conducteur')) {
-            console.log('in');
-
             await instance.delete('userHasRoute/delete/' + userHasRouteId, { headers: { "content-type": "application/json" } });
             const route = await instance.post('views/routeInfo', { route_id: routeId }, { headers: { "content-type": "application/json" } })
             socket.emit('message', {

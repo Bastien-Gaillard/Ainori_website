@@ -54,7 +54,6 @@ router.get('/user', authenticateToken, async (req, res) => {
 
 router.post('/create', authenticateToken, async (req, res) => {
     try {
-        console.log(req.body.images);
         const result = await prisma.users_vehicles.create({
             data: {
                 user_id: req.user.id,
@@ -66,7 +65,6 @@ router.post('/create', authenticateToken, async (req, res) => {
                 image_id: req.body.images.id,
             }
         });
-        console.log(result)
         res.send(result);
     } catch (error) {
         console.error(error);
@@ -76,7 +74,6 @@ router.post('/create', authenticateToken, async (req, res) => {
 
 router.put('/update', authenticateToken, async (req, res) => {
     try {
-        console.log('id:', req.body.id);
         if (!!req.body.images) {
             const result = await prisma.users_vehicles.update({
                 where: {
@@ -136,7 +133,6 @@ router.post('/id', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });

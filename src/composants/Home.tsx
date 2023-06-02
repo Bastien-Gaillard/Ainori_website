@@ -64,7 +64,6 @@ export default function Home({ socket }) {
     }, 2500);
   };
   const RideCardWrapper = ({ rides }) => {
-    console.log('all rides', rides)
     if (rides.length == 0) {
       return (
         <h2 style={{ color: "red", textAlign: "center", margin: "10px", padding: "10px" }}>Pas de trajet pour l’instant ...</h2>

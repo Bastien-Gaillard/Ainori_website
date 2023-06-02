@@ -43,7 +43,6 @@ export default function Comming({ socket }) {
     const [openRoutes, setOpenRoutes] = useState(false);
     const handleChange = (event) => {
         setData({});
-        console.log(event.target.checked);
     };
     const handleDeleteRoutesdValue = (value) => {
         setDeleteRoutes(value);
@@ -294,9 +293,6 @@ export default function Comming({ socket }) {
         }
     };
 
-    const fetchData = () => {
-        console.log('fetchData')
-    }
     return (
         <Container sx={{
             height: '93vh',

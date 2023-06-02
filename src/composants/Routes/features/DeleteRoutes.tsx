@@ -28,10 +28,8 @@ export default function DeleteRoutes({ routeId, onDeleteRoutesValue, socket }) {
             if (window.confirm('⚠️ Voulez vous supprimer ce trajet ? ⚠️\n Un message sera envoyé aux participants')) {
                 await instance.post('userHasRoute/route', { route_id: routeId }, { headers: { "content-type": "application/json" } })
                     .then(async (response) => {
-                        console.log(response.data);
                         await instance.post('views/routeInfo', { route_id: routeId }, { headers: { "content-type": "application/json" } })
                             .then(async (route) => {
-                                console.log(route.data);
                                 if (!!response.data) {
                                     response.data.forEach(async (element) => {
                                         socket.emit('message', {
@@ -52,7 +50,7 @@ export default function DeleteRoutes({ routeId, onDeleteRoutesValue, socket }) {
 
                             });
                     }).catch((err) => {
-                        console.log(err);
+                        console.error(err);
                     });
             }
         } catch (error) {

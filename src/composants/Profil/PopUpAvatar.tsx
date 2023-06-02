@@ -16,7 +16,6 @@ const PopUpAvatar = ({ image, onChange, onClick }) => {
         setSelectedFile(event.target.files[0]);
         handleUpload(event.target.files[0]);
         setDisplayImage(true);
-        console.log(selectedFile, event.target.files[0]);
     };
 
     const handleUpload = async (selectedFile) => {
@@ -39,7 +38,7 @@ const PopUpAvatar = ({ image, onChange, onClick }) => {
                 .then(async (response) => {
                     const result = await instance.put("user/update/avatar", { image_id: response.data.id }, { headers: { "content-type": "application/json" } })
                         .then(async (response) => {
-                            console.log(response)
+                            console.log("")
                         }).catch((err) => {
                             console.error(err);
                         });

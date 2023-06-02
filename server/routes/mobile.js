@@ -49,23 +49,18 @@ router.post('/login', async (req, res) => {
 
     //Compare password if user exist
     if (user == null) {
-        console.log('null');
         res.send("null");
         return;
     } else if (user?.status == 0) {
-        console.log('disable');
-
         res.send("disable");
         return;
     } else if (hashPassword(req.body.password) != user.password) {
-        console.log('oops');
         res.send("null");
         return;
     }
     delete user.password;
     //Create token and add user_id and token in the session
     delete user.password;
-    console.log(user);
     res.send(user);
 
 });
@@ -81,10 +76,8 @@ router.post('/routesComming', authenticateToken, async (req, res) => {
         const result = await prisma.$queryRaw`
       SELECT * FROM route_history WHERE status = 1 AND user_has_route_user_id = ${req.body.id} OR driver_id = ${req.body.id}
       ORDER BY departure_date DESC, departure_time DESC`;
-        console.log(result)
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -106,7 +99,6 @@ router.delete('userHasRoute/delete/:id',authenticateToken,  async (req, res) => 
 
         res.send(isUser);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -122,42 +114,34 @@ router.post('/routeInfo',authenticateToken,  async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
       SELECT * FROM good_routes WHERE route_id = ${req.body.route_id}`;
-        console.log(result)
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
 
 router.post('usersHasRoutes/route', authenticateToken, async (req, res) => {
     try {
-        console.log(req.body);
         const result = await prisma.users_has_routes.findMany({
             where: {
                 route_id: parseInt(req.body.route_id)
             }
         });
-        console.log(result)
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
 
 router.delete('route/delete/:id', authenticateToken, async (req, res) => {
     try {
-        console.log('req.params', req.params)
         const result = await prisma.routes.delete({
             where: {
                 id: parseInt(req.params.id)
             }
         });
-        console.log('the result is', result)
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -179,7 +163,6 @@ router.post('/propRoutes', authenticateToken, async (req, res) => {
         `
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -192,7 +175,6 @@ router.post('/routesHistory', authenticateToken, async (req, res) => {
       ORDER BY departure_date DESC, departure_time DESC`
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });

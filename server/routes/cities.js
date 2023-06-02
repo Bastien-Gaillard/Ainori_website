@@ -39,7 +39,6 @@ router.post('', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -52,13 +51,11 @@ router.post('/id', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
 router.post('/zip_code/name', authenticateToken, async (req, res) => {
     try {
-        console.log(req.body);
         const result = await prisma.cities.findFirst({
             where: {
                 zip_code: req.body.code,
@@ -67,7 +64,6 @@ router.post('/zip_code/name', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -76,7 +72,6 @@ router.post('/cities', authenticateToken, async (req, res) => {
         const result = await prisma.cities.findMany();
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -93,7 +88,6 @@ router.post('/create', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -113,7 +107,6 @@ router.put('/update', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });
@@ -126,7 +119,6 @@ router.delete('/delete', authenticateToken, async (req, res) => {
         });
         res.send(result);
     } catch (error) {
-        console.log(error);
         res.status(400).send('Une erreur est survenue')
     }
 });

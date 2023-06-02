@@ -23,7 +23,6 @@ router.get('/routes', authenticateToken, async (req, res) => {
     const result = await prisma.routes.findMany();
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -58,10 +57,8 @@ router.get('/routes/id', authenticateToken, async (req, res) => {
         statuts: true
       }
     });
-    console.log('the result is', result);
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -74,7 +71,6 @@ router.post('/route', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -109,7 +105,6 @@ router.post('/departure/arrival', authenticateToken, async (req, res) => {
     }
 
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -135,9 +130,7 @@ router.post('/create', authenticateToken, async (req, res) => {
       }
     });
     res.send(result)
-    console.log(result)
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -161,7 +154,6 @@ router.put('/update', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -179,7 +171,6 @@ router.put('/remainingSeats', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -195,7 +186,6 @@ router.put('/disable', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -211,23 +201,19 @@ router.put('/enable', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
 
 router.delete('/delete/:id', authenticateToken, async (req, res) => {
   try {
-    console.log('req.params', req.params)
     const result = await prisma.routes.delete({
       where: {
         id: parseInt(req.params.id)
       }
     });
-    console.log('the result is', result)
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });

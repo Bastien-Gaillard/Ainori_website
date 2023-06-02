@@ -22,7 +22,6 @@ router.get('/usersHasRoutes', authenticateToken, async (req, res) => {
     const result = await prisma.users_has_routes.findMany();
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -35,22 +34,18 @@ router.post('', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
 router.post('/route', authenticateToken, async (req, res) => {
   try {
-    console.log(req.body);
     const result = await prisma.users_has_routes.findMany({
       where: {
         route_id: parseInt(req.body.route_id)
       }
     });
-    console.log(result)
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -63,7 +58,6 @@ router.post('/user', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -78,7 +72,6 @@ router.post('/user/route', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -93,7 +86,6 @@ router.post('/create', authenticateToken, async (req, res) => {
     });
     res.send(result)
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -111,7 +103,6 @@ router.put('/update', authenticateToken, async (req, res) => {
     });
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(400).send('Une erreur est survenue')
   }
 });
@@ -129,7 +120,7 @@ router.delete('/delete/:id', authenticateToken, async (req, res) => {
 
     res.send(isUser);
   } catch (error) {
-    console.log(error);
+
     res.status(400).send('Une erreur est survenue')
   }
 });
