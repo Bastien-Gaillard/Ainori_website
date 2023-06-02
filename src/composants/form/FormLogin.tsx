@@ -32,7 +32,12 @@ export default function FormLogin() {
                     localStorage.setItem('role', response.data.role_id);
                     localStorage.setItem('reload', 'true');
 
-                    navigate('/home');
+                    
+                    if(response.data.role_id == 2){
+                        navigate('/allRoutes');
+                    }else{
+                        navigate('/home');
+                    }
                 }
             }).catch((err) => {
                 console.error(err);

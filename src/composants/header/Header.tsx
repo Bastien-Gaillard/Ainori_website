@@ -22,6 +22,7 @@ export default function Header({ socket, updateImage, role }) {
 	const [isConnected, setIsConnected] = useState(false);
 	const [user, setUser] = useState();
 	const [image, setImage] = useState();
+	const roleadm = parseInt(localStorage.getItem('role'), 10);
 	let navigate = useNavigate();
 	const cookieUser = cookies.user;
 
@@ -38,6 +39,7 @@ export default function Header({ socket, updateImage, role }) {
 	useEffect(() => {
 		(async () => {
 			const link = window.location.pathname;
+			
 			if (link != '/forgot') {
 				if (!link.startsWith('/forgot/')) {
 
@@ -80,18 +82,37 @@ export default function Header({ socket, updateImage, role }) {
 	const Login = (
 		<AppBar position="relative" sx={{ zIndex: 1, height: '60px' }}>
 			<Toolbar>
-				<Link sx={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-					color: 'black',
-					textDecoration: 'none',
-				}} href='/home'>
-					<img style={{ width: '34px', height: '34px' }} src='logo.png' alt="" />
-					<h1>Ainori</h1>
-				</Link>
-				<Nav value={navValue} role={role} />
-				<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role} />
+				{roleadm === 2 ? (
+				<>
+					<Link sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						color: 'black',
+						textDecoration: 'none',
+					}} href='/allRoutes'>
+						<img style={{ width: '34px', height: '34px' }} src='logo.png' alt="" />
+						<h1 style={{color:"red" ,fontFamily: 'Calibri'}}>Ainori Admin</h1>
+					</Link>
+					<Nav value={navValue} role={role} />
+					<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role} />
+				</>
+				) : (
+					<>
+					<Link sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						color: 'black',
+						textDecoration: 'none',
+					}} href='/home'>
+						<img style={{ width: '34px', height: '34px' }} src='logo.png' alt="" />
+						<h1 style={{fontFamily: 'Calibri'}}>Ainori</h1>
+					</Link>
+					<Nav value={navValue} role={role} />
+					<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role} />
+				</>
+				)}
 			</Toolbar>
 		</AppBar>
 	)
