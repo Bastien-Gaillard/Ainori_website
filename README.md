@@ -70,9 +70,13 @@ Pour lancer le projet en mode développeur executer la commande suivante : ```np
 <br/>Pour y acceder aller sur le lien suivant : http://localhost:3001/
 
 <br/><br/>
-Compte administrateur: bastien.gaillard@formation-technologique.fr
+Compte administrateur: <br/>
+email: bastien.gaillard@formation-technologique.fr <br/>
+password: Azerty_1234
 <br/><br/>
-Compte administrateur: bastien.gaillard@formation-technologique.fr
+Compte utilisateur: <br/>
+email: thomas.barron@formation-technologique.fr <br/>
+password: Azerty_1234
 
 ## Structure
 
