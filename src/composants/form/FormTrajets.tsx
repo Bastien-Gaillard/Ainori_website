@@ -308,7 +308,7 @@ export default function FormTrajets(props) {
                             />
                             }
                         />
-                        <LocalizationProvider locale={fr} dateAdapter={AdapterDayjs}>
+                        <LocalizationProvider locale={fr} dateAdapter={AdapterDayjs} >
                             <Button
                                 onClick={() => setOpen(!open)}
                                 sx={{
@@ -348,19 +348,24 @@ export default function FormTrajets(props) {
                                     <ListeDesDates datesList={datesList} />
                                 </Box>
                             )}
-                            <DemoItem label="Heure de départ">
-                                <MobileTimePicker
-                                    label="Heure de départ"
-                                    value={departureTime}
-                                    onChange={(newValue) => setDepartureTime(newValue)}
-                                />
+                            <DemoItem label="Heure de départ" >
+                                <div id="dateDepart">
+                                    <MobileTimePicker
+                                        label="Heure de départ"
+                                        value={departureTime}
+                                        onChange={(newValue) => setDepartureTime(newValue)}
+                                    />
+                                </div>
                             </DemoItem>
                             <DemoItem label="Heure d'arrivée">
-                                <MobileTimePicker
-                                    label="Heure d'arrivée"
-                                    value={arrivalTime}
-                                    onChange={(newValue) => setArrivalTime(newValue)}
-                                />
+                                <div id="dateArrivee">
+                                    <MobileTimePicker
+                                        key={'dateArrivée'}
+                                        label="Heure d'arrivée"
+                                        value={arrivalTime}
+                                        onChange={(newValue) => setArrivalTime(newValue)}
+                                    />
+                                </div>
                             </DemoItem>
                             {departureTime > arrivalTime && departureTime && arrivalTime && (
                                 <div

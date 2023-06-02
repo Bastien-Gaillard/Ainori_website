@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 import { frFR } from '@mui/material/locale';
+
 const theme = createTheme({
   palette: {
     type: 'light',
@@ -14,22 +15,22 @@ const theme = createTheme({
     divider: '#BDBDBD',
   },
   typography: {
-    fontFamily: 'Anton',
+    fontFamily: 'Calibri',
     body1: {
-      fontFamily: 'Barlow',
+      fontFamily: 'Calibri',
     },
     body2: {
-      fontFamily: 'Barlow',
+      fontFamily: 'Calibri',
     },
     button: {
-      fontFamily: 'Barlow',
+      fontFamily: 'Calibri',
       fontWeight: 1000,
     },
     caption: {
-      fontFamily: 'Barlow',
+      fontFamily: 'Calibri',
     },
     overline: {
-      fontFamily: 'Barlow',
+      fontFamily: 'Calibri',
     },
     h1: {
       fontSize: '3rem',
@@ -121,7 +122,6 @@ const theme = createTheme({
       },
     },
   },
-},
-frFR);
+}, frFR);
 
 export default theme;
