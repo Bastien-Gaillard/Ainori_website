@@ -17,7 +17,10 @@ import MapIcon from '@mui/icons-material/Map';
 import { AlertColor } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteRoutes from './Routes/features/DeleteRoutes';
+
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
 
@@ -35,6 +38,8 @@ export default function History({ socket }) {
     const [message, setMessage] = useState("Une erreur est survenu");
     const [severity, setSeverity] = useState<AlertColor>("error");
     const [joinTravel, setJoinTravel] = useState(0);
+    const [deleteRoutes, setDeleteRoutes] = useState(false);
+
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
     };
@@ -45,7 +50,7 @@ export default function History({ socket }) {
     const [result, setResult] = useState();
     useEffect(() => {
         const fetchData = async () => {
-            await instance.get('views/routesHistory')
+            await instance.get('views/allHistory')
                 .then(async (response) => {
                     console.log(response.data)
                     let rows = [];
@@ -76,7 +81,12 @@ export default function History({ socket }) {
                 });
         };
         fetchData();
-    }, [result, joinTravel]);
+    }, [result, joinTravel, deleteRoutes]);
+
+    const handleDeleteRoutesdValue = (value) => {
+        setDeleteRoutes(value);
+    };
+
 
     const columns: GridColDef[] = [
         {
@@ -215,7 +225,7 @@ export default function History({ socket }) {
             width: 140,
             hideSortIcons: true,
             hideable: false,
-        },       
+        },
     ];
 
 
@@ -224,7 +234,7 @@ export default function History({ socket }) {
         return (
             <GridToolbarContainer sx={{ display: 'inline-block', width: '100%' }}>
                 <GridToolbarFilterButton sx={{ float: "left", marginRight: '2vw' }} />
-                <Button variant="outlined" key="profil" onClick={handleClickOpenAdd}>Créer un trajet</Button>
+
                 <GridToolbarQuickFilter sx={{ float: "right" }} />
             </GridToolbarContainer>
         );
@@ -256,7 +266,7 @@ export default function History({ socket }) {
             },
         }}>
             <Helmet>
-                <title>Covoiturage</title>
+                <title>Historique</title>
             </Helmet>
 
             <Dialog

@@ -39,6 +39,7 @@ export default function AllRoutes({ socket }) {
     const [severity, setSeverity] = useState<AlertColor>("error");
     const [joinTravel, setJoinTravel] = useState(0);
     const [deleteRoutes, setDeleteRoutes] = useState(false);
+    const roleadm = parseInt(localStorage.getItem('role'), 10);
 
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
@@ -249,7 +250,7 @@ export default function AllRoutes({ socket }) {
         return (
             <GridToolbarContainer sx={{ display: 'inline-block', width: '100%' }}>
                 <GridToolbarFilterButton sx={{ float: "left", marginRight: '2vw' }} />
-                <Button variant="outlined" key="profil" onClick={handleClickOpenAdd}>Créer un trajet</Button>
+                {roleadm!=1?(""):(<Button variant="outlined" key="profil" onClick={handleClickOpenAdd}>Créer un trajet</Button>)}
                 <GridToolbarQuickFilter sx={{ float: "right" }} />
             </GridToolbarContainer>
         );
@@ -281,7 +282,7 @@ export default function AllRoutes({ socket }) {
             },
         }}>
             <Helmet>
-                <title>Covoiturage</title>
+                {roleadm!=1?(<title>Les trajets</title>):(<title>Covoiturage</title>)}
             </Helmet>
 
             <Dialog
