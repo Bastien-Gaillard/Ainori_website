@@ -44,7 +44,11 @@ Pour commencer il faudra installer Node.js version 18.16.0
 
 ## Installation
 
-Installer la version Node.js : 
+### Cloner le projet : 
+
+Ouvrez l'inviter de commande puis executer la commande suivante 
+```git clone https://github.com/Bastien-Gaillard/Ainori_web.git```
+
 ## Structure
 
 ## Contributeurs 
