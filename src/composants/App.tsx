@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from './Header/Header';
+import Header from './header/Header';
 import Login from './Login';
 import Forgot from './Forgot';
 import ForgotPassword from './ForgotPassword';
@@ -16,23 +16,31 @@ import { RouteSharp } from '@mui/icons-material';
 import RoutesList from './Routes/RoutesList'
 import Messages from './Messages/Index';
 import * as io from "socket.io-client";
+import AllRoutes from './AllRoutes';
+import History from './History';
+
 const socket = io.connect('http://localhost:3001');
 // import socketIO from 'socket.io-client';
 // const socket2 = socketIO.connect('http://localhost:4000');
 export default function App() {
 
   const [image, setImage] = React.useState();
+	const [role, setRole] = React.useState(localStorage.getItem('role'));
 
   React.useEffect(() => {
     console.log('image in app ', image);
   }, [image]);
+
+	React.useEffect(() => {
+		console.log('Le role est : ', role);
+	}, [role]);
 
   //new Route for test page Home.js by thomas
   return (
     <ThemeProvider theme={theme} >
 
       <BrowserRouter>
-        <Header socket={socket} updateImage={image}/>
+        <Header socket={socket} updateImage={image} role={role}/>
 
         <Routes>
           <Route path="/" element={<Login />}/>
@@ -41,6 +49,8 @@ export default function App() {
           <Route path="mycars" element={<Home socket={socket}/>} />
           <Route path="myroutes" element={<RoutesList socket={socket}/>} />
           <Route path="carpool" element={<Carpool socket={socket}/>} />
+          <Route path="allRoutes" element={<AllRoutes socket={socket}/>} />
+          <Route path="history" element={<History socket={socket}/>} />
           <Route path="messages" element={<Messages socket={socket}/>} />
           {/* // <Route path="logout" element={<Home />} />
           // <Route path="messages" element={<Home />} /> */}

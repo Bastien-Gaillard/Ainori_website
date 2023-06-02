@@ -2,7 +2,7 @@ import { CssBaseline, Box, Typography, Container } from '@mui/material';
 import axios from 'axios';
 import theme from '../cusotmization/palette'
 import { useState } from 'react';
-import FormForgot from './Form/FormForgot';
+import FormForgot from './form/FormForgot';
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });

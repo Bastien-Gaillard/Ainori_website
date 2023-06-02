@@ -3,12 +3,12 @@
 
 ## Avant de lancer le projet 
 
-```npm install```
+```npm install --f```
 
 Créer un .env et ajouter la ligne suivante : 
 
 ```json
-DATABASE_URL="mysql://root:@localhost:3306/ainori"
+DATABASE_URL="mysql://Windev:MotDePasseTopSecret@51.91.249.126:3306/ainori"
 ACCESS_TOKEN_SECRET=4242XX424208
 REFRESH_TOKEN_SECRET=424200000X1
 ```

@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/material/Menu';
 import Container from '@mui/material/Container';
@@ -20,25 +20,6 @@ import { useCookies } from 'react-cookie';
 const instance = axios.create({
     baseURL: 'http://localhost:3001/',
 });
-
-const settings = [
-    {
-        name: "Profil",
-        redirect: "/Profil"
-    },
-    {
-        name: "Avis",
-        redirect: "/profilAvis"
-    },
-    {
-        name: "Mes voitures",
-        redirect: "/profilVoiturs"
-    },
-    {
-        name: "Messages",
-        redirect: "/messages"
-    }
-];
 
 type ImageModel = {
     path: string,
@@ -60,6 +41,24 @@ export default function ProfilNav({ onNavChange, socket, updateImage, role }) {
     const [user, setUser] = useState<UserModel>(null);
     const [image, setImage] = useState(updateImage)
     const [messages, setMessages] = useState([]);
+    const [settings, setSettings] = useState([
+        {
+            name: "Profil",
+            redirect: "/Profil"
+        },
+        {
+            name: "Avis",
+            redirect: "/profilAvis"
+        },
+        {
+            name: "Mes voitures",
+            redirect: "/profilVoiturs"
+        },
+        {
+            name: "Messages",
+            redirect: "/messages"
+        }
+    ])
     const cookieUser = cookies.user;
 
 
@@ -74,7 +73,7 @@ export default function ProfilNav({ onNavChange, socket, updateImage, role }) {
                 const dataUser = await instance.get('user/current/id');
                 console.log('datauser', dataUser.data);
                 setUser(dataUser.data);
-                if(dataUser.data.image?.path){
+                if (dataUser.data.image?.path) {
                     setImage(dataUser.data.image?.path);
                 }
             } catch (error) {

@@ -29,6 +29,9 @@ export default function FormLogin() {
                 } else {
                     setCookie('user', true, { path: '/' });
                     localStorage.setItem('userName', response.data.firstname);
+                    localStorage.setItem('role', response.data.role_id);
+                    localStorage.setItem('reload', 'true');
+
                     navigate('/home');
                 }
             }).catch((err) => {

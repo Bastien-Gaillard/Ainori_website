@@ -30,13 +30,12 @@ router.get('/routesHistoryDriver', authenticateToken, async (req, res) => {
     }
 });
 
-router.get('/routesHistoryUser', authenticateToken, async (req, res) => {
+router.get('/routesHistory', authenticateToken, async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
       SELECT * FROM route_history 
-      WHERE user_has_route_user_id = ${req.user.id} AND status = 0
+      WHERE status = 0 AND user_id = ${req.user.id} OR driver_id = ${req.user.id}
       ORDER BY departure_date DESC, departure_time DESC`
-        console.log(result)
         res.send(result);
     } catch (error) {
         console.log(error);
@@ -44,25 +43,12 @@ router.get('/routesHistoryUser', authenticateToken, async (req, res) => {
     }
 });
 
-router.get('/routesCommingDriver', authenticateToken, async (req, res) => {
+router.get('/routesComming', authenticateToken, async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
-      SELECT * FROM good_routes WHERE user_id = ${req.user.id} AND status = 1
+      SELECT * FROM good_routes WHERE status = 1
       ORDER BY departure_date DESC, departure_time DESC`;
         console.log(result)
-        res.send(result);
-    } catch (error) {
-        console.log(error);
-        res.status(400).send('Une erreur est survenue')
-    }
-});
-
-router.get('/routesCommingUser', authenticateToken, async (req, res) => {
-    try {
-        const result = await prisma.$queryRaw`
-      SELECT * FROM route_history WHERE user_has_route_user_id = ${req.user.id} AND status = 1
-      ORDER BY departure_date DESC, departure_time DESC`;
-        console.log('waw', result);
         res.send(result);
     } catch (error) {
         console.log(error);
@@ -76,29 +62,6 @@ router.get('/existingRoutes', authenticateToken, async (req, res) => {
         SELECT * FROM existing_routes WHERE user_id != ${req.user.id} AND remaining_seats!=0 AND status=1 AND (CONCAT(departure_date, ' ', ADDTIME(departure_time, '01:00:00')) > NOW())
       ORDER BY departure_date DESC , departure_time DESC`
         console.log(result)
-        res.send(result);
-    } catch (error) {
-        console.log(error);
-        res.status(400).send('Une erreur est survenue')
-    }
-});
-
-router.get('/conversations', authenticateToken, async (req, res) => {
-    try {
-        const result = await prisma.$queryRaw`
-        SELECT subquery.user_id, subquery.name
-        FROM (
-            SELECT received_by_user_id as user_id, receiver as name, sended_at
-            FROM display_messages AS dm
-            WHERE dm.sended_by_user_id = ${req.user.id}
-            GROUP BY dm.received_by_user_id, receiver
-            UNION
-            SELECT sended_by_user_id as user_id, sender as name, sended_at
-            FROM display_messages AS dm
-            WHERE dm.received_by_user_id = ${req.user.id}
-            GROUP BY dm.sended_by_user_id, sender
-        ) as subquery
-        GROUP BY subquery.sended_at;`
         res.send(result);
     } catch (error) {
         console.log(error);
@@ -124,7 +87,7 @@ router.post('/conversation', authenticateToken, async (req, res) => {
             }
         })
         result.forEach(element => {
-            if(element.sended_by_user_id == req.user.id){
+            if (element.sended_by_user_id == req.user.id) {
                 element.position = 'right';
                 element.background_color = '#00bcd4';
                 element.name = 'Vous';
@@ -156,7 +119,7 @@ router.post('/routeInfo', authenticateToken, async (req, res) => {
     }
 });
 router.post('/propRoutesFilter', authenticateToken, async (req, res) => {
-    
+
     try {
         const result = await prisma.$queryRaw`
 
@@ -201,6 +164,23 @@ router.get('/propRoutes', authenticateToken, async (req, res) => {
                 FROM users_has_routes
                 WHERE user_id = ${req.user.id}
         )
+        ORDER BY e.departure_date DESC, e.departure_time DESC;
+        `
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
+router.get('/allRoutes', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+        SELECT *
+        FROM good_routes e
+        WHERE e.remaining_seats != 0 
+            AND e.status = 1 
+            AND (CONCAT(e.departure_date, ' ', ADDTIME(e.departure_time, '01:00:00')) > NOW())
         ORDER BY e.departure_date DESC, e.departure_time DESC;
         `
         res.send(result);
