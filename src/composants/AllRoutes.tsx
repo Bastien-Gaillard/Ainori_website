@@ -281,8 +281,10 @@ export default function AllRoutes({ socket }) {
                 fontWeight: '600',
             },
         }}>
-            <Helmet>
-                {roleadm!=1?(<title>Les trajets</title>):(<title>Covoiturage</title>)}
+            <Helmet >
+                <title style={{fontFamily: 'Calibri'}}>
+                    {roleadm!=1?("Les trajets"):("Covoiturage")}
+                </title>
             </Helmet>
 
             <Dialog
@@ -297,7 +299,7 @@ export default function AllRoutes({ socket }) {
                     <FormTrajets handleCloseForm={handleCloseAdd} />
                 </DialogContent>
             </Dialog>
-            <h1 style={{ margin: '2vh 0 2vh 0', textAlign: 'center' }}>Les trajets</h1>
+            <h1 style={{ margin: '2vh 0 2vh 0', textAlign: 'center' ,fontFamily: 'Calibri'}}>Les trajets</h1>
             {!!data &&
                 <DataGrid
                     sx={{ width: '100%', height: '80vh' }}
