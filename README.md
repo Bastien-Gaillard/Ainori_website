@@ -34,12 +34,11 @@ La documentation : https://nodejs.org/en
 ### Socket.io
 
 Permet une communication bidirectionelle utilisé pour créer la messagerie instantanée
-
+La documentation : https://socket.io/
 ### Mui
-
 Permet d'importer des composants préconçus afin de simplifier l'intégration et la gestion du style.
+La documentation : https://mui.com/material-ui/getting-started/overview/
 ### Email.js
-
 Permet de gérer l'envoi des mails pour les mot de passe oublié 
 
 ## Prerequis
