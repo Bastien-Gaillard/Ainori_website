@@ -92,7 +92,7 @@ export default function Header({ socket, updateImage, role }) {
 						textDecoration: 'none',
 					}} href='/allRoutes'>
 						<img style={{ width: '34px', height: '34px' }} src='logo.png' alt="" />
-						<h1 style={{color:"red" ,fontFamily: 'Calibri'}}>Ainori Admin</h1>
+						<h1 style={{fontFamily: 'Calibri'}}>Ainori <span style={{color:"red"}}> Admin </span></h1>
 					</Link>
 					<Nav value={navValue} role={role} />
 					<ProfilNav onNavChange={handleNavChange} socket={socket} updateImage={updateImage} role={role} />
