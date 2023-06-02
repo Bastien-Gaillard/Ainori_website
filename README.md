@@ -3,6 +3,8 @@
 
 ## Avant de lancer le projet 
 
+Installer node.js
+
 ```npm install --f```
 
 Créer un .env et ajouter la ligne suivante : 
