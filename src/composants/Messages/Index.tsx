@@ -54,6 +54,7 @@ const Messages = ({ socket }) => {
     useEffect(() => {
         instance.get('views/conversations')
             .then(async (response) => {
+                console.log(response.data)
                 setConversations(response.data);
             }).catch((err) => {
                 console.log("err " + err);
@@ -198,7 +199,7 @@ const Messages = ({ socket }) => {
                         {!!conversations &&
                             conversations.map((value) => (
 
-                                <ListItem button key={value.user_id} onClick={() => { setReceivedName({ name: value.name, id: value.user_id }); getConversation(value.user_id), setUserSelect(true); }}>
+                                <ListItem key={value.user_id} onClick={() => { setReceivedName({ name: value.name, id: value.user_id }); getConversation(value.user_id), setUserSelect(true); }}>
                                     <ListItemIcon>
                                         <Avatar alt={value.name} src="https://material-ui.com/static/images" />
                                     </ListItemIcon>

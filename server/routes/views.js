@@ -63,6 +63,33 @@ router.get('/existingRoutes', authenticateToken, async (req, res) => {
     }
 });
 
+router.get('/conversations', authenticateToken, async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    try {
+        const result = await prisma.$queryRaw`
+        SELECT subquery.user_id, subquery.name
+        FROM (
+            SELECT received_by_user_id as user_id, receiver as name, sended_at
+            FROM display_messages AS dm
+            WHERE dm.sended_by_user_id = ${req.user.id}
+            GROUP BY dm.received_by_user_id, receiver
+            UNION
+            SELECT sended_by_user_id as user_id, sender as name, sended_at
+            FROM display_messages AS dm
+            WHERE dm.received_by_user_id = ${req.user.id}
+            GROUP BY dm.sended_by_user_id, sender
+        ) as subquery
+        GROUP BY subquery.user_id;`
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
+
 router.post('/conversation', authenticateToken, async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
