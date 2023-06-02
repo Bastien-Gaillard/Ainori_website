@@ -205,4 +205,30 @@ router.get('/allHistory', authenticateToken, async (req, res) => {
     }
 });
 
+router.get('/routesCommingDriver', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+      SELECT * FROM good_routes WHERE user_id = ${req.user.id} AND status = 1
+      ORDER BY departure_date DESC, departure_time DESC`;
+        console.log(result)
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
+router.get('/routesCommingUser', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+      SELECT * FROM route_history WHERE user_has_route_user_id = ${req.user.id} AND status = 1
+      ORDER BY departure_date DESC, departure_time DESC`;
+        console.log('waw', result);
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
 module.exports = router;
