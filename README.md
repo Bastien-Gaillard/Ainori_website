@@ -84,11 +84,11 @@ La structure du projet (les fichiers important) :
 ├── src                          <br/>
 │   ├── composants               <br/>
 
-<br/>schema.prisma :          Schema de la base de données orienté objet
-<br/>public :                 Dossier pour stocker les images, fichier, etc
-<br/>server -> index.js :     Fichier qui permet de créer l'api du serveur ainsi que de gérer les routes et sessions (express, node.js, socket.io)
-<br/>server -> routes :       Dossier contenant les fichiers javascript des routes de l'api (express, node.js)
-<br/>src -> composants :      Les composants qui s'affiche sur le site web (react)
+<br/>schema.prisma :          &nbsp; &nbsp;Schema de la base de données orienté objet
+<br/>public :                 &nbsp; &nbsp;Dossier pour stocker les images, fichier, etc
+<br/>server -> index.js :     &nbsp; &nbsp;Fichier qui permet de créer l'api du serveur ainsi que de gérer les routes et sessions (express, node.js, socket.io)
+<br/>server -> routes :       &nbsp; &nbsp;Dossier contenant les fichiers javascript des routes de l'api (express, node.js)
+<br/>src -> composants :      &nbsp; &nbsp;Les composants qui s'affiche sur le site web (react)
 
 
 ## Contributeurs 
