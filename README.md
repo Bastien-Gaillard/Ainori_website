@@ -22,11 +22,14 @@ Ainori est une application de covoiturage pour les élèves du centre de formati
  
 ### React
 
-Permet de créer la page et les composant de l'application en utilisant du Javascript (coté front)
+Permet de créer la page et les composant de l'application en utilisant du Javascript (coté front).
+La documentation : https://fr.legacy.reactjs.org/
 
 ### Node.js / Express
 
-Permet de créer l'api utilisé par l'application (coté back)*
+Permet de créer l'api utilisé par l'application (coté back).
+La documentation : https://nodejs.org/en
+                   https://expressjs.com/fr/
 
 ### Socket.io
 
@@ -41,6 +44,7 @@ Permet de gérer l'envoi des mails pour les mot de passe oublié
 
 ## Prerequis
 
+Pour commencer il faudra installer Node.js 
 ## Installation
 
 ## Structure
