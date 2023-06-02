@@ -85,11 +85,11 @@ La structure du projet (les fichiers important) :
 │   ├── composants               <br/>
 ├── package.json
 
-<br/>schema.prisma :          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Schema de la base de données orienté objet<br/>
-<br/>public :                 &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; Dossier pour stocker les images, fichier, etc<br/>
-<br/>server -> index.js :     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Fichier qui permet de créer l'api du serveur ainsi que de gérer les routes et sessions (express, node.js, socket.io)<br/>
-<br/>server -> routes :       &nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;Dossier contenant les fichiers javascript des routes de l'api (express, node.js)<br/>
-<br/>src -> composants :      &nbsp;&nbsp; &nbsp;Les composants qui s'affiche sur le site web (react)<br/>
+<br/>schema.prisma :          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Schema de la base de données orienté objet
+<br/>public :                 &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; Dossier pour stocker les images, fichier, etc
+<br/>server -> index.js :     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Fichier qui permet de créer l'api du serveur ainsi que de gérer les routes et sessions (express, node.js, socket.io)
+<br/>server -> routes :       &nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;Dossier contenant les fichiers javascript des routes de l'api (express, node.js)
+<br/>src -> composants :      &nbsp;&nbsp; &nbsp;Les composants qui s'affiche sur le site web (react)
 <br/>package.json :           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Contient les commandes tel que 'npm run dev' ainsi que toutes les dépendances
 
 
