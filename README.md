@@ -1,22 +1,66 @@
-# Ainori_web
+# Ainori
 
+Lien du site:
 
-## Avant de lancer le projet 
+Acceder au site au lien suivant : http://51.91.249.126:3001
 
-Installer node.js
+## Sommaire:
 
-```npm install --f```
+    * L'application
+    * Technologies
+    * Prérequis
+    * Installation
+    * Structure
+    * Contributeurs
+    
 
-Créer un .env et ajouter la ligne suivante : 
+## L'application
 
-```json
-DATABASE_URL="mysql://Windev:MotDePasseTopSecret@51.91.249.126:3306/ainori"
-ACCESS_TOKEN_SECRET=4242XX424208
-REFRESH_TOKEN_SECRET=424200000X1
-```
+Ainori est une application de covoiturage pour les élèves du centre de formation Nextech
 
-```npx prisma generate```
+## Technologies
+ 
+### React
 
-## Lancer le projet
+Permet de créer la page et les composant de l'application en utilisant du Javascript (coté front)
 
-```npm run dev```
+### Node.js / Express
+
+Permet de créer l'api utilisé par l'application (coté back)*
+
+### Socket.io
+
+### Mui
+
+### Email.js
+## Prerequis
+
+## Installation
+
+## Structure
+
+## Contributeurs 
+  
+  GAILLARD Bastien
+  LALLEMENT Lilian
+  BARRON Thomas
+  
+I used html, css, ...
+Setup
+
+    download or clone the repository
+    run npm install
+    ...
+
+Approach
+
+I adopted the BEM naming style for my css class names and ...
+Status
+
+[name of project] is still in progress. Version 2 will be out soon.
+Credits
+
+List of contriubutors:
+
+    John Doe
+    Beginners guide to BEM
