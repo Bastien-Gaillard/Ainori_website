@@ -32,10 +32,10 @@ Permet une communication bidirectionelle utilisé pour créer la messagerie inst
 La documentation : https://socket.io/
 ### Mui
 Permet d'importer des composants préconçus afin de simplifier l'intégration et la gestion du style.
-La documentation : https://mui.com/material-ui/getting-started/overview/
+\n La documentation : https://mui.com/material-ui/getting-started/overview/
 ### Email.js
 Permet de gérer l'envoi des mails pour les mot de passe oublié 
-La documentation : https://www.emailjs.com/docs/
+\n La documentation : https://www.emailjs.com/docs/
 ## Prerequis
 Pour commencer il faudra installer Node.js 
 ## Installation
