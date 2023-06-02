@@ -37,8 +37,11 @@ Permet d'importer des composants préconçus afin de simplifier l'intégration e
 Permet de gérer l'envoi des mails pour les mot de passe oublié 
 <br/> La documentation : https://www.emailjs.com/docs/
 ## Prerequis
+
+### Node.js 
 Pour commencer il faudra installer Node.js version 18.16.0 
 <br/> Le lien de téléchargement : https://nodejs.org/en/download
+
 ## Installation
 
 Installer la version Node.js : 
