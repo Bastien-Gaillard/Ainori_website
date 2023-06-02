@@ -59,7 +59,7 @@ A la racine du projet, créez un fichier ```.env```
 Ajouter à l'interieur le code suivant : 
 <br/>
 ```
-DATABASE_URL="mysql://Windev:NBSjMAaNYWUp@51.91.249.126:3306/ainori"
+DATABASE_URL="mysql://Windev:DMib8e6ntl5YMZCUv3se@51.91.249.126:3306/ainori"
 ACCESS_TOKEN_SECRET=4242XX424208
 REFRESH_TOKEN_SECRET=424200000X1
 ```
