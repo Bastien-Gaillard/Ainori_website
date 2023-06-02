@@ -12,8 +12,28 @@
 
 ## L'application
 
-Ainori est une application de covoiturage pour les élèves du centre de formation Nextech
+Ainori est une application de covoiturage pour les élèves du centre de formation Nextech.
+Elle a plusieurs fonctionnalités :
+   - Pour les utilisateurs :
 
+          * Connexion au site via leurs identifiants
+          * Création d'un trajet
+          * Inscription à un trajet
+          * Dé-inscription d'un trajet
+          * Gestion de ses véhicules
+          * Visualisation de l'historique de ses trajets
+          * Gestion de son profil
+          * Messagerie
+
+   - Pour les administrateurs :
+
+          * Connexion au site via leurs identifiants
+          * Visualisation de l'intégralité des trajets
+          * Visualisation de l'historique de tous les trajets
+          * Gestion de son profil
+          * Gestion de ses véhicules
+          * Messagerie
+  
 ## Technologies
  
 ### React
