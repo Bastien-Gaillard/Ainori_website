@@ -195,7 +195,7 @@ router.get('/allHistory', authenticateToken, async (req, res) => {
         const result = await prisma.$queryRaw`
         SELECT *
         FROM good_routes e
-        WHERE (CONCAT(e.departure_date, ' ', ADDTIME(e.departure_time, '01:00:00')) < NOW())
+        WHERE (CONCAT(e.departure_date, ' ', ADDTIME(e.departure_time, '01:00:00')) > NOW())
         ORDER BY e.departure_date DESC, e.departure_time DESC;
         `
         res.send(result);
