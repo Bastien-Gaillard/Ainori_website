@@ -20,6 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Helmet } from 'react-helmet';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteRoutes from './Routes/features/DeleteRoutes';
+import FromPassenger from './form/FromPassenger';
 
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
@@ -40,6 +41,16 @@ export default function AllRoutes({ socket }) {
     const [joinTravel, setJoinTravel] = useState(0);
     const [deleteRoutes, setDeleteRoutes] = useState(false);
     const roleadm = parseInt(localStorage.getItem('role'), 10);
+    const [selectedRoute, setSelectedRoute] = useState(null);
+
+    const handleRowClick = (params) => {
+        setSelectedRoute(params.row);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
@@ -242,17 +253,35 @@ export default function AllRoutes({ socket }) {
                 )
             }
         },
+        {
+            field: 'id',
+            headerName: 'Passagers',
+            width: 120,
+            filterable: false,
+            hideSortIcons: true,
+            hideable: false,
+            renderCell: (params: GridRenderCellParams<any>) => {
+              return (
+                <Button onClick={() => handleRowClick(params)}>
+                  Voir les passagers
+                </Button>
+              );
+            },
+        },
     ];
 
 
 
     const CustomToolbar = () => {
         return (
+            <>
             <GridToolbarContainer sx={{ display: 'inline-block', width: '100%' }}>
                 <GridToolbarFilterButton sx={{ float: "left", marginRight: '2vw' }} />
                 {roleadm!=1?(""):(<Button variant="outlined" key="profil" onClick={handleClickOpenAdd}>Créer un trajet</Button>)}
                 <GridToolbarQuickFilter sx={{ float: "right" }} />
             </GridToolbarContainer>
+
+            </>
         );
     }
 
@@ -297,6 +326,17 @@ export default function AllRoutes({ socket }) {
                 </DialogTitle>
                 <DialogContent>
                     <FormTrajets handleCloseForm={handleCloseAdd} />
+                </DialogContent>
+            </Dialog>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>
+                    Passagers du trajet {selectedRoute && selectedRoute.id}
+                    <CloseIcon onClick={handleClose} sx={{ color: 'red' }} />
+                </DialogTitle>
+                <DialogContent>
+                    {selectedRoute && (
+                        <FromPassenger trajetId={selectedRoute.id} />
+                    )}
                 </DialogContent>
             </Dialog>
             <h1 style={{ margin: '2vh 0 2vh 0', textAlign: 'center' ,fontFamily: 'Calibri'}}>Les trajets</h1>

@@ -190,6 +190,20 @@ router.get('/allRoutes', authenticateToken, async (req, res) => {
     }
 });
 
+router.get('/allUserRout', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+        SELECT user_has_route_user_id,participant
+        FROM route_history
+        WHERE route_id = req.body.idRoute ;
+        `
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
 router.get('/allHistory', authenticateToken, async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
