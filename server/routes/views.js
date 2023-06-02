@@ -190,4 +190,19 @@ router.get('/allRoutes', authenticateToken, async (req, res) => {
     }
 });
 
+router.get('/allHistory', authenticateToken, async (req, res) => {
+    try {
+        const result = await prisma.$queryRaw`
+        SELECT *
+        FROM good_routes e
+        WHERE (CONCAT(e.departure_date, ' ', ADDTIME(e.departure_time, '01:00:00')) < NOW())
+        ORDER BY e.departure_date DESC, e.departure_time DESC;
+        `
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Une erreur est survenue')
+    }
+});
+
 module.exports = router;
