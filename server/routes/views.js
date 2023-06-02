@@ -190,12 +190,12 @@ router.get('/allRoutes', authenticateToken, async (req, res) => {
     }
 });
 
-router.get('/allUserRout', authenticateToken, async (req, res) => {
+router.post('/allUserRout', authenticateToken, async (req, res) => {
     try {
         const result = await prisma.$queryRaw`
-        SELECT user_has_route_user_id,participant
+        SELECT user_has_route_user_id,participant,driver_id ,user_has_route_id
         FROM route_history
-        WHERE route_id = req.body.idRoute ;
+        WHERE route_id = ${req.body.idRoute} ;
         `
         res.send(result);
     } catch (error) {

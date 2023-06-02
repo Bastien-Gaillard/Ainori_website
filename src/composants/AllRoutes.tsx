@@ -21,6 +21,7 @@ import { Helmet } from 'react-helmet';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteRoutes from './Routes/features/DeleteRoutes';
 import FromPassenger from './form/FromPassenger';
+import GroupIcon from '@mui/icons-material/Group';
 
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
@@ -240,31 +241,21 @@ export default function AllRoutes({ socket }) {
         },
         {
             field: 'id',
-            headerName: 'Supprimer',
-            width: 80,
-            filterable: false,
-            hideSortIcons: true,
-            hideable: false,
-            renderCell: (params: GridRenderCellParams<any>) => {
-                return (
-                    <Button >
-                        <DeleteRoutes onDeleteRoutesValue={handleDeleteRoutesdValue} routeId={params.value} socket={socket} />
-                    </Button>
-                )
-            }
-        },
-        {
-            field: 'id',
-            headerName: 'Passagers',
-            width: 120,
+            headerName: 'Action',
+            width: 140,
             filterable: false,
             hideSortIcons: true,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
               return (
+                <>
                 <Button onClick={() => handleRowClick(params)}>
-                  Voir les passagers
+                    <GroupIcon  />
                 </Button>
+                <Button >
+                    <DeleteRoutes onDeleteRoutesValue={handleDeleteRoutesdValue} routeId={params.value} socket={socket} />
+                </Button>
+                </>
               );
             },
         },
@@ -329,13 +320,13 @@ export default function AllRoutes({ socket }) {
                 </DialogContent>
             </Dialog>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>
-                    Passagers du trajet {selectedRoute && selectedRoute.id}
+                <DialogTitle style={{display:'flex',alignItems:'center'}}>
                     <CloseIcon onClick={handleClose} sx={{ color: 'red' }} />
+                    Passagers du trajet :
                 </DialogTitle>
                 <DialogContent>
                     {selectedRoute && (
-                        <FromPassenger trajetId={selectedRoute.id} />
+                        <FromPassenger trajetId={selectedRoute.id} socket={socket} />
                     )}
                 </DialogContent>
             </Dialog>
