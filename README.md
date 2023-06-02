@@ -73,6 +73,22 @@ Pour lancer le projet en mode développeur executer la commande suivante : ```np
 
 ## Structure
 
+La structure du projet (les fichiers important) : 
+
+├── prisma
+│   ├── schema.prisma
+├── public 
+├── server
+│   ├── index.js
+│   ├── routes 
+├── src
+│   ├── composants
+
+schema.prisma : Schema de la base de données orienté objet
+public : Dossier pour stocker les images, fichier, etc
+server -> index.js : Fichier qui permet de créer l'api du serveur ainsi que de gérer les routes et sessions (express, node.js, socket.io)
+server -> routes : Dossier contenant les fichiers javascript des routes de l'api (express, node.js)
+src -> composants : Les composants qui s'affiche sur le site web (react)
 
 
 ## Contributeurs 
@@ -80,23 +96,3 @@ Pour lancer le projet en mode développeur executer la commande suivante : ```np
   GAILLARD Bastien
   LALLEMENT Lilian
   BARRON Thomas
-  
-I used html, css, ...
-Setup
-
-    download or clone the repository
-    run npm install
-    ...
-
-Approach
-
-I adopted the BEM naming style for my css class names and ...
-Status
-
-[name of project] is still in progress. Version 2 will be out soon.
-Credits
-
-List of contriubutors:
-
-    John Doe
-    Beginners guide to BEM
