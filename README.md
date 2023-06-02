@@ -2,7 +2,7 @@
 
 Lien du site:
 
-Acceder au site au lien suivant : http://51.91.249.126:3001
+Acceder au site avec le lien suivant : ATTENTION CELA NE FONCTIONNE PAS POUR LE MOMENT http://51.91.249.126:3001
 
 ## Sommaire:
 
@@ -30,9 +30,15 @@ Permet de créer l'api utilisé par l'application (coté back)*
 
 ### Socket.io
 
+Permet une communication bidirectionelle utilisé pour créer la messagerie instantanée
+
 ### Mui
 
+Permet d'importer des composants préconçus afin de simplifier l'intégration et la gestion du style.
 ### Email.js
+
+Permet de gérer l'envoi des mails pour les mot de passe oublié 
+
 ## Prerequis
 
 ## Installation
