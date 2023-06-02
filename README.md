@@ -1,9 +1,5 @@
 # Ainori
 
-Lien du site:
-
-Acceder au site avec le lien suivant : ATTENTION CELA NE FONCTIONNE PAS POUR LE MOMENT http://51.91.249.126:3001
-
 ## Sommaire:
 
     * L'application
