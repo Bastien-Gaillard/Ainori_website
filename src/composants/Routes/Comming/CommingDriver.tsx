@@ -19,6 +19,8 @@ import LeaveRoute from '../features/LeaveRoute';
 import DeleteRoutes from '../features/DeleteRoutes';
 import Alert from "../../features/Alert"
 import { useSnackbar } from 'notistack';
+import GroupIcon from '@mui/icons-material/Group';
+import FromPassenger from '../../form/FromPassenger';
 import RideCard from '../../RideCard';
 interface JSXElement extends React.ReactElement<any> { }
 type Element = JSXElement | null;
@@ -41,6 +43,8 @@ export default function Comming({ socket }) {
     const [leaveRoutes, setLeaveRoutes] = useState(false);
     const [ride, setRide] = useState<any>({});
     const [openRoutes, setOpenRoutes] = useState(false);
+    const [selectedRoute, setSelectedRoute] = useState(null);
+    const [openpop, setopenpop] = useState<boolean>(false);
     const handleChange = (event) => {
         setData({});
     };
@@ -59,6 +63,14 @@ export default function Comming({ socket }) {
         }, 2500);
     };
 
+    const handleRowClick = (params) => {
+        setSelectedRoute(params.row);
+        setopenpop(true);
+    };
+
+    const handleClose = () => {
+        setopenpop(false);
+    };
 
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
@@ -255,16 +267,21 @@ export default function Comming({ socket }) {
         {
             field: 'id',
             headerName: 'Annuler',
-            width: 80,
+            width: 140,
             hideSortIcons: true,
             filterable: false,
             hideable: false,
             renderCell: (params: GridRenderCellParams<any>) => {
                 if (params.row.is_driver) {
                     return (
-                        <Box>
+                        <>
+                        <Button onClick={() => handleRowClick(params)}>
+                            <GroupIcon  />
+                        </Button>
+                        <Button >
                             <DeleteRoutes onDeleteRoutesValue={handleDeleteRoutesdValue} routeId={params.row.route_id} socket={socket} />
-                        </Box>
+                        </Button>
+                        </>
 
                     )
                 } else {
@@ -294,6 +311,7 @@ export default function Comming({ socket }) {
     };
 
     return (
+        <>
         <Container sx={{
             height: '93vh',
             width: '100%',
@@ -326,5 +344,17 @@ export default function Comming({ socket }) {
                 localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
             />
         </Container>
+        <Dialog open={openpop} onClose={handleClose}>
+            <DialogTitle style={{display:'flex',alignItems:'center'}}>
+                <CloseIcon onClick={handleClose} sx={{ color: 'red' }} />
+                Passagers du trajet :
+            </DialogTitle>
+            <DialogContent>
+                {selectedRoute && (
+                    <FromPassenger trajetId={selectedRoute.id} socket={socket} />
+                )}
+            </DialogContent>
+        </Dialog>
+        </>
     );
 }
