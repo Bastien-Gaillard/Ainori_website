@@ -16,7 +16,7 @@ var FileStore = require('session-file-store')(sessions);
 const port = process.env.PORT || 3001;
 const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
-const socket = require('./socket');
+const io = require('socket.io')();
 const { SHA256 } = require('crypto-js');
 // const cleanSessions = require('./cleanSessions');
 const mockResponse = {
@@ -274,24 +274,25 @@ app.put('/forgot/update', async (req, res) => {
 });
 
 
-socketIO.on('connection', (socket) => {
-  // console.log(`⚡: ${socket.id} user just connected!`);
+io.on('connection', (socket) => {
+  // Join a room specific to the connected user
+  socket.join(socket.id);
 
   socket.on('message', (data) => {
-    // data.sender = req.se.id;
-    // console.log(data);
-    socketIO.emit('messageResponse', data);
+    // Send the message only to the sender
+    io.to(socket.id).emit('messageResponse', data);
   });
 
   socket.on('countMessage', (data) => {
-    socketIO.emit('notif', data);
+    // Send the notification only to the sender
+    io.to(socket.id).emit('notif', data);
   });
 
   socket.on('disconnect', () => {
-    // console.log('🔥: A user disconnected');
+    // Leave the room when the user disconnects
+    socket.leave(socket.id);
   });
 });
-
 
 app.get('*', (req, res) => res.sendFile(path.resolve('dist', 'index.html')));
 
